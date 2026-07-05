@@ -1,0 +1,21 @@
+spring:
+  # mysql
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/englishworddb
+    username: root
+    password: root
+server:
+  port: 8080
+  servlet:
+    context-path: /api
+    multipart:
+      # 大小限制
+      max-file-size: 10MB
+debug: true
+
+# 微信小程序配置
+wx:
+  miniapp:
+    app-id: your-app-id
+    app-secret: your-app-secret
