@@ -1,7 +1,7 @@
 import { computed, reactive, ref } from 'vue'
-import { registerStudent, registerTeacher, wxLogin } from '@/api/auth'
+import { loginUser } from '@/api/userAccountController'
 import { useUserStore } from '@/store/user'
-import type { UserRole } from '@/types/user'
+import type { UserInfo, UserRole, UserStatus } from '@/types/user'
 import { getWxLoginCode } from '@/utils/wxLogin'
 
 const authState = reactive({
@@ -12,6 +12,12 @@ const authState = reactive({
 const loading = ref(false)
 const pendingRole = ref<UserRole | null>(null)
 const isMockEnv = ref(false)
+
+type LoginUserVO = API.UserAccountVO & {
+  openid?: string
+  openId?: string
+  token?: string
+}
 
 // #ifndef MP-WEIXIN
 isMockEnv.value = true
@@ -62,24 +68,37 @@ export function useAuth() {
       const { code, isMock } = await getWxLoginCode()
       isMockEnv.value = isMock
 
-      const result = await wxLogin(code, role)
-      const openid = `mock_openid_${code.slice(-8)}`
+      const response = await loginUser({
+        code,
+        loginRole: role,
+      })
+      const result = response.data
+      const userAccount = result.data as LoginUserVO | undefined
+      const openid = userAccount?.openid || userAccount?.openId || ''
 
-      if (result.isNewUser || !result.user) {
+      if (result.message === '请注册用户') {
+        uni.showToast({ title: '请先注册用户', icon: 'none' })
         store.setPendingAuth(openid, role)
         closeWxLogin()
         const url =
           role === 'student'
             ? '/pages/auth/register-student'
             : '/pages/auth/register-teacher'
-        uni.navigateTo({ url })
+        setTimeout(() => {
+          uni.navigateTo({ url })
+        }, 800)
         return
       }
 
-      store.setUser(result.user, result.token)
+      if (result.code !== 0 || !userAccount?.id) {
+        throw new Error(result.message || '登录失败，请重试')
+      }
+
+      const user = mapUserAccountToUserInfo(userAccount, role, openid)
+      store.setUser(user, userAccount.token || `token_${user.id}`)
       closeWxLogin()
 
-      if (result.user.role === 'teacher' && result.user.status === 'pending') {
+      if (user.role === 'teacher' && user.status === 'pending') {
         uni.showToast({ title: '登录成功，账号审核中', icon: 'none' })
         return
       }
@@ -121,24 +140,9 @@ export function useAuth() {
       return
     }
 
-    loading.value = true
-    try {
-      const user = await registerStudent({
-        name: name.trim(),
-        studentId: studentId.trim(),
-        openid: store.state.pendingOpenid,
-      })
-      store.setUser(user, `token_${user.id}`)
-      store.clearPendingAuth()
-      uni.showToast({ title: '注册成功', icon: 'success' })
-      setTimeout(() => {
-        uni.switchTab({ url: '/pages/study/index' })
-      }, 800)
-    } catch {
-      uni.showToast({ title: '注册失败', icon: 'none' })
-    } finally {
-      loading.value = false
-    }
+    void name
+    void studentId
+    uni.showToast({ title: '注册接口暂未实现', icon: 'none' })
   }
 
   async function submitTeacherRegister(name: string, school: string) {
@@ -147,24 +151,9 @@ export function useAuth() {
       return
     }
 
-    loading.value = true
-    try {
-      const user = await registerTeacher({
-        name: name.trim(),
-        school: school.trim(),
-        openid: store.state.pendingOpenid,
-      })
-      store.setUser(user, `token_${user.id}`)
-      store.clearPendingAuth()
-      uni.showToast({ title: '提交成功，等待审核', icon: 'none' })
-      setTimeout(() => {
-        uni.switchTab({ url: '/pages/index/index' })
-      }, 800)
-    } catch {
-      uni.showToast({ title: '提交失败', icon: 'none' })
-    } finally {
-      loading.value = false
-    }
+    void name
+    void school
+    uni.showToast({ title: '注册接口暂未实现', icon: 'none' })
   }
 
   function logout() {
@@ -193,4 +182,28 @@ export function useAuth() {
     submitTeacherRegister,
     logout,
   }
+}
+
+function mapUserAccountToUserInfo(
+  userAccount: LoginUserVO,
+  fallbackRole: UserRole,
+  openid: string,
+): UserInfo {
+  return {
+    id: String(userAccount.id),
+    openid,
+    role: (userAccount.role as UserRole) || fallbackRole,
+    name: userAccount.realName || '微信用户',
+    studentId: userAccount.studentNo,
+    school: userAccount.schoolName,
+    status: normalizeStatus(userAccount.status),
+    avatar: userAccount.avatarUrl,
+  }
+}
+
+function normalizeStatus(status?: string): UserStatus {
+  if (status === 'pending' || status === 'approved' || status === 'rejected') {
+    return status
+  }
+  return 'approved'
 }

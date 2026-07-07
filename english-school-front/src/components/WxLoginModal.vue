@@ -1,10 +1,10 @@
 <template>
-  <view v-if="visible" class="modal-mask" @tap="emit('close')">
+  <view v-if="visible" class="modal-mask" @tap="handleClose">
     <view class="modal-panel" @tap.stop>
       <view class="modal-header">
         <text class="modal-title">微信一键登录</text>
         <text class="modal-subtitle">
-          以{{ roleLabel }}身份登录，无需手机号
+          以{{ roleLabel }}身份登录校园背单词
         </text>
       </view>
 
@@ -12,20 +12,31 @@
         <view class="wx-icon-wrap">
           <text class="wx-icon">微</text>
         </view>
-        <text class="wx-desc">授权后将使用微信身份登录校园背单词</text>
+        <text class="wx-desc">{{ loginDesc }}</text>
         <text v-if="isMockEnv" class="mock-tip">当前为模拟环境，点击按钮即可体验完整流程</text>
+      </view>
+
+      <view class="auth-tips">
+        <view class="tip-item">
+          <text class="tip-dot" />
+          <text class="tip-text">仅用于确认微信身份并匹配{{ roleLabel }}账号</text>
+        </view>
+        <view class="tip-item">
+          <text class="tip-dot" />
+          <text class="tip-text">未注册账号会先提示，再进入注册页面</text>
+        </view>
       </view>
 
       <button
         class="wx-login-btn"
         :loading="loading"
         :disabled="loading"
-        @tap="emit('confirm')"
+        @tap="handleConfirm"
       >
-        {{ loading ? '授权中...' : '微信一键登录' }}
+        {{ buttonText }}
       </button>
 
-      <view class="cancel-btn" @tap="emit('close')">
+      <view class="cancel-btn" @tap="handleClose">
         <text class="cancel-text">取消</text>
       </view>
     </view>
@@ -49,6 +60,22 @@ const emit = defineEmits<{
 }>()
 
 const roleLabel = computed(() => (props.role === 'teacher' ? '教师' : '学生'))
+const loginDesc = computed(() =>
+  props.role === 'teacher'
+    ? '授权后将使用微信身份登录教师端，账号需审核通过后使用'
+    : '授权后将使用微信身份登录学生端，继续学习进度',
+)
+const buttonText = computed(() => (props.loading ? '微信授权中...' : '微信一键登录'))
+
+function handleClose() {
+  if (props.loading) return
+  emit('close')
+}
+
+function handleConfirm() {
+  if (props.loading) return
+  emit('confirm')
+}
 </script>
 
 <style scoped lang="scss">
@@ -69,6 +96,7 @@ const roleLabel = computed(() => (props.role === 'teacher' ? '教师' : '学生'
   padding: 48rpx 40rpx 40rpx;
   background: rgba(28, 28, 30, 0.98);
   border-radius: 28rpx;
+  box-shadow: 0 24rpx 80rpx rgba(0, 0, 0, 0.28);
 }
 
 .modal-header {
@@ -94,7 +122,7 @@ const roleLabel = computed(() => (props.role === 'teacher' ? '教师' : '学生'
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-bottom: 48rpx;
+  margin-bottom: 32rpx;
 }
 
 .wx-icon-wrap {
@@ -106,6 +134,7 @@ const roleLabel = computed(() => (props.role === 'teacher' ? '教师' : '学生'
   margin-bottom: 24rpx;
   border-radius: 50%;
   background: #07c160;
+  box-shadow: 0 16rpx 32rpx rgba(7, 193, 96, 0.28);
 }
 
 .wx-icon {
@@ -128,6 +157,38 @@ const roleLabel = computed(() => (props.role === 'teacher' ? '教师' : '学生'
   color: #ff7a30;
   border-radius: 8rpx;
   background: rgba(255, 122, 48, 0.12);
+}
+
+.auth-tips {
+  margin-bottom: 36rpx;
+  padding: 24rpx;
+  border-radius: 18rpx;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.tip-item {
+  display: flex;
+  align-items: flex-start;
+
+  & + & {
+    margin-top: 16rpx;
+  }
+}
+
+.tip-dot {
+  width: 8rpx;
+  height: 8rpx;
+  margin-top: 14rpx;
+  margin-right: 14rpx;
+  border-radius: 50%;
+  background: #07c160;
+}
+
+.tip-text {
+  flex: 1;
+  font-size: 23rpx;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.48);
 }
 
 .wx-login-btn {

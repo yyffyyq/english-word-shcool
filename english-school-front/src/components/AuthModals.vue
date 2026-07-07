@@ -1,16 +1,16 @@
 <template>
   <RoleSelectModal
-    :visible="auth.showRoleModal"
-    @close="auth.closeRoleSelect"
-    @select="auth.selectRole"
+    :visible="showRoleModal"
+    @close="closeRoleSelect"
+    @select="selectRole"
   />
   <WxLoginModal
-    :visible="auth.showWxLoginModal"
-    :role="auth.pendingRole"
-    :loading="auth.loading"
-    :is-mock-env="auth.isMockEnv"
-    @close="auth.closeWxLogin"
-    @confirm="auth.confirmWxLogin"
+    :visible="showWxLoginModal"
+    :role="pendingRole"
+    :loading="loading"
+    :is-mock-env="isMockEnv"
+    @close="closeWxLogin"
+    @confirm="confirmWxLogin"
   />
 </template>
 
@@ -19,5 +19,15 @@ import RoleSelectModal from '@/components/RoleSelectModal.vue'
 import WxLoginModal from '@/components/WxLoginModal.vue'
 import { useAuth } from '@/composables/useAuth'
 
-const auth = useAuth()
+const {
+  showRoleModal,
+  showWxLoginModal,
+  pendingRole,
+  loading,
+  isMockEnv,
+  closeRoleSelect,
+  closeWxLogin,
+  selectRole,
+  confirmWxLogin,
+} = useAuth()
 </script>
