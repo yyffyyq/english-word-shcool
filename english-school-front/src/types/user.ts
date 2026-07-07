@@ -18,6 +18,19 @@ export interface WxLoginResult {
   code: string
 }
 
+export interface PendingRegisterAuth {
+  openid: string
+  role: UserRole
+  wxCode: string
+  userAccountId?: string
+  realName?: string
+  schoolName?: string
+  studentNo?: string
+  avatarUrl?: string
+  status?: string
+  createdAt: number
+}
+
 export interface RegisterStudentPayload {
   name: string
   studentId: string

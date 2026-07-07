@@ -1,7 +1,7 @@
 import { computed, reactive, ref } from 'vue'
 import { loginUser } from '@/api/userAccountController'
 import { useUserStore } from '@/store/user'
-import type { UserInfo, UserRole, UserStatus } from '@/types/user'
+import type { PendingRegisterAuth, UserInfo, UserRole, UserStatus } from '@/types/user'
 import { getWxLoginCode } from '@/utils/wxLogin'
 
 const authState = reactive({
@@ -78,7 +78,7 @@ export function useAuth() {
 
       if (result.message === '请注册用户') {
         uni.showToast({ title: '请先注册用户', icon: 'none' })
-        store.setPendingAuth(openid, role)
+        store.setPendingAuth(buildPendingRegisterAuth(userAccount, role, code, openid))
         closeWxLogin()
         const url =
           role === 'student'
@@ -135,7 +135,7 @@ export function useAuth() {
   }
 
   async function submitStudentRegister(name: string, studentId: string) {
-    if (!store.state.pendingOpenid || store.state.pendingRole !== 'student') {
+    if (store.state.pendingRegisterAuth?.role !== 'student') {
       uni.showToast({ title: '请先完成微信授权', icon: 'none' })
       return
     }
@@ -146,7 +146,7 @@ export function useAuth() {
   }
 
   async function submitTeacherRegister(name: string, school: string) {
-    if (!store.state.pendingOpenid || store.state.pendingRole !== 'teacher') {
+    if (store.state.pendingRegisterAuth?.role !== 'teacher') {
       uni.showToast({ title: '请先完成微信授权', icon: 'none' })
       return
     }
@@ -198,6 +198,26 @@ function mapUserAccountToUserInfo(
     school: userAccount.schoolName,
     status: normalizeStatus(userAccount.status),
     avatar: userAccount.avatarUrl,
+  }
+}
+
+function buildPendingRegisterAuth(
+  userAccount: LoginUserVO | undefined,
+  role: UserRole,
+  wxCode: string,
+  openid: string,
+): PendingRegisterAuth {
+  return {
+    openid,
+    role,
+    wxCode,
+    userAccountId: userAccount?.id ? String(userAccount.id) : undefined,
+    realName: userAccount?.realName,
+    schoolName: userAccount?.schoolName,
+    studentNo: userAccount?.studentNo,
+    avatarUrl: userAccount?.avatarUrl,
+    status: userAccount?.status,
+    createdAt: Date.now(),
   }
 }
 

@@ -1,5 +1,6 @@
 const USER_KEY = 'english_school_user'
 const TOKEN_KEY = 'english_school_token'
+const PENDING_REGISTER_AUTH_KEY = 'english_school_pending_register_auth'
 
 export function getStorage<T>(key: string): T | null {
   try {
@@ -29,6 +30,20 @@ export function setUserStorage(user: import('@/types/user').UserInfo) {
 export function clearUserStorage() {
   removeStorage(USER_KEY)
   removeStorage(TOKEN_KEY)
+}
+
+export function getPendingRegisterAuthStorage() {
+  return getStorage<import('@/types/user').PendingRegisterAuth>(PENDING_REGISTER_AUTH_KEY)
+}
+
+export function setPendingRegisterAuthStorage(
+  auth: import('@/types/user').PendingRegisterAuth,
+) {
+  setStorage(PENDING_REGISTER_AUTH_KEY, auth)
+}
+
+export function clearPendingRegisterAuthStorage() {
+  removeStorage(PENDING_REGISTER_AUTH_KEY)
 }
 
 export function getToken() {
