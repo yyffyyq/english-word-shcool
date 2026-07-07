@@ -5,9 +5,21 @@ declare namespace API {
     message?: string;
   };
 
+  type BaseResponseVoid = {
+    code?: number;
+    data?: Record<string, any>;
+    message?: string;
+  };
+
   type UserAccountLoginRequest = {
     code?: string;
     loginRole?: string;
+  };
+
+  type UserAccountStudentRegisterRequest = {
+    openid?: string;
+    realName?: string;
+    studentNo?: string;
   };
 
   type UserAccountVO = {

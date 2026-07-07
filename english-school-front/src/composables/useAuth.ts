@@ -1,5 +1,5 @@
 import { computed, reactive, ref } from 'vue'
-import { loginUser } from '@/api/userAccountController'
+import { loginUser, registerStudent } from '@/api/userAccountController'
 import { useUserStore } from '@/store/user'
 import type { PendingRegisterAuth, UserInfo, UserRole, UserStatus } from '@/types/user'
 import { getWxLoginCode } from '@/utils/wxLogin'
@@ -135,14 +135,44 @@ export function useAuth() {
   }
 
   async function submitStudentRegister(name: string, studentId: string) {
-    if (store.state.pendingRegisterAuth?.role !== 'student') {
+    const pendingAuth = store.state.pendingRegisterAuth
+    if (pendingAuth?.role !== 'student') {
       uni.showToast({ title: '请先完成微信授权', icon: 'none' })
       return
     }
 
-    void name
-    void studentId
-    uni.showToast({ title: '注册接口暂未实现', icon: 'none' })
+    if (!pendingAuth.openid) {
+      uni.showToast({ title: '微信身份信息缺失，请重新授权', icon: 'none' })
+      return
+    }
+
+    loading.value = true
+    try {
+      const response = await registerStudent({
+        openid: pendingAuth.openid,
+        realName: name.trim(),
+        studentNo: studentId.trim(),
+      })
+      const result = response.data
+      const userAccount = result.data as LoginUserVO | undefined
+
+      if (result.code !== 0 || !userAccount?.id) {
+        throw new Error(result.message || '注册失败，请重试')
+      }
+
+      const user = mapUserAccountToUserInfo(userAccount, 'student', pendingAuth.openid)
+      store.setUser(user, userAccount.token || `token_${user.id}`)
+      store.clearPendingAuth()
+      uni.showToast({ title: '注册成功', icon: 'success' })
+      setTimeout(() => {
+        uni.switchTab({ url: '/pages/study/index' })
+      }, 800)
+    } catch (error) {
+      const message = error instanceof Error ? error.message : '注册失败，请重试'
+      uni.showToast({ title: message, icon: 'none' })
+    } finally {
+      loading.value = false
+    }
   }
 
   async function submitTeacherRegister(name: string, school: string) {

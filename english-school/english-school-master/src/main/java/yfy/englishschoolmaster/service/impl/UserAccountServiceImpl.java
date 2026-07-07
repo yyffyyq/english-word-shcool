@@ -6,10 +6,13 @@ import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.spring.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
 import yfy.englishschoolmaster.exception.ErrorCode;
 import yfy.englishschoolmaster.exception.ThrowUtils;
 import yfy.englishschoolmaster.mapper.UserAccountMapper;
 import yfy.englishschoolmaster.model.dto.UserAccountLoginRequest;
+import yfy.englishschoolmaster.model.dto.UserAccountStudentRegisterRequest;
 import yfy.englishschoolmaster.model.dto.WxSessionResult;
 import yfy.englishschoolmaster.model.entity.UserAccount;
 import yfy.englishschoolmaster.model.vo.UserAccountVO;
@@ -25,6 +28,8 @@ import yfy.englishschoolmaster.service.WxMiniAppService;
 public class UserAccountServiceImpl extends ServiceImpl<UserAccountMapper, UserAccount> implements UserAccountService {
 
     private static final String STATUS_DISABLED = "DISABLED";
+    private static final String STATUS_NORMAL = "NORMAL";
+    private static final String ROLE_STUDENT = "STUDENT";
 
     @Autowired
     private WxMiniAppService wxMiniAppService;
@@ -57,6 +62,49 @@ public class UserAccountServiceImpl extends ServiceImpl<UserAccountMapper, UserA
                 ErrorCode.NO_AUTH_ERROR, "当前账号角色与登录入口不一致，请切换入口后重试");
         ThrowUtils.throwIf(STATUS_DISABLED.equals(userAccount.getStatus()),
                 ErrorCode.FORBIDDEN_ERROR, "账号已被禁用，请联系管理员");
+
+        return toUserAccountVO(userAccount);
+    }
+
+    /**
+     * 学生注册：将 openid、姓名、学号写入 user_account 表
+     *
+     * @param request 学生注册请求体
+     * @return 注册成功后的用户信息
+     */
+    @Override
+    public UserAccountVO registerStudent(UserAccountStudentRegisterRequest request) {
+        ThrowUtils.throwIf(request == null, ErrorCode.PARAMS_ERROR, "学生注册请求为空");
+        ThrowUtils.throwIf(StrUtil.isBlank(request.getOpenid()), ErrorCode.PARAMS_ERROR, "openid 不能为空");
+        ThrowUtils.throwIf(StrUtil.isBlank(request.getRealName()), ErrorCode.PARAMS_ERROR, "姓名不能为空");
+        ThrowUtils.throwIf(StrUtil.isBlank(request.getStudentNo()), ErrorCode.PARAMS_ERROR, "学号不能为空");
+
+        String openid = request.getOpenid().trim();
+        String realName = request.getRealName().trim();
+        String studentNo = request.getStudentNo().trim();
+
+        UserAccount existByOpenid = this.getOne(QueryWrapper.create()
+                .eq(UserAccount::getOpenid, openid));
+        ThrowUtils.throwIf(existByOpenid != null, ErrorCode.OPERATION_ERROR, "该微信账号已注册，请直接登录");
+
+        UserAccount existByStudentNo = this.getOne(QueryWrapper.create()
+                .eq(UserAccount::getStudentNo, studentNo)
+                .eq(UserAccount::getRole, ROLE_STUDENT));
+        ThrowUtils.throwIf(existByStudentNo != null, ErrorCode.OPERATION_ERROR, "该学号已被注册");
+
+        LocalDateTime now = LocalDateTime.now();
+        UserAccount userAccount = UserAccount.builder()
+                .openid(openid)
+                .realName(realName)
+                .studentNo(studentNo)
+                .role(ROLE_STUDENT)
+                .status(STATUS_NORMAL)
+                .createdAt(now)
+                .updatedAt(now)
+                .build();
+
+        boolean saved = this.save(userAccount);
+        ThrowUtils.throwIf(!saved, ErrorCode.OPERATION_ERROR, "学生注册失败");
 
         return toUserAccountVO(userAccount);
     }

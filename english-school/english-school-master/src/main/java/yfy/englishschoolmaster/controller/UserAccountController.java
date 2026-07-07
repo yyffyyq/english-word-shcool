@@ -14,6 +14,7 @@ import yfy.englishschoolmaster.common.ResultUtils;
 import yfy.englishschoolmaster.exception.ErrorCode;
 import yfy.englishschoolmaster.exception.ThrowUtils;
 import yfy.englishschoolmaster.model.dto.UserAccountLoginRequest;
+import yfy.englishschoolmaster.model.dto.UserAccountStudentRegisterRequest;
 import yfy.englishschoolmaster.model.entity.UserAccount;
 import yfy.englishschoolmaster.model.vo.UserAccountVO;
 import yfy.englishschoolmaster.service.UserAccountService;
@@ -58,10 +59,28 @@ public class UserAccountController {
         return ResultUtils.success(login_info);
     }
 
-    // 2. 微信小程序登录注册接口：
-    //  这里分为学生注册和教师注册
-    //  我计划在这类采用模版方法实现
-    //  教师注册多一个审核流程。
+    /**
+     * 学生注册接口：微信小程序提交 openid、姓名、学号后写入数据库
+     *
+     * @param request 学生注册请求体
+     * @return 注册成功后的用户信息
+     */
+    @PostMapping("/register/student")
+    public BaseResponse<UserAccountVO> registerStudent(@RequestBody UserAccountStudentRegisterRequest request) {
+        ThrowUtils.throwIf(request == null, ErrorCode.PARAMS_ERROR, "学生注册请求为空");
+        UserAccountVO userAccountVO = userAccountService.registerStudent(request);
+        return ResultUtils.success(userAccountVO);
+    }
+
+    /**
+     * 教师注册接口：待实现，暂返回空
+     *
+     * @return 空
+     */
+    @PostMapping("/register/teacher")
+    public BaseResponse<Void> registerTeacher() {
+        return ResultUtils.success(null);
+    }
 
     // 3. 微信登录注销接口：
     //  这里需要做的是在注销用户信息。

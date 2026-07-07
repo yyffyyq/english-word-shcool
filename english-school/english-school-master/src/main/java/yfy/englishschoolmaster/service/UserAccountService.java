@@ -2,6 +2,7 @@ package yfy.englishschoolmaster.service;
 
 import com.mybatisflex.core.service.IService;
 import yfy.englishschoolmaster.model.dto.UserAccountLoginRequest;
+import yfy.englishschoolmaster.model.dto.UserAccountStudentRegisterRequest;
 import yfy.englishschoolmaster.model.entity.UserAccount;
 import yfy.englishschoolmaster.model.vo.UserAccountVO;
 
@@ -18,4 +19,12 @@ public interface UserAccountService extends IService<UserAccount> {
      * @return 封装后信息 UserAccountVO
      */
     UserAccountVO getLogin(UserAccountLoginRequest request);
+
+    /**
+     * 学生注册
+     *
+     * @param request 学生注册请求体
+     * @return 注册成功后的用户信息
+     */
+    UserAccountVO registerStudent(UserAccountStudentRegisterRequest request);
 }
