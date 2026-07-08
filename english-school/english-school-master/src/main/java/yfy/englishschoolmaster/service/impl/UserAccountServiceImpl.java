@@ -38,7 +38,7 @@ public class UserAccountServiceImpl extends ServiceImpl<UserAccountMapper, UserA
      * 获取登录用户信息
      *
      * @param request 登录请求体
-     * @return 封装后信息 UserAccountVO；未注册时返回 null
+     * @return 封装后信息 UserAccountVO；未注册时仅返回 openid
      */
     @Override
     public UserAccountVO getLogin(UserAccountLoginRequest request) {
@@ -55,7 +55,9 @@ public class UserAccountServiceImpl extends ServiceImpl<UserAccountMapper, UserA
         UserAccount userAccount = this.getOne(QueryWrapper.create()
                 .eq(UserAccount::getOpenid, openid));
         if (userAccount == null) {
-            return null;
+            UserAccountVO unregisteredVO = new UserAccountVO();
+            unregisteredVO.setOpenid(openid);
+            return unregisteredVO;
         }
 
         ThrowUtils.throwIf(!loginRole.equalsIgnoreCase(userAccount.getRole()),

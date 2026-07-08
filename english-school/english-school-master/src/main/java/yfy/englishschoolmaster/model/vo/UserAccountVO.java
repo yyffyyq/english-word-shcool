@@ -50,4 +50,9 @@ public class UserAccountVO implements Serializable {
      * 账号状态：NORMAL 正常，DISABLED 禁用
      */
     private String status;
+
+    /**
+     * 微信 openid，仅未注册时返回，供前端引导注册
+     */
+    private String openid;
 }

@@ -49,14 +49,11 @@ public class UserAccountController {
         // 1. 判断请求是否为空
         ThrowUtils.throwIf(request == null , ErrorCode.PARAMS_ERROR,"微信登录请求为空");
 
-        // 2. 判断是否为第一次登录，如果是第一次进行注册操作
-        UserAccountVO login_info = userAccountService.getLogin(request);
-        // a. 判断login_info状态返回小程序信息用于进行下一步判断
-        // 引导用户到注册接口进行注册
-        ThrowUtils.throwIf(login_info == null ,ErrorCode.PARAMS_ERROR,"请注册用户");
+        // 2. 查询登录信息；未注册时返回仅含 openid 的 VO，前端据此引导注册
+        UserAccountVO loginInfo = userAccountService.getLogin(request);
 
-        // 3. 封装返回类型给前端
-        return ResultUtils.success(login_info);
+        // 3. 封装返回类型给前端（id 为空表示未注册，openid 供注册接口使用）
+        return ResultUtils.success(loginInfo);
     }
 
     /**
