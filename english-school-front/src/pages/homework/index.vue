@@ -2,15 +2,15 @@
   <view class="page">
     <AuthModals />
     <view class="header">
-      <text class="title">班级</text>
-      <text class="subtitle">选择班级，加入学习</text>
+      <text class="title">作业</text>
+      <text class="subtitle">布置与管理班级单词作业</text>
     </view>
 
     <view class="empty-card" @tap="handleAction">
       <text class="empty-icon">+</text>
-      <text class="empty-text">加入班级</text>
+      <text class="empty-text">创建作业</text>
     </view>
-    <AppTabBar current-path="pages/class/index" />
+    <AppTabBar current-path="pages/homework/index" />
   </view>
 </template>
 
@@ -19,12 +19,17 @@ import { onShow } from '@dcloudio/uni-app'
 import AuthModals from '@/components/AuthModals.vue'
 import AppTabBar from '@/components/AppTabBar.vue'
 import { useAuth } from '@/composables/useAuth'
+import { useUserStore } from '@/store/user'
 import { syncCustomTabBar } from '@/utils/tabBar'
 
 const auth = useAuth()
+const store = useUserStore()
 
 onShow(() => {
-  syncCustomTabBar('pages/class/index')
+  syncCustomTabBar('pages/homework/index')
+  if (store.isLoggedIn.value && !store.isTeacher.value) {
+    uni.switchTab({ url: '/pages/index/index' })
+  }
 })
 
 function handleAction() {

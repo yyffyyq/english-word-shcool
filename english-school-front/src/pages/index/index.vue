@@ -1,8 +1,6 @@
 <template>
-  <view class="page">
+  <view class="page" :style="pageStyle">
     <AuthModals />
-    <image class="bg-image" src="/static/bg-home.png" mode="aspectFill" />
-    <view class="bg-overlay" />
 
     <view class="page-content">
       <view class="top-bar">
@@ -22,51 +20,75 @@
       </view>
 
       <view class="entry-bar">
-        <view class="entry-item" @tap="handleStudentLogin">
-          <text class="entry-label">学生登录</text>
-          <text class="entry-count">STUDENT</text>
+        <view class="entry-item" @tap="goStudy">
+          <text class="entry-label">学习</text>
+          <text class="entry-count">STUDY</text>
         </view>
         <view class="entry-divider" />
-        <view class="entry-item" @tap="handleTeacherLogin">
-          <text class="entry-label">教师登录</text>
-          <text class="entry-count">TEACHER</text>
-        </view>
-      </view>
-
-      <view class="bottom-tools">
-        <view class="tool-btn" @tap="goStudy">
-          <text class="tool-icon">▦</text>
-        </view>
-        <view class="tool-btn" @tap="goMine">
-          <text class="tool-icon">⌕</text>
+        <view class="entry-item" @tap="goReview">
+          <text class="entry-label">复习</text>
+          <text class="entry-count">REVIEW</text>
         </view>
       </view>
     </view>
+    <AppTabBar current-path="pages/index/index" />
   </view>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
+import { onLoad, onShow } from '@dcloudio/uni-app'
 import AuthModals from '@/components/AuthModals.vue'
 import { useAuth } from '@/composables/useAuth'
 import { useUserStore } from '@/store/user'
+import AppTabBar from '@/components/AppTabBar.vue'
+import { syncCustomTabBar } from '@/utils/tabBar'
 
 const auth = useAuth()
 const store = useUserStore()
 
+const pageStyle = ref<Record<string, string>>({
+  height: '100%',
+})
+
 const userAvatar = computed(() => store.state.user?.avatar || '/static/default-avatar.png')
 
-function handleStudentLogin() {
-  auth.loginWithRole('student')
+function initPageLayout() {
+  const info = uni.getWindowInfo()
+  const statusBarHeight = info.statusBarHeight || 0
+  const tabBarHeight = 56 + (info.safeAreaInsets?.bottom || 0)
+  const pageHeight = Math.max(info.windowHeight, 0)
+  pageStyle.value = {
+    minHeight: `${pageHeight}px`,
+    width: '100%',
+    '--status-bar-height': `${statusBarHeight}px`,
+    '--page-height': `${pageHeight}px`,
+    '--app-tab-bar-height': `${tabBarHeight}px`,
+  }
 }
+onLoad(initPageLayout)
+onShow(() => {
+  initPageLayout()
+  syncCustomTabBar('pages/index/index')
+})
 
-function handleTeacherLogin() {
-  auth.loginWithRole('teacher')
+function requireLogin(): boolean {
+  if (store.isLoggedIn.value) return true
+  uni.showToast({ title: '请先登录', icon: 'none' })
+  auth.openRoleSelect()
+  return false
 }
 
 function goStudy() {
+  if (!requireLogin()) return
   if (!auth.guardPageAccess()) return
-  uni.switchTab({ url: '/pages/study/index' })
+  uni.navigateTo({ url: '/pages/study/index' })
+}
+
+function goReview() {
+  if (!requireLogin()) return
+  if (!auth.guardPageAccess()) return
+  uni.navigateTo({ url: '/pages/review/index' })
 }
 
 function goMine() {
@@ -75,30 +97,22 @@ function goMine() {
 }
 </script>
 
+<style lang="scss">
+page {
+  width: 100%;
+  min-height: 100%;
+  background: #1e4d3b;
+}
+</style>
+
 <style scoped lang="scss">
 .page {
   position: relative;
-  min-height: 100vh;
-  overflow: hidden;
-  background: #1a1a1a;
-}
-
-.bg-image {
-  position: absolute;
-  inset: 0;
+  box-sizing: border-box;
   width: 100%;
-  height: 100%;
-}
-
-.bg-overlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    180deg,
-    rgba(0, 0, 0, 0.15) 0%,
-    rgba(0, 0, 0, 0.35) 55%,
-    rgba(0, 0, 0, 0.65) 100%
-  );
+  min-height: var(--page-height);
+  overflow: visible;
+  background: linear-gradient(180deg, #1e4d3b 0%, #0f2e24 100%);
 }
 
 .page-content {
@@ -106,12 +120,15 @@ function goMine() {
   z-index: 1;
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
-  padding: calc(var(--status-bar-height, 44px) + 24rpx) 40rpx calc(120rpx + env(safe-area-inset-bottom));
+  box-sizing: border-box;
+  width: 100%;
+  min-height: var(--page-height);
+  padding: calc(var(--status-bar-height, 44px) + 24rpx) 40rpx calc(var(--app-tab-bar-height, 56px) + 34rpx);
 }
 
 .top-bar {
   display: flex;
+  flex-shrink: 0;
   align-items: center;
 }
 
@@ -131,12 +148,11 @@ function goMine() {
 }
 
 .hero {
-  flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  margin-top: -80rpx;
+  margin-top: 300rpx;
 }
 
 .hero-label {
@@ -162,9 +178,12 @@ function goMine() {
 
 .entry-bar {
   display: flex;
+  flex-shrink: 0;
   align-items: stretch;
+  width: 100%;
   height: 120rpx;
-  background: rgba(0, 0, 0, 0.42);
+  margin-top: auto;
+  background: rgba(0, 0, 0, 0.22);
   backdrop-filter: blur(16px);
 }
 
@@ -197,24 +216,4 @@ function goMine() {
   letter-spacing: 2rpx;
 }
 
-.bottom-tools {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-top: 32rpx;
-  padding: 0 8rpx;
-}
-
-.tool-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 64rpx;
-  height: 64rpx;
-}
-
-.tool-icon {
-  font-size: 36rpx;
-  color: rgba(255, 255, 255, 0.75);
-}
 </style>

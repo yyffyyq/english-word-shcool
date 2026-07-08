@@ -4,7 +4,9 @@
       "path": "pages/index/index",
       "style": {
         "navigationStyle": "custom",
-        "navigationBarTitleText": "首页"
+        "navigationBarTitleText": "首页",
+        "enablePullDownRefresh": false,
+        "backgroundColor": "#1e4d3b"
       }
     },
     {
@@ -23,6 +25,12 @@
       "path": "pages/class/index",
       "style": {
         "navigationBarTitleText": "班级"
+      }
+    },
+    {
+      "path": "pages/homework/index",
+      "style": {
+        "navigationBarTitleText": "作业"
       }
     },
     {
@@ -73,22 +81,16 @@
         "selectedIconPath": "static/tabbar/home-active.png"
       },
       {
-        "pagePath": "pages/study/index",
-        "text": "学习",
-        "iconPath": "static/tabbar/study.png",
-        "selectedIconPath": "static/tabbar/study-active.png"
-      },
-      {
-        "pagePath": "pages/review/index",
-        "text": "复习",
-        "iconPath": "static/tabbar/review.png",
-        "selectedIconPath": "static/tabbar/review-active.png"
-      },
-      {
         "pagePath": "pages/class/index",
         "text": "班级",
         "iconPath": "static/tabbar/class.png",
         "selectedIconPath": "static/tabbar/class-active.png"
+      },
+      {
+        "pagePath": "pages/homework/index",
+        "text": "作业",
+        "iconPath": "static/tabbar/study.png",
+        "selectedIconPath": "static/tabbar/study-active.png"
       },
       {
         "pagePath": "pages/mine/index",

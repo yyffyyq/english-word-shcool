@@ -1,33 +1,26 @@
 <template>
   <view class="page">
     <AuthModals />
-    <!-- 未登录状态 -->
-    <view v-if="!store.isLoggedIn" class="guest-view">
-      <view class="guest-card">
-        <text class="guest-title">登录后查看个人信息</text>
-        <text class="guest-desc">选择教师或学生身份，微信一键登录</text>
-        <view class="login-btn" @tap="auth.openRoleSelect">
-          <text class="login-text">立即登录</text>
-        </view>
-      </view>
-    </view>
 
-    <!-- 已登录状态 -->
-    <view v-else class="profile-view">
+    <view class="profile-view">
       <view class="profile-header">
-        <image class="avatar" :src="store.state.user?.avatar || '/static/default-avatar.png'" mode="aspectFill" />
+        <image
+          class="avatar"
+          :src="avatarUrl"
+          mode="aspectFill"
+        />
         <view class="profile-info">
-          <text class="name">{{ store.state.user?.name }}</text>
-          <text class="role-tag">{{ roleLabel }}</text>
+          <text class="name">{{ displayName }}</text>
+          <text v-if="store.isLoggedIn" class="role-tag">{{ roleLabel }}</text>
         </view>
       </view>
 
       <view class="info-card">
-        <view v-if="store.isStudent.value" class="info-row">
+        <view v-if="store.isLoggedIn && store.isStudent.value" class="info-row">
           <text class="info-label">学号</text>
           <text class="info-value">{{ store.state.user?.studentId || '-' }}</text>
         </view>
-        <view v-if="store.isTeacher.value" class="info-row">
+        <view v-if="store.isLoggedIn && store.isTeacher.value" class="info-row">
           <text class="info-label">学校</text>
           <text class="info-value">{{ store.state.user?.school || '-' }}</text>
         </view>
@@ -37,26 +30,47 @@
         </view>
       </view>
 
-      <view class="logout-btn" @tap="auth.logout">
-        <text class="logout-text">退出登录</text>
+      <view class="action-btn" :class="{ login: !store.isLoggedIn }" @tap="handleAction">
+        <text class="action-text" :class="{ 'login-text': !store.isLoggedIn }">
+          {{ store.isLoggedIn ? '退出登录' : '请登录' }}
+        </text>
       </view>
     </view>
+    <AppTabBar current-path="pages/mine/index" />
   </view>
 </template>
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import { onShow, onTabItemTap } from '@dcloudio/uni-app'
+import { onShow } from '@dcloudio/uni-app'
 import AuthModals from '@/components/AuthModals.vue'
+import AppTabBar from '@/components/AppTabBar.vue'
 import { useAuth } from '@/composables/useAuth'
 import { useUserStore } from '@/store/user'
+import { syncCustomTabBar } from '@/utils/tabBar'
 
 const auth = useAuth()
 const store = useUserStore()
 
+onShow(() => {
+  syncCustomTabBar('pages/mine/index')
+})
+
+const avatarUrl = computed(() =>
+  store.isLoggedIn.value
+    ? store.state.user?.avatar || '/static/default-avatar.png'
+    : '/static/default-avatar.png',
+)
+
+const displayName = computed(() =>
+  store.isLoggedIn.value ? store.state.user?.name || '微信用户' : '未登录',
+)
+
 const roleLabel = computed(() => (store.isTeacher.value ? '教师' : '学生'))
 
 const statusLabel = computed(() => {
+  if (!store.isLoggedIn.value) return '未登录'
+
   const status = store.state.user?.status
   if (status === 'approved') return '已通过'
   if (status === 'pending') return '审核中'
@@ -65,76 +79,28 @@ const statusLabel = computed(() => {
 })
 
 const statusClass = computed(() => {
+  if (!store.isLoggedIn.value) return 'status-guest'
+
   const status = store.state.user?.status
   if (status === 'approved') return 'status-approved'
   if (status === 'pending') return 'status-pending'
   return ''
 })
 
-onShow(() => {
-  if (!store.isLoggedIn.value) {
-    auth.openRoleSelect()
+function handleAction() {
+  if (store.isLoggedIn.value) {
+    auth.logout()
+    return
   }
-})
-
-onTabItemTap(() => {
-  if (!store.isLoggedIn.value) {
-    auth.openRoleSelect()
-  }
-})
+  auth.openRoleSelect()
+}
 </script>
 
 <style scoped lang="scss">
 .page {
   min-height: 100vh;
-  padding: 32rpx;
+  padding: 32rpx 32rpx calc(140rpx + env(safe-area-inset-bottom));
   background: #f5f5f7;
-}
-
-.guest-view {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 70vh;
-}
-
-.guest-card {
-  width: 100%;
-  padding: 64rpx 48rpx;
-  text-align: center;
-  border-radius: 24rpx;
-  background: #fff;
-  box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.06);
-}
-
-.guest-title {
-  display: block;
-  font-size: 34rpx;
-  font-weight: 600;
-  color: #1a1a1a;
-}
-
-.guest-desc {
-  display: block;
-  margin-top: 16rpx;
-  font-size: 26rpx;
-  color: #8e8e93;
-}
-
-.login-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 88rpx;
-  margin-top: 48rpx;
-  border-radius: 44rpx;
-  background: #1a1a1a;
-}
-
-.login-text {
-  font-size: 28rpx;
-  color: #fff;
-  letter-spacing: 2rpx;
 }
 
 .profile-header {
@@ -202,6 +168,10 @@ onTabItemTap(() => {
   color: #1a1a1a;
 }
 
+.status-guest {
+  color: #8e8e93;
+}
+
 .status-approved {
   color: #34c759;
 }
@@ -210,7 +180,7 @@ onTabItemTap(() => {
   color: #ff7a30;
 }
 
-.logout-btn {
+.action-btn {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -219,10 +189,20 @@ onTabItemTap(() => {
   border-radius: 44rpx;
   background: #fff;
   border: 1rpx solid #e5e5ea;
+
+  &.login {
+    background: #1a1a1a;
+    border-color: #1a1a1a;
+  }
 }
 
-.logout-text {
+.action-text {
   font-size: 28rpx;
   color: #ff3b30;
+}
+
+.login-text {
+  color: #fff;
+  letter-spacing: 2rpx;
 }
 </style>

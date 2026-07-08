@@ -3,6 +3,7 @@ import { loginUser, registerStudent } from '@/api/userAccountController'
 import { useUserStore } from '@/store/user'
 import type { PendingRegisterAuth, UserInfo, UserRole, UserStatus } from '@/types/user'
 import { getWxLoginCode } from '@/utils/wxLogin'
+import { syncCustomTabBar } from '@/utils/tabBar'
 
 const authState = reactive({
   showRoleModal: false,
@@ -76,7 +77,7 @@ export function useAuth() {
       const userAccount = result.data as LoginUserVO | undefined
       const openid = userAccount?.openid || userAccount?.openId || ''
 
-      if (result.message === '请注册用户') {
+      if (isUnregisteredUser(result, userAccount, openid)) {
         uni.showToast({ title: '请先注册用户', icon: 'none' })
         store.setPendingAuth(buildPendingRegisterAuth(userAccount, role, code, openid))
         closeWxLogin()
@@ -98,12 +99,18 @@ export function useAuth() {
       store.setUser(user, userAccount.token || `token_${user.id}`)
       closeWxLogin()
 
-      if (user.role === 'teacher' && user.status === 'pending') {
-        uni.showToast({ title: '登录成功，账号审核中', icon: 'none' })
+      if (user.role === 'teacher') {
+        if (user.status === 'pending') {
+          uni.showToast({ title: '登录成功，账号审核中', icon: 'none' })
+        } else {
+          uni.showToast({ title: '微信登录成功', icon: 'success' })
+        }
+        syncCustomTabBar('pages/index/index')
         return
       }
 
       uni.showToast({ title: '微信登录成功', icon: 'success' })
+      syncCustomTabBar('pages/index/index')
     } catch (error) {
       const message = error instanceof Error ? error.message : '登录失败，请重试'
       uni.showToast({ title: message, icon: 'none' })
@@ -165,7 +172,8 @@ export function useAuth() {
       store.clearPendingAuth()
       uni.showToast({ title: '注册成功', icon: 'success' })
       setTimeout(() => {
-        uni.switchTab({ url: '/pages/study/index' })
+        uni.switchTab({ url: '/pages/index/index' })
+        syncCustomTabBar('pages/index/index')
       }, 800)
     } catch (error) {
       const message = error instanceof Error ? error.message : '注册失败，请重试'
@@ -190,6 +198,9 @@ export function useAuth() {
     store.logout()
     uni.showToast({ title: '已退出登录', icon: 'none' })
     uni.switchTab({ url: '/pages/index/index' })
+    setTimeout(() => {
+      syncCustomTabBar('pages/index/index')
+    }, 300)
   }
 
   return {
@@ -249,6 +260,14 @@ function buildPendingRegisterAuth(
     status: userAccount?.status,
     createdAt: Date.now(),
   }
+}
+
+function isUnregisteredUser(
+  result: API.BaseResponseUserAccountVO,
+  userAccount: LoginUserVO | undefined,
+  openid: string,
+) {
+  return result.message === '请注册用户' || (Boolean(openid) && !userAccount?.id)
 }
 
 function normalizeStatus(status?: string): UserStatus {
