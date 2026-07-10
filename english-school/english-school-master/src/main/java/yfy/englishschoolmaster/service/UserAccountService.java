@@ -1,6 +1,8 @@
 package yfy.englishschoolmaster.service;
 
 import com.mybatisflex.core.service.IService;
+import yfy.englishschoolmaster.model.dto.SystemLoginRequest;
+import yfy.englishschoolmaster.model.dto.SystemRegisterRequest;
 import yfy.englishschoolmaster.model.dto.UserAccountLoginRequest;
 import yfy.englishschoolmaster.model.dto.UserAccountStudentRegisterRequest;
 import yfy.englishschoolmaster.model.entity.UserAccount;
@@ -27,4 +29,20 @@ public interface UserAccountService extends IService<UserAccount> {
      * @return 注册成功后的用户信息
      */
     UserAccountVO registerStudent(UserAccountStudentRegisterRequest request);
+
+    /**
+     * Web 管理端登录
+     *
+     * @param request 登录请求体
+     * @return 登录用户信息
+     */
+    UserAccountVO systemLogin(SystemLoginRequest request);
+
+    /**
+     * Web 管理端注册
+     *
+     * @param request 注册请求体
+     * @return 注册后的用户信息
+     */
+    UserAccountVO systemRegister(SystemRegisterRequest request);
 }

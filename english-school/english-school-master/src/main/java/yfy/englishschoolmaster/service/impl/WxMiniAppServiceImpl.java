@@ -23,18 +23,30 @@ public class WxMiniAppServiceImpl implements WxMiniAppService {
     @Autowired
     private WxMiniAppProperties wxMiniAppProperties;
 
+    /**
+     * 通过code 获取 用户登录信息
+     * @param code 临时登录凭证
+     * @return
+     */
     @Override
     public WxSessionResult code2Session(String code) {
+        // 1. 拿到微信小程序id和秘钥
         String appId = wxMiniAppProperties.getAppId();
         String appSecret = wxMiniAppProperties.getAppSecret();
+
+        // 2. 判断参数是否正确
         if (StrUtil.hasBlank(appId, appSecret)) {
             throw new BusinessException(ErrorCode.SYSTEM_ERROR, "微信小程序配置缺失，请检查 appId 和 appSecret");
         }
 
+        // 3. 构建请求体
         String url = StrUtil.format(CODE2SESSION_URL, appId, appSecret, code);
         String responseBody = HttpUtil.get(url);
+
+        // 4. 调用并返回获取到的登录的微信用户信息
         WxSessionResult sessionResult = JSONUtil.toBean(responseBody, WxSessionResult.class);
 
+        // 5. 判断返回响应体
         if (sessionResult == null) {
             throw new BusinessException(ErrorCode.SYSTEM_ERROR, "微信登录失败，响应为空");
         }
@@ -45,6 +57,8 @@ public class WxMiniAppServiceImpl implements WxMiniAppService {
         if (StrUtil.isBlank(sessionResult.getOpenid())) {
             throw new BusinessException(ErrorCode.OPERATION_ERROR, "微信登录失败，未获取到 openid");
         }
+
+        // 6. 返回登录微信用户信息
         return sessionResult;
     }
 }

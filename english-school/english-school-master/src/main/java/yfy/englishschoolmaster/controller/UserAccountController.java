@@ -13,10 +13,15 @@ import yfy.englishschoolmaster.common.BaseResponse;
 import yfy.englishschoolmaster.common.ResultUtils;
 import yfy.englishschoolmaster.exception.ErrorCode;
 import yfy.englishschoolmaster.exception.ThrowUtils;
+import yfy.englishschoolmaster.model.dto.SystemLoginRequest;
+import yfy.englishschoolmaster.model.dto.SystemRegisterRequest;
 import yfy.englishschoolmaster.model.dto.UserAccountLoginRequest;
 import yfy.englishschoolmaster.model.dto.UserAccountStudentRegisterRequest;
+import yfy.englishschoolmaster.model.dto.UserAccountTeacherRegisterRequest;
 import yfy.englishschoolmaster.model.entity.UserAccount;
+import yfy.englishschoolmaster.model.vo.TeacherApprovalVO;
 import yfy.englishschoolmaster.model.vo.UserAccountVO;
+import yfy.englishschoolmaster.service.TeacherApprovalService;
 import yfy.englishschoolmaster.service.UserAccountService;
 import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
@@ -32,6 +37,9 @@ public class UserAccountController {
 
     @Autowired
     private UserAccountService userAccountService;
+
+    @Autowired
+    private TeacherApprovalService teacherApprovalService;
 
     /**
      * 微信一键登录接口：
@@ -49,7 +57,7 @@ public class UserAccountController {
         // 1. 判断请求是否为空
         ThrowUtils.throwIf(request == null , ErrorCode.PARAMS_ERROR,"微信登录请求为空");
 
-        // 2. 查询登录信息；未注册时返回仅含 openid 的 VO，前端据此引导注册
+        // 2. 查询登录信息：优先读 Redis，未命中再查库；未注册时返回仅含 openid 的 VO
         UserAccountVO loginInfo = userAccountService.getLogin(request);
 
         // 3. 封装返回类型给前端（id 为空表示未注册，openid 供注册接口使用）
@@ -57,26 +65,87 @@ public class UserAccountController {
     }
 
     /**
-     * 学生注册接口：微信小程序提交 openid、姓名、学号后写入数据库
-     *
-     * @param request 学生注册请求体
-     * @return 注册成功后的用户信息
+     * Web 管理端登录接口：
+     * 校验管理员账号与密码，
+     *       密码会先使用固定盐值加密
+     *       再与数据库中 password_hash 字段比对
+     * @param request
+     * @return
      */
-    @PostMapping("/register/student")
-    public BaseResponse<UserAccountVO> registerStudent(@RequestBody UserAccountStudentRegisterRequest request) {
-        ThrowUtils.throwIf(request == null, ErrorCode.PARAMS_ERROR, "学生注册请求为空");
-        UserAccountVO userAccountVO = userAccountService.registerStudent(request);
+    @PostMapping("/system/login")
+    public BaseResponse<UserAccountVO> systemLogin(@RequestBody SystemLoginRequest request){
+
+        // 1. 判断请求是否为空
+        ThrowUtils.throwIf(request == null , ErrorCode.PARAMS_ERROR,"登录请求为空");
+
+        // 2. 校验账号密码并获取登录用户信息
+        UserAccountVO userAccountVO = userAccountService.systemLogin(request);
+
+        // 3. 封装返回类型给前端
         return ResultUtils.success(userAccountVO);
     }
 
     /**
-     * 教师注册接口：待实现，暂返回空
-     *
-     * @return 空
+     * Web 管理端注册接口：
+     * 创建新的管理员账号，
+     *       密码使用固定盐值加密后写入 password_hash
+     *       角色默认设置为 ADMIN
+     * @param request
+     * @return
+     */
+    @PostMapping("/system/register")
+    public BaseResponse<UserAccountVO> systemRegister(@RequestBody SystemRegisterRequest request){
+
+        // 1. 判断请求是否为空
+        ThrowUtils.throwIf(request == null , ErrorCode.PARAMS_ERROR,"注册请求为空");
+
+        // 2. 创建管理员账号
+        UserAccountVO userAccountVO = userAccountService.systemRegister(request);
+
+        // 3. 封装返回类型给前端
+        return ResultUtils.success(userAccountVO);
+    }
+
+    /**
+     * 学生注册接口：
+     * 微信小程序提交 openid、姓名、学号，
+     *       校验通过后直接写入 user_account 表
+     *       学生注册无需审批，注册成功即可登录
+     * @param request
+     * @return
+     */
+    @PostMapping("/register/student")
+    public BaseResponse<UserAccountVO> registerStudent(@RequestBody UserAccountStudentRegisterRequest request){
+
+        // 1. 判断请求是否为空
+        ThrowUtils.throwIf(request == null , ErrorCode.PARAMS_ERROR,"学生注册请求为空");
+
+        // 2. 写入学生账号信息
+        UserAccountVO userAccountVO = userAccountService.registerStudent(request);
+
+        // 3. 封装返回类型给前端
+        return ResultUtils.success(userAccountVO);
+    }
+
+    /**
+     * 教师注册接口：
+     * 微信小程序提交教师注册信息，
+     *       生成教师审批记录写入 teacher_approval 表
+     *       审批状态为待审批，暂不创建 user_account 记录
+     * @param request
+     * @return
      */
     @PostMapping("/register/teacher")
-    public BaseResponse<Void> registerTeacher() {
-        return ResultUtils.success(null);
+    public BaseResponse<TeacherApprovalVO> registerTeacher(@RequestBody UserAccountTeacherRegisterRequest request){
+
+        // 1. 判断请求是否为空
+        ThrowUtils.throwIf(request == null , ErrorCode.PARAMS_ERROR,"教师注册请求为空");
+
+        // 2. 提交教师注册审批申请
+        TeacherApprovalVO teacherApprovalVO = teacherApprovalService.registerTeacher(request);
+
+        // 3. 封装返回类型给前端
+        return ResultUtils.success(teacherApprovalVO);
     }
 
     // 3. 微信登录注销接口：

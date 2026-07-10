@@ -23,13 +23,17 @@ CREATE TABLE IF NOT EXISTS user_account (
 
 CREATE TABLE IF NOT EXISTS teacher_approval (
   id BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT '审批记录ID',
-  teacher_id BIGINT NOT NULL COMMENT '教师用户ID，关联 user_account.id',
+  openid VARCHAR(64) NOT NULL COMMENT '微信小程序 openid，审批通过前用于标识申请人',
+  real_name VARCHAR(50) NOT NULL COMMENT '教师真实姓名',
+  school_name VARCHAR(100) NULL COMMENT '所属学校名称',
+  teacher_id BIGINT NULL COMMENT '审批通过后关联 user_account.id',
   status VARCHAR(20) NOT NULL COMMENT '审批状态：PENDING 待审批，APPROVED 已通过，REJECTED 已拒绝',
   reject_reason VARCHAR(255) NULL COMMENT '拒绝原因，只有审批拒绝时填写',
   approved_by BIGINT NULL COMMENT '审批管理员ID，关联 user_account.id',
   approved_at DATETIME NULL COMMENT '审批时间',
   created_at DATETIME NOT NULL COMMENT '提交审批时间',
   updated_at DATETIME NOT NULL COMMENT '更新时间',
+  KEY idx_teacher_approval_openid (openid),
   KEY idx_teacher_approval_teacher (teacher_id),
   KEY idx_teacher_approval_status (status),
   CONSTRAINT fk_teacher_approval_teacher
@@ -37,3 +41,7 @@ CREATE TABLE IF NOT EXISTS teacher_approval (
   CONSTRAINT fk_teacher_approval_admin
     FOREIGN KEY (approved_by) REFERENCES user_account (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='教师注册审批表';
+
+
+INSERT INTO user_account (username, password_hash, role, real_name, status, created_at, updated_at)
+VALUES ('admin', '123456', 'ADMIN', '超级管理员', 'NORMAL', NOW(), NOW());

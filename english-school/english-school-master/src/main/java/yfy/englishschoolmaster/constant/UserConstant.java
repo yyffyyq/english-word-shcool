@@ -7,9 +7,14 @@ package yfy.englishschoolmaster.constant;
 public interface UserConstant {
 
     /**
-     * 用户登录态键
+     * 微信登录 Redis 键前缀
      */
-    String USER_LOGIN_STATE = "user_login";
+    String WX_LOGIN_KEY = "wx.login";
+
+    /**
+     * 密码加盐值
+     */
+    String PASSWORD_SALT = "yfy";
 
     //  region 权限
 
