@@ -6,8 +6,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import yfy.englishschoolmaster.annotation.AuthCheck;
 import yfy.englishschoolmaster.common.BaseResponse;
 import yfy.englishschoolmaster.common.ResultUtils;
+import yfy.englishschoolmaster.constant.UserConstant;
 import yfy.englishschoolmaster.exception.ErrorCode;
 import yfy.englishschoolmaster.exception.ThrowUtils;
 import yfy.englishschoolmaster.model.dto.TeacherApprovalAuditRequest;
@@ -50,11 +52,14 @@ public class TeacherApprovalController {
     /**
      * 审核教师注册申请接口：
      * 管理员对教师注册申请进行审批，
-     *       通过后创建教师账号，拒绝则记录拒绝原因
-     * @param request
-     * @return
+     *       通过后创建教师账号，拒绝则记录拒绝原因。
+     * 请求头需携带 openid，由 AuthInterceptor 校验管理员权限。
+     *
+     * @param request 审核请求
+     * @return 审批结果
      */
     @PostMapping("/audit")
+    @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
     public BaseResponse<TeacherApprovalVO> auditTeacherApproval(@RequestBody TeacherApprovalAuditRequest request){
 
         // 1. 判断请求是否为空
