@@ -1,35 +1,263 @@
 <template>
   <view class="page">
     <AuthModals />
+
     <view class="header">
       <text class="title">班级</text>
-      <text class="subtitle">选择班级，加入学习</text>
+      <text class="subtitle">{{ subtitle }}</text>
     </view>
 
     <view class="empty-card" @tap="handleAction">
       <text class="empty-icon">+</text>
-      <text class="empty-text">加入班级</text>
+      <text class="empty-text">{{ actionText }}</text>
     </view>
+
+    <view v-if="isTeacher" class="class-list">
+      <view v-for="item in classList" :key="item.id" class="class-card">
+        <text class="class-name">{{ item.className || '-' }}</text>
+        <view class="info-row">
+          <text class="info-label">年级</text>
+          <text class="info-value">{{ item.grade || '-' }}</text>
+        </view>
+        <view class="info-row">
+          <text class="info-label">学校</text>
+          <text class="info-value">{{ item.schoolName || '-' }}</text>
+        </view>
+        <view class="info-row" @tap="copyInviteCode(item.inviteCode)">
+          <text class="info-label">邀请码</text>
+          <view class="invite-wrap">
+            <text class="invite-code">{{ item.inviteCode || '-' }}</text>
+            <text v-if="item.inviteCode" class="invite-copy">复制</text>
+          </view>
+        </view>
+      </view>
+
+      <view v-if="loading && classList.length === 0" class="list-tip">
+        <text class="list-tip-text">加载中...</text>
+      </view>
+      <view v-else-if="!loading && classList.length === 0" class="list-tip">
+        <text class="list-tip-text">暂无班级，点击上方创建</text>
+      </view>
+      <view v-else-if="hasMore" class="list-tip" @tap="loadMore">
+        <text class="list-tip-text">{{ loading ? '加载中...' : '加载更多' }}</text>
+      </view>
+      <view v-else-if="classList.length > 0" class="list-tip">
+        <text class="list-tip-text">没有更多了</text>
+      </view>
+    </view>
+
+    <view v-if="showCreateModal" class="modal-mask" @tap="closeCreateModal">
+      <view class="modal-panel" @tap.stop>
+        <view class="modal-header">
+          <text class="modal-title">创建班级</text>
+          <text class="modal-subtitle">填写班级信息并生成邀请码</text>
+        </view>
+
+        <view class="form-card">
+          <view class="form-item">
+            <text class="label">班级名称</text>
+            <input
+              v-model="form.className"
+              class="input"
+              placeholder="例如：三年级一班"
+              placeholder-class="placeholder"
+            />
+          </view>
+          <view class="form-item">
+            <text class="label">年级</text>
+            <input
+              v-model="form.grade"
+              class="input"
+              placeholder="例如：三年级"
+              placeholder-class="placeholder"
+            />
+          </view>
+          <view class="form-item">
+            <text class="label">学校名称</text>
+            <input
+              v-model="form.schoolName"
+              class="input"
+              placeholder="可不填，默认使用教师学校"
+              placeholder-class="placeholder"
+            />
+          </view>
+        </view>
+
+        <view
+          class="submit-btn"
+          :class="{ disabled: !canCreate || creating }"
+          @tap="submitCreateClass"
+        >
+          <text class="submit-text">{{ creating ? '创建中...' : '确认创建' }}</text>
+        </view>
+        <view class="cancel-btn" @tap="closeCreateModal">
+          <text class="cancel-text">取消</text>
+        </view>
+      </view>
+    </view>
+
     <AppTabBar current-path="pages/class/index" />
   </view>
 </template>
 
 <script setup lang="ts">
-import { onShow } from '@dcloudio/uni-app'
+import { computed, reactive, ref } from 'vue'
+import { onReachBottom, onShow } from '@dcloudio/uni-app'
+import { addClassInfo, listClassInfoByPage } from '@/api/classInfoController'
 import AuthModals from '@/components/AuthModals.vue'
 import AppTabBar from '@/components/AppTabBar.vue'
 import { useAuth } from '@/composables/useAuth'
+import { useUserStore } from '@/store/user'
 import { syncCustomTabBar } from '@/utils/tabBar'
 
+const PAGE_SIZE = 10
+
 const auth = useAuth()
+const store = useUserStore()
+
+const classList = ref<API.ClassInfoVO[]>([])
+const pageNum = ref(1)
+const totalPage = ref(1)
+const loading = ref(false)
+const creating = ref(false)
+const showCreateModal = ref(false)
+
+const form = reactive({
+  className: '',
+  grade: '',
+  schoolName: '',
+})
+
+const isTeacher = computed(() => store.isTeacher.value)
+const actionText = computed(() => (isTeacher.value ? '创建班级' : '加入班级'))
+const subtitle = computed(() =>
+  isTeacher.value ? '创建班级，邀请学生加入' : '选择班级，加入学习',
+)
+const canCreate = computed(() => Boolean(form.className.trim()))
+const hasMore = computed(() => pageNum.value < totalPage.value)
 
 onShow(() => {
   syncCustomTabBar('pages/class/index')
+  if (store.isLoggedIn.value && isTeacher.value && !store.isTeacherPending.value) {
+    resetAndFetchClasses()
+    return
+  }
+
+  classList.value = []
+  pageNum.value = 1
+  totalPage.value = 1
+})
+
+onReachBottom(() => {
+  if (isTeacher.value) {
+    loadMore()
+  }
 })
 
 function handleAction() {
   if (!auth.guardPageAccess()) return
+
+  if (isTeacher.value) {
+    openCreateModal()
+    return
+  }
+
   uni.showToast({ title: '功能开发中', icon: 'none' })
+}
+
+function openCreateModal() {
+  form.className = ''
+  form.grade = ''
+  form.schoolName = store.state.user?.school || ''
+  showCreateModal.value = true
+}
+
+function closeCreateModal() {
+  if (creating.value) return
+  showCreateModal.value = false
+}
+
+async function submitCreateClass() {
+  if (!canCreate.value || creating.value) return
+  if (!auth.guardPageAccess()) return
+
+  creating.value = true
+  try {
+    const response = await addClassInfo({
+      className: form.className.trim(),
+      grade: form.grade.trim() || undefined,
+      schoolName: form.schoolName.trim() || undefined,
+    })
+    const result = response.data
+
+    if (result.code !== 0 || !result.data) {
+      throw new Error(result.message || '创建班级失败')
+    }
+
+    uni.showToast({ title: '创建成功', icon: 'success' })
+    showCreateModal.value = false
+    await resetAndFetchClasses()
+  } catch (error) {
+    const message = error instanceof Error ? error.message : '创建班级失败'
+    uni.showToast({ title: message, icon: 'none' })
+  } finally {
+    creating.value = false
+  }
+}
+
+async function resetAndFetchClasses() {
+  pageNum.value = 1
+  totalPage.value = 1
+  await fetchClassList(true)
+}
+
+async function loadMore() {
+  if (!isTeacher.value || loading.value || !hasMore.value) return
+  pageNum.value += 1
+  await fetchClassList(false)
+}
+
+async function fetchClassList(replace: boolean) {
+  if (loading.value && !replace) return
+  loading.value = true
+
+  try {
+    const currentPage = replace ? 1 : pageNum.value
+    const response = await listClassInfoByPage({
+      pageNum: currentPage,
+      pageSize: PAGE_SIZE,
+      sortField: 'createdAt',
+      sortOrder: 'descend',
+    })
+    const result = response.data
+
+    if (result.code !== 0 || !result.data) {
+      throw new Error(result.message || '获取班级列表失败')
+    }
+
+    const records = result.data.records || []
+    classList.value = replace ? records : [...classList.value, ...records]
+    totalPage.value = Math.max(Number(result.data.totalPage) || 1, 1)
+    pageNum.value = Number(result.data.pageNumber) || currentPage
+  } catch (error) {
+    if (!replace) {
+      pageNum.value = Math.max(pageNum.value - 1, 1)
+    }
+    const message = error instanceof Error ? error.message : '获取班级列表失败'
+    uni.showToast({ title: message, icon: 'none' })
+  } finally {
+    loading.value = false
+  }
+}
+
+function copyInviteCode(inviteCode?: string) {
+  if (!inviteCode) return
+  uni.setClipboardData({
+    data: inviteCode,
+    success() {
+      uni.showToast({ title: '邀请码已复制', icon: 'success' })
+    },
+  })
 }
 </script>
 
@@ -77,6 +305,183 @@ function handleAction() {
 .empty-text {
   margin-top: 16rpx;
   font-size: 28rpx;
+  color: #8e8e93;
+}
+
+.class-list {
+  margin-top: 24rpx;
+}
+
+.class-card {
+  padding: 8rpx 32rpx 8rpx;
+  margin-bottom: 24rpx;
+  border-radius: 24rpx;
+  background: #fff;
+}
+
+.class-name {
+  display: block;
+  padding: 28rpx 0 8rpx;
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.info-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24rpx 0;
+  border-bottom: 1rpx solid #f0f0f0;
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.info-label {
+  font-size: 28rpx;
+  color: #8e8e93;
+}
+
+.info-value {
+  max-width: 420rpx;
+  font-size: 28rpx;
+  color: #1a1a1a;
+  text-align: right;
+}
+
+.invite-wrap {
+  display: flex;
+  align-items: center;
+}
+
+.invite-code {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #ff7a30;
+  letter-spacing: 2rpx;
+}
+
+.invite-copy {
+  margin-left: 16rpx;
+  padding: 4rpx 12rpx;
+  font-size: 22rpx;
+  color: #ff7a30;
+  border-radius: 8rpx;
+  background: rgba(255, 122, 48, 0.12);
+}
+
+.list-tip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16rpx 0 8rpx;
+}
+
+.list-tip-text {
+  font-size: 24rpx;
+  color: #8e8e93;
+}
+
+.modal-mask {
+  position: fixed;
+  inset: 0;
+  z-index: 1001;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.45);
+}
+
+.modal-panel {
+  width: 100%;
+  padding: 40rpx 32rpx calc(40rpx + env(safe-area-inset-bottom));
+  border-radius: 32rpx 32rpx 0 0;
+  background: #f5f5f7;
+}
+
+.modal-header {
+  margin-bottom: 28rpx;
+}
+
+.modal-title {
+  display: block;
+  font-size: 36rpx;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.modal-subtitle {
+  display: block;
+  margin-top: 8rpx;
+  font-size: 24rpx;
+  color: #8e8e93;
+}
+
+.form-card {
+  padding: 8rpx 32rpx;
+  border-radius: 24rpx;
+  background: #fff;
+}
+
+.form-item {
+  padding: 24rpx 0;
+  border-bottom: 1rpx solid #f0f0f0;
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.label {
+  display: block;
+  margin-bottom: 12rpx;
+  font-size: 24rpx;
+  color: #8e8e93;
+}
+
+.input {
+  height: 56rpx;
+  font-size: 30rpx;
+  color: #1a1a1a;
+}
+
+.placeholder {
+  color: #c7c7cc;
+}
+
+.submit-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 88rpx;
+  margin-top: 40rpx;
+  border-radius: 44rpx;
+  background: #ff7a30;
+
+  &.disabled {
+    opacity: 0.45;
+  }
+}
+
+.submit-text {
+  font-size: 30rpx;
+  font-weight: 500;
+  color: #fff;
+  letter-spacing: 2rpx;
+}
+
+.cancel-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 80rpx;
+  margin-top: 8rpx;
+}
+
+.cancel-text {
+  font-size: 26rpx;
   color: #8e8e93;
 }
 </style>

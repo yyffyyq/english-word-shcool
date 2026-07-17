@@ -1,5 +1,6 @@
 import { computed, reactive } from 'vue'
 import type { PendingRegisterAuth, UserInfo, UserRole } from '@/types/user'
+import { normalizeRole } from '@/types/user'
 import {
   clearPendingRegisterAuthStorage,
   clearUserStorage,
@@ -28,27 +29,33 @@ const state = reactive<UserState>({
 })
 
 export function initUserStore() {
-  state.user = getUserStorage()
+  const cachedUser = getUserStorage()
+  state.user = cachedUser
+    ? { ...cachedUser, role: normalizeRole(cachedUser.role) }
+    : null
   state.token = getToken()
   state.pendingRegisterAuth = getPendingRegisterAuthStorage()
   state.pendingOpenid = state.pendingRegisterAuth?.openid || null
-  state.pendingRole = state.pendingRegisterAuth?.role || null
+  state.pendingRole = state.pendingRegisterAuth?.role
+    ? normalizeRole(state.pendingRegisterAuth.role)
+    : null
 }
 
 export function useUserStore() {
   const isLoggedIn = computed(() => !!state.user && !!state.token)
-  const isStudent = computed(() => state.user?.role === 'student')
-  const isTeacher = computed(() => state.user?.role === 'teacher')
+  const isStudent = computed(() => normalizeRole(state.user?.role) === 'student')
+  const isTeacher = computed(() => normalizeRole(state.user?.role) === 'teacher')
   const isApproved = computed(() => state.user?.status === 'approved')
   const isPending = computed(() => state.user?.status === 'pending')
   const isTeacherPending = computed(
-    () => state.user?.role === 'teacher' && state.user?.status === 'pending',
+    () => normalizeRole(state.user?.role) === 'teacher' && state.user?.status === 'pending',
   )
 
   function setUser(user: UserInfo, token: string) {
-    state.user = user
+    const normalizedUser = { ...user, role: normalizeRole(user.role) }
+    state.user = normalizedUser
     state.token = token
-    setUserStorage(user)
+    setUserStorage(normalizedUser)
     setToken(token)
   }
 
@@ -59,11 +66,11 @@ export function useUserStore() {
       typeof authOrOpenid === 'string'
         ? {
             openid: authOrOpenid,
-            role: role as UserRole,
+            role: normalizeRole(role),
             wxCode: '',
             createdAt: Date.now(),
           }
-        : authOrOpenid
+        : { ...authOrOpenid, role: normalizeRole(authOrOpenid.role) }
 
     state.pendingOpenid = auth.openid
     state.pendingRole = auth.role

@@ -1,4 +1,5 @@
 import type { UserRole } from '@/types/user'
+import { normalizeRole } from '@/types/user'
 
 export interface TabBarItem {
   pagePath: string
@@ -35,11 +36,11 @@ const MINE_TAB: TabBarItem = {
   selectedIconPath: '/static/tabbar/mine-active.png',
 }
 
-export function getTabBarConfig(isLoggedIn: boolean, role?: UserRole | null): TabBarItem[] {
+export function getTabBarConfig(isLoggedIn: boolean, role?: UserRole | string | null): TabBarItem[] {
   if (!isLoggedIn) {
     return [HOME_TAB, MINE_TAB]
   }
-  if (role === 'teacher') {
+  if (normalizeRole(role) === 'teacher') {
     return [HOME_TAB, CLASS_TAB, HOMEWORK_TAB, MINE_TAB]
   }
   return [HOME_TAB, CLASS_TAB, MINE_TAB]

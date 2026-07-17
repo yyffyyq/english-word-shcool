@@ -36,9 +36,52 @@ export async function registerStudent(
 }
 
 /** 此处后端没有提供注释 POST /userAccount/register/teacher */
-export async function registerTeacher(options?: { [key: string]: any }) {
-  return request<API.BaseResponseVoid>("/userAccount/register/teacher", {
+export async function registerTeacher(
+  body: API.UserAccountTeacherRegisterRequest,
+  options?: { [key: string]: any }
+) {
+  return request<API.BaseResponseTeacherApprovalVO>(
+    "/userAccount/register/teacher",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      data: body,
+      ...(options || {}),
+    }
+  );
+}
+
+/** 此处后端没有提供注释 POST /userAccount/system/login */
+export async function systemLogin(
+  body: API.SystemLoginRequest,
+  options?: { [key: string]: any }
+) {
+  return request<API.BaseResponseUserAccountVO>("/userAccount/system/login", {
     method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    data: body,
     ...(options || {}),
   });
+}
+
+/** 此处后端没有提供注释 POST /userAccount/system/register */
+export async function systemRegister(
+  body: API.SystemRegisterRequest,
+  options?: { [key: string]: any }
+) {
+  return request<API.BaseResponseUserAccountVO>(
+    "/userAccount/system/register",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      data: body,
+      ...(options || {}),
+    }
+  );
 }

@@ -2,6 +2,15 @@ export type UserRole = 'student' | 'teacher'
 
 export type UserStatus = 'none' | 'pending' | 'approved' | 'rejected'
 
+/** 后端可能返回 TEACHER/STUDENT，统一成小写角色 */
+export function normalizeRole(role?: string | null, fallback: UserRole = 'student'): UserRole {
+  const value = (role || '').toLowerCase()
+  if (value === 'teacher' || value === 'student') {
+    return value
+  }
+  return fallback
+}
+
 export interface UserInfo {
   id: string
   openid: string

@@ -2,6 +2,7 @@ import { computed, reactive, ref } from 'vue'
 import { loginUser, registerStudent } from '@/api/userAccountController'
 import { useUserStore } from '@/store/user'
 import type { PendingRegisterAuth, UserInfo, UserRole, UserStatus } from '@/types/user'
+import { normalizeRole } from '@/types/user'
 import { getWxLoginCode } from '@/utils/wxLogin'
 import { syncCustomTabBar } from '@/utils/tabBar'
 
@@ -233,7 +234,7 @@ function mapUserAccountToUserInfo(
   return {
     id: String(userAccount.id),
     openid,
-    role: (userAccount.role as UserRole) || fallbackRole,
+    role: normalizeRole(userAccount.role, fallbackRole),
     name: userAccount.realName || '微信用户',
     studentId: userAccount.studentNo,
     school: userAccount.schoolName,

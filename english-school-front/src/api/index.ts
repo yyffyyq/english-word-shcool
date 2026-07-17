@@ -3,6 +3,10 @@
 // API 更新时间：
 // API 唯一标识：
 import * as userAccountController from "./userAccountController";
+import * as teacherApprovalController from "./teacherApprovalController";
+import * as classInfoController from "./classInfoController";
 export default {
   userAccountController,
+  teacherApprovalController,
+  classInfoController,
 };

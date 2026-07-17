@@ -33,7 +33,7 @@ function myAxios<T = unknown>(
   config: RequestConfig = {},
 ): Promise<RequestResponse<T>> {
   const requestUrl = buildUrl(url, config.params)
-  const header = config.header || config.headers || {}
+  const header = buildRequestHeader(config)
 
   return new Promise((resolve, reject) => {
     uni.request({
@@ -80,6 +80,26 @@ function buildUrl(
 
   if (!query) return fullUrl
   return `${fullUrl}${fullUrl.includes('?') ? '&' : '?'}${query}`
+}
+
+function buildRequestHeader(config: RequestConfig): Record<string, string> {
+  const header: Record<string, string> = {
+    ...(config.header || config.headers || {}),
+  }
+
+  if (!header.openid) {
+    try {
+      const user = uni.getStorageSync('english_school_user') as { openid?: string } | ''
+      const openid = user && typeof user === 'object' ? user.openid : ''
+      if (openid) {
+        header.openid = openid
+      }
+    } catch {
+      // ignore storage read errors
+    }
+  }
+
+  return header
 }
 
 function handleUnauthorized(url: string, data: unknown) {
