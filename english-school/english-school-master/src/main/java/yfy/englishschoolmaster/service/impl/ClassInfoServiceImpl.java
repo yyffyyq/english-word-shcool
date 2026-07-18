@@ -6,6 +6,7 @@ import cn.hutool.core.util.StrUtil;
 import com.mybatisflex.core.paginate.Page;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.spring.service.impl.ServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import yfy.englishschoolmaster.constant.UserConstant;
 import yfy.englishschoolmaster.exception.BusinessException;
@@ -15,12 +16,23 @@ import yfy.englishschoolmaster.mapper.ClassInfoMapper;
 import yfy.englishschoolmaster.model.dto.ClassInfoAddRequest;
 import yfy.englishschoolmaster.model.dto.ClassInfoQueryRequest;
 import yfy.englishschoolmaster.model.entity.ClassInfo;
+import yfy.englishschoolmaster.model.entity.ClassStudent;
+import yfy.englishschoolmaster.model.entity.UserAccount;
 import yfy.englishschoolmaster.model.vo.ClassInfoVO;
+import yfy.englishschoolmaster.model.vo.ClassStudentVO;
 import yfy.englishschoolmaster.model.vo.UserAccountVO;
 import yfy.englishschoolmaster.service.ClassInfoService;
+import yfy.englishschoolmaster.service.ClassStudentService;
+import yfy.englishschoolmaster.service.UserAccountService;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * 班级信息服务层实现
@@ -31,10 +43,17 @@ import java.util.Set;
 public class ClassInfoServiceImpl extends ServiceImpl<ClassInfoMapper, ClassInfo> implements ClassInfoService {
 
     private static final String STATUS_ACTIVE = "ACTIVE";
+    private static final String STATUS_IN_CLASS = "IN_CLASS";
     private static final String INVITE_CODE_CHARS = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
     private static final int INVITE_CODE_LENGTH = 6;
     private static final int INVITE_CODE_MAX_RETRY = 10;
     private static final Set<String> SORT_FIELDS = Set.of("createdAt", "updatedAt", "className", "status");
+
+    @Autowired
+    private ClassStudentService classStudentService;
+
+    @Autowired
+    private UserAccountService userAccountService;
 
     @Override
     public ClassInfoVO createClass(ClassInfoAddRequest request, UserAccountVO loginUser) {
@@ -109,6 +128,101 @@ public class ClassInfoServiceImpl extends ServiceImpl<ClassInfoMapper, ClassInfo
         // 3. 分页查询并转换 VO
         Page<ClassInfo> page = this.page(Page.of(pageNum, pageSize), queryWrapper);
         return page.map(this::toClassInfoVO);
+    }
+
+    @Override
+    public ClassInfoVO getClassDetail(Long classId, UserAccountVO loginUser) {
+        ClassInfo classInfo = getAccessibleClass(classId, loginUser, false);
+        ClassInfoVO classInfoVO = toClassInfoVO(classInfo);
+        long studentCount = classStudentService.count(QueryWrapper.create()
+                .eq(ClassStudent::getClassId, classId)
+                .eq(ClassStudent::getStatus, STATUS_IN_CLASS));
+        classInfoVO.setStudentCount(studentCount);
+        return classInfoVO;
+    }
+
+    @Override
+    public List<ClassStudentVO> listClassStudents(Long classId, UserAccountVO loginUser) {
+        getAccessibleClass(classId, loginUser, false);
+
+        List<ClassStudent> classStudents = classStudentService.list(QueryWrapper.create()
+                .eq(ClassStudent::getClassId, classId)
+                .eq(ClassStudent::getStatus, STATUS_IN_CLASS)
+                .orderBy(ClassStudent::getJoinedAt, true));
+        if (classStudents == null || classStudents.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        List<Long> studentIds = classStudents.stream()
+                .map(ClassStudent::getStudentId)
+                .filter(Objects::nonNull)
+                .distinct()
+                .toList();
+        Map<Long, UserAccount> studentMap = studentIds.isEmpty()
+                ? Collections.emptyMap()
+                : userAccountService.listByIds(studentIds).stream()
+                .collect(Collectors.toMap(UserAccount::getId, Function.identity(), (a, b) -> a));
+
+        return classStudents.stream().map(classStudent -> {
+            ClassStudentVO vo = new ClassStudentVO();
+            vo.setId(classStudent.getId());
+            vo.setClassId(classStudent.getClassId());
+            vo.setStudentId(classStudent.getStudentId());
+            vo.setJoinedAt(classStudent.getJoinedAt());
+            vo.setStatus(classStudent.getStatus());
+            UserAccount student = studentMap.get(classStudent.getStudentId());
+            if (student != null) {
+                vo.setRealName(student.getRealName());
+                vo.setStudentNo(student.getStudentNo());
+                vo.setAvatarUrl(student.getAvatarUrl());
+            }
+            return vo;
+        }).toList();
+    }
+
+    @Override
+    public ClassInfoVO refreshInviteCode(Long classId, UserAccountVO loginUser) {
+        ClassInfo classInfo = getAccessibleClass(classId, loginUser, true);
+        String inviteCode = generateUniqueInviteCode();
+        classInfo.setInviteCode(inviteCode);
+        classInfo.setUpdatedAt(LocalDateTime.now());
+        boolean updated = this.updateById(classInfo);
+        ThrowUtils.throwIf(!updated, ErrorCode.OPERATION_ERROR, "刷新邀请码失败");
+        return toClassInfoVO(classInfo);
+    }
+
+    /**
+     * 校验班级存在，并校验访问权限：
+     * 教师仅可操作自己的班级；管理员可读全部（刷新邀请码仅教师）
+     *
+     * @param classId        班级ID
+     * @param loginUser      当前登录用户
+     * @param teacherOnlyWrite 是否仅教师可写（刷新邀请码）
+     */
+    private ClassInfo getAccessibleClass(Long classId, UserAccountVO loginUser, boolean teacherOnlyWrite) {
+        ThrowUtils.throwIf(loginUser == null || loginUser.getId() == null, ErrorCode.NOT_LOGIN_ERROR, "未登录");
+        ThrowUtils.throwIf(classId == null || classId <= 0, ErrorCode.PARAMS_ERROR, "班级ID不合法");
+
+        ClassInfo classInfo = this.getById(classId);
+        ThrowUtils.throwIf(classInfo == null, ErrorCode.NOT_FOUND_ERROR, "班级不存在");
+
+        String role = loginUser.getRole();
+        boolean isAdmin = UserConstant.ADMIN_ROLE.equalsIgnoreCase(role);
+        boolean isTeacher = UserConstant.TEACHER_ROLE.equalsIgnoreCase(role);
+
+        if (teacherOnlyWrite) {
+            ThrowUtils.throwIf(!isTeacher, ErrorCode.NO_AUTH_ERROR, "仅教师可刷新邀请码");
+            ThrowUtils.throwIf(!Objects.equals(classInfo.getTeacherId(), loginUser.getId()),
+                    ErrorCode.NO_AUTH_ERROR, "无权操作该班级");
+            return classInfo;
+        }
+
+        ThrowUtils.throwIf(!isAdmin && !isTeacher, ErrorCode.NO_AUTH_ERROR, "仅教师或管理员可访问班级");
+        if (isTeacher) {
+            ThrowUtils.throwIf(!Objects.equals(classInfo.getTeacherId(), loginUser.getId()),
+                    ErrorCode.NO_AUTH_ERROR, "无权访问该班级");
+        }
+        return classInfo;
     }
 
     /**

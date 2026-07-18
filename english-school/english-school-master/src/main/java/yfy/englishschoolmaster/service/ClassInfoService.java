@@ -6,7 +6,10 @@ import yfy.englishschoolmaster.model.dto.ClassInfoAddRequest;
 import yfy.englishschoolmaster.model.dto.ClassInfoQueryRequest;
 import yfy.englishschoolmaster.model.entity.ClassInfo;
 import yfy.englishschoolmaster.model.vo.ClassInfoVO;
+import yfy.englishschoolmaster.model.vo.ClassStudentVO;
 import yfy.englishschoolmaster.model.vo.UserAccountVO;
+
+import java.util.List;
 
 /**
  * 班级信息服务层
@@ -33,4 +36,33 @@ public interface ClassInfoService extends IService<ClassInfo> {
      * @return 分页班级列表
      */
     Page<ClassInfoVO> listClassInfoByPage(ClassInfoQueryRequest request, UserAccountVO loginUser);
+
+    /**
+     * 班级详情 + 在班学生数：
+     * 教师仅可查看自己的班级，管理员可查看全部
+     *
+     * @param classId   班级ID
+     * @param loginUser 当前登录用户
+     * @return 班级详情
+     */
+    ClassInfoVO getClassDetail(Long classId, UserAccountVO loginUser);
+
+    /**
+     * 班级学生列表（当前在班）：
+     * 教师仅可查看自己的班级，管理员可查看全部
+     *
+     * @param classId   班级ID
+     * @param loginUser 当前登录用户
+     * @return 学生列表
+     */
+    List<ClassStudentVO> listClassStudents(Long classId, UserAccountVO loginUser);
+
+    /**
+     * 刷新班级邀请码（教师权限，仅可操作自己的班级）
+     *
+     * @param classId   班级ID
+     * @param loginUser 当前登录教师
+     * @return 刷新后的班级信息
+     */
+    ClassInfoVO refreshInviteCode(Long classId, UserAccountVO loginUser);
 }

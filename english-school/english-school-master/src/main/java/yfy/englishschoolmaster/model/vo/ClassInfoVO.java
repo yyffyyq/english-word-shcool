@@ -59,4 +59,9 @@ public class ClassInfoVO implements Serializable {
      * 更新时间
      */
     private LocalDateTime updatedAt;
+
+    /**
+     * 当前在班学生数（仅详情接口填充）
+     */
+    private Long studentCount;
 }

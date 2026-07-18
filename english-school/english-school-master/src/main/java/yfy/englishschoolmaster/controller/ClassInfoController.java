@@ -3,6 +3,8 @@ package yfy.englishschoolmaster.controller;
 import com.mybatisflex.core.paginate.Page;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,8 +18,11 @@ import yfy.englishschoolmaster.exception.ThrowUtils;
 import yfy.englishschoolmaster.model.dto.ClassInfoAddRequest;
 import yfy.englishschoolmaster.model.dto.ClassInfoQueryRequest;
 import yfy.englishschoolmaster.model.vo.ClassInfoVO;
+import yfy.englishschoolmaster.model.vo.ClassStudentVO;
 import yfy.englishschoolmaster.model.vo.UserAccountVO;
 import yfy.englishschoolmaster.service.ClassInfoService;
+
+import java.util.List;
 
 /**
  * 班级信息控制层
@@ -76,6 +81,57 @@ public class ClassInfoController {
 
         // 3. 封装返回类型给前端
         return ResultUtils.success(page);
+    }
+
+    /**
+     * 班级详情接口（含在班学生数）：
+     * 教师仅可查看自己的班级，管理员可查看全部。
+     *
+     * @param id          班级ID
+     * @param httpRequest HTTP 请求
+     * @return 班级详情
+     */
+    @GetMapping("/{id}")
+    @AuthCheck
+    public BaseResponse<ClassInfoVO> getClassInfo(@PathVariable("id") Long id,
+                                                  HttpServletRequest httpRequest) {
+        UserAccountVO loginUser = getLoginUser(httpRequest);
+        ClassInfoVO classInfoVO = classInfoService.getClassDetail(id, loginUser);
+        return ResultUtils.success(classInfoVO);
+    }
+
+    /**
+     * 班级学生列表接口：
+     * 返回当前在班学生，教师仅可查看自己的班级，管理员可查看全部。
+     *
+     * @param id          班级ID
+     * @param httpRequest HTTP 请求
+     * @return 学生列表
+     */
+    @GetMapping("/{id}/students")
+    @AuthCheck
+    public BaseResponse<List<ClassStudentVO>> listClassStudents(@PathVariable("id") Long id,
+                                                                HttpServletRequest httpRequest) {
+        UserAccountVO loginUser = getLoginUser(httpRequest);
+        List<ClassStudentVO> students = classInfoService.listClassStudents(id, loginUser);
+        return ResultUtils.success(students);
+    }
+
+    /**
+     * 刷新班级邀请码接口（教师权限）：
+     * 仅可刷新自己创建的班级邀请码。
+     *
+     * @param id          班级ID
+     * @param httpRequest HTTP 请求
+     * @return 刷新后的班级信息
+     */
+    @PostMapping("/{id}/refresh-invite")
+    @AuthCheck(mustRole = UserConstant.TEACHER_ROLE)
+    public BaseResponse<ClassInfoVO> refreshInviteCode(@PathVariable("id") Long id,
+                                                       HttpServletRequest httpRequest) {
+        UserAccountVO loginUser = getLoginUser(httpRequest);
+        ClassInfoVO classInfoVO = classInfoService.refreshInviteCode(id, loginUser);
+        return ResultUtils.success(classInfoVO);
     }
 
     private UserAccountVO getLoginUser(HttpServletRequest httpRequest) {
