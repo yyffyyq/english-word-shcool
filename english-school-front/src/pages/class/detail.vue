@@ -30,19 +30,12 @@
           <text class="info-label">学生人数</text>
           <text class="info-value">{{ classInfo.studentCount ?? studentList.length }}</text>
         </view>
-        <view class="info-row" @tap="handleInviteTap">
+        <view v-if="isTeacher" class="info-row" @tap="handleInviteTap">
           <text class="info-label">邀请码</text>
           <view class="invite-wrap">
             <text class="invite-code">{{ classInfo.inviteCode || '-' }}</text>
-            <text v-if="isTeacher && classInfo.inviteCode" class="invite-action">
+            <text v-if="classInfo.inviteCode" class="invite-action">
               {{ refreshing ? '刷新中' : '刷新' }}
-            </text>
-            <text
-              v-else-if="classInfo.inviteCode"
-              class="invite-action"
-              @tap.stop="copyInviteCode(classInfo.inviteCode)"
-            >
-              复制
             </text>
           </view>
         </view>
@@ -170,12 +163,7 @@ async function fetchStudents() {
 }
 
 function handleInviteTap() {
-  if (!isTeacher.value) {
-    if (classInfo.value?.inviteCode) {
-      copyInviteCode(classInfo.value.inviteCode)
-    }
-    return
-  }
+  if (!isTeacher.value) return
   confirmRefreshInvite()
 }
 
@@ -210,16 +198,6 @@ async function doRefreshInvite() {
   } finally {
     refreshing.value = false
   }
-}
-
-function copyInviteCode(inviteCode?: string) {
-  if (!inviteCode) return
-  uni.setClipboardData({
-    data: inviteCode,
-    success() {
-      uni.showToast({ title: '邀请码已复制', icon: 'success' })
-    },
-  })
 }
 
 function formatJoinedAt(value?: string) {

@@ -23,6 +23,12 @@ declare namespace API {
     message?: string;
   };
 
+  type BaseResponseString = {
+    code?: number;
+    data?: string;
+    message?: string;
+  };
+
   type BaseResponseTeacherApprovalVO = {
     code?: number;
     data?: TeacherApprovalVO;
@@ -64,6 +70,11 @@ declare namespace API {
     createdAt?: string;
     updatedAt?: string;
     studentCount?: number;
+  };
+
+  type ClassStudentAddStudentRequest = {
+    studentId?: number;
+    inviteCode?: string;
   };
 
   type ClassStudentVO = {
