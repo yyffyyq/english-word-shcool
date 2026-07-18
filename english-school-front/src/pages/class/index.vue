@@ -13,8 +13,16 @@
     </view>
 
     <view v-if="isTeacher" class="class-list">
-      <view v-for="item in classList" :key="item.id" class="class-card">
-        <text class="class-name">{{ item.className || '-' }}</text>
+      <view
+        v-for="item in classList"
+        :key="item.id"
+        class="class-card"
+        @tap="goClassDetail(item.id)"
+      >
+        <view class="class-card-top">
+          <text class="class-name">{{ item.className || '-' }}</text>
+          <text class="class-arrow">›</text>
+        </view>
         <view class="info-row">
           <text class="info-label">年级</text>
           <text class="info-value">{{ item.grade || '-' }}</text>
@@ -23,11 +31,17 @@
           <text class="info-label">学校</text>
           <text class="info-value">{{ item.schoolName || '-' }}</text>
         </view>
-        <view class="info-row" @tap="copyInviteCode(item.inviteCode)">
+        <view class="info-row">
+          <text class="info-label">学生人数</text>
+          <text class="info-value">{{ item.studentCount ?? 0 }}</text>
+        </view>
+        <view class="info-row" @tap.stop="handleInviteTap(item)">
           <text class="info-label">邀请码</text>
           <view class="invite-wrap">
             <text class="invite-code">{{ item.inviteCode || '-' }}</text>
-            <text v-if="item.inviteCode" class="invite-copy">复制</text>
+            <text v-if="item.inviteCode" class="invite-action">
+              {{ refreshingId === item.id ? '刷新中' : '刷新' }}
+            </text>
           </view>
         </view>
       </view>
@@ -103,7 +117,11 @@
 <script setup lang="ts">
 import { computed, reactive, ref } from 'vue'
 import { onReachBottom, onShow } from '@dcloudio/uni-app'
-import { addClassInfo, listClassInfoByPage } from '@/api/classInfoController'
+import {
+  addClassInfo,
+  listClassInfoByPage,
+  refreshInviteCode,
+} from '@/api/classInfoController'
 import AuthModals from '@/components/AuthModals.vue'
 import AppTabBar from '@/components/AppTabBar.vue'
 import { useAuth } from '@/composables/useAuth'
@@ -120,6 +138,7 @@ const pageNum = ref(1)
 const totalPage = ref(1)
 const loading = ref(false)
 const creating = ref(false)
+const refreshingId = ref<number | null>(null)
 const showCreateModal = ref(false)
 
 const form = reactive({
@@ -205,6 +224,52 @@ async function submitCreateClass() {
   }
 }
 
+function goClassDetail(id?: number) {
+  if (!id) return
+  if (!auth.guardPageAccess()) return
+  uni.navigateTo({ url: `/pages/class/detail?id=${id}` })
+}
+
+function handleInviteTap(item: API.ClassInfoVO) {
+  if (!item.id) return
+  if (!auth.guardPageAccess()) return
+  if (refreshingId.value === item.id) return
+
+  uni.showModal({
+    title: '刷新邀请码',
+    content: `确认刷新「${item.className || '该班级'}」的邀请码？旧邀请码将失效。`,
+    success: async (res) => {
+      if (!res.confirm) return
+      await doRefreshInvite(item.id as number)
+    },
+  })
+}
+
+async function doRefreshInvite(id: number) {
+  refreshingId.value = id
+  try {
+    const response = await refreshInviteCode({ id })
+    const result = response.data
+    if (result.code !== 0 || !result.data) {
+      throw new Error(result.message || '刷新邀请码失败')
+    }
+
+    const index = classList.value.findIndex((item) => item.id === id)
+    if (index >= 0) {
+      classList.value[index] = {
+        ...classList.value[index],
+        ...result.data,
+      }
+    }
+    uni.showToast({ title: '邀请码已刷新', icon: 'success' })
+  } catch (error) {
+    const message = error instanceof Error ? error.message : '刷新邀请码失败'
+    uni.showToast({ title: message, icon: 'none' })
+  } finally {
+    refreshingId.value = null
+  }
+}
+
 async function resetAndFetchClasses() {
   pageNum.value = 1
   totalPage.value = 1
@@ -248,16 +313,6 @@ async function fetchClassList(replace: boolean) {
   } finally {
     loading.value = false
   }
-}
-
-function copyInviteCode(inviteCode?: string) {
-  if (!inviteCode) return
-  uni.setClipboardData({
-    data: inviteCode,
-    success() {
-      uni.showToast({ title: '邀请码已复制', icon: 'success' })
-    },
-  })
 }
 </script>
 
@@ -319,12 +374,24 @@ function copyInviteCode(inviteCode?: string) {
   background: #fff;
 }
 
-.class-name {
-  display: block;
+.class-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   padding: 28rpx 0 8rpx;
+}
+
+.class-name {
+  flex: 1;
   font-size: 32rpx;
   font-weight: 600;
   color: #1a1a1a;
+}
+
+.class-arrow {
+  margin-left: 12rpx;
+  font-size: 36rpx;
+  color: #c7c7cc;
 }
 
 .info-row {
@@ -363,7 +430,7 @@ function copyInviteCode(inviteCode?: string) {
   letter-spacing: 2rpx;
 }
 
-.invite-copy {
+.invite-action {
   margin-left: 16rpx;
   padding: 4rpx 12rpx;
   font-size: 22rpx;

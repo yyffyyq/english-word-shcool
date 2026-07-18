@@ -5,6 +5,12 @@ declare namespace API {
     message?: string;
   };
 
+  type BaseResponseListClassStudentVO = {
+    code?: number;
+    data?: ClassStudentVO[];
+    message?: string;
+  };
+
   type BaseResponsePageClassInfoVO = {
     code?: number;
     data?: PageClassInfoVO;
@@ -57,6 +63,26 @@ declare namespace API {
     status?: string;
     createdAt?: string;
     updatedAt?: string;
+    studentCount?: number;
+  };
+
+  type ClassStudentVO = {
+    id?: number;
+    classId?: number;
+    studentId?: number;
+    realName?: string;
+    studentNo?: string;
+    avatarUrl?: string;
+    joinedAt?: string;
+    status?: string;
+  };
+
+  type getClassInfoParams = {
+    id: number;
+  };
+
+  type listClassStudentsParams = {
+    id: number;
   };
 
   type PageClassInfoVO = {
@@ -75,6 +101,10 @@ declare namespace API {
     totalPage?: number;
     totalRow?: number;
     optimizeCountQuery?: boolean;
+  };
+
+  type refreshInviteCodeParams = {
+    id: number;
   };
 
   type SystemLoginRequest = {

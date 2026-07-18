@@ -28,6 +28,12 @@
       }
     },
     {
+      "path": "pages/class/detail",
+      "style": {
+        "navigationBarTitleText": "班级详情"
+      }
+    },
+    {
       "path": "pages/homework/index",
       "style": {
         "navigationBarTitleText": "作业"
