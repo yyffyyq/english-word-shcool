@@ -12,7 +12,7 @@
       <text class="empty-text">{{ actionText }}</text>
     </view>
 
-    <view v-if="isTeacher" class="class-list">
+    <view v-if="canFetchClassList || !isTeacher" class="class-list">
       <view
         v-for="item in classList"
         :key="item.id"
@@ -35,7 +35,11 @@
           <text class="info-label">学生人数</text>
           <text class="info-value">{{ item.studentCount ?? 0 }}</text>
         </view>
-        <view class="info-row" @tap.stop="handleInviteTap(item)">
+        <view
+          v-if="isTeacher"
+          class="info-row"
+          @tap.stop="handleInviteTap(item)"
+        >
           <text class="info-label">邀请码</text>
           <view class="invite-wrap">
             <text class="invite-code">{{ item.inviteCode || '-' }}</text>
@@ -50,7 +54,7 @@
         <text class="list-tip-text">加载中...</text>
       </view>
       <view v-else-if="!loading && classList.length === 0" class="list-tip">
-        <text class="list-tip-text">暂无班级，点击上方创建</text>
+        <text class="list-tip-text">{{ emptyListTip }}</text>
       </view>
       <view v-else-if="hasMore" class="list-tip" @tap="loadMore">
         <text class="list-tip-text">{{ loading ? '加载中...' : '加载更多' }}</text>
@@ -110,6 +114,38 @@
       </view>
     </view>
 
+    <view v-if="showJoinModal" class="modal-mask" @tap="closeJoinModal">
+      <view class="modal-panel" @tap.stop>
+        <view class="modal-header">
+          <text class="modal-title">加入班级</text>
+          <text class="modal-subtitle">请输入教师提供的邀请码</text>
+        </view>
+
+        <view class="form-card">
+          <view class="form-item">
+            <text class="label">邀请码</text>
+            <input
+              v-model="joinForm.inviteCode"
+              class="input"
+              placeholder="请输入邀请码"
+              placeholder-class="placeholder"
+            />
+          </view>
+        </view>
+
+        <view
+          class="submit-btn"
+          :class="{ disabled: !canJoin || joining }"
+          @tap="submitJoinClass"
+        >
+          <text class="submit-text">{{ joining ? '加入中...' : '确认加入' }}</text>
+        </view>
+        <view class="cancel-btn" @tap="closeJoinModal">
+          <text class="cancel-text">取消</text>
+        </view>
+      </view>
+    </view>
+
     <AppTabBar current-path="pages/class/index" />
   </view>
 </template>
@@ -121,11 +157,13 @@ import {
   addClassInfo,
   listClassInfoByPage,
   refreshInviteCode,
+  studentJoinClass,
 } from '@/api/classInfoController'
 import AuthModals from '@/components/AuthModals.vue'
 import AppTabBar from '@/components/AppTabBar.vue'
 import { useAuth } from '@/composables/useAuth'
 import { useUserStore } from '@/store/user'
+import { getUserStorage } from '@/utils/storage'
 import { syncCustomTabBar } from '@/utils/tabBar'
 
 const PAGE_SIZE = 10
@@ -138,8 +176,10 @@ const pageNum = ref(1)
 const totalPage = ref(1)
 const loading = ref(false)
 const creating = ref(false)
+const joining = ref(false)
 const refreshingId = ref<number | null>(null)
 const showCreateModal = ref(false)
+const showJoinModal = ref(false)
 
 const form = reactive({
   className: '',
@@ -147,17 +187,29 @@ const form = reactive({
   schoolName: '',
 })
 
+const joinForm = reactive({
+  inviteCode: '',
+})
+
 const isTeacher = computed(() => store.isTeacher.value)
+const canFetchClassList = computed(
+  () => store.isLoggedIn.value && isTeacher.value && !store.isTeacherPending.value,
+)
 const actionText = computed(() => (isTeacher.value ? '创建班级' : '加入班级'))
 const subtitle = computed(() =>
-  isTeacher.value ? '创建班级，邀请学生加入' : '选择班级，加入学习',
+  isTeacher.value ? '创建班级，邀请学生加入' : '输入邀请码，加入班级学习',
+)
+const emptyListTip = computed(() =>
+  isTeacher.value ? '暂无班级，点击上方创建' : '暂无班级，点击上方加入',
 )
 const canCreate = computed(() => Boolean(form.className.trim()))
+const canJoin = computed(() => Boolean(joinForm.inviteCode.trim()))
 const hasMore = computed(() => pageNum.value < totalPage.value)
 
 onShow(() => {
   syncCustomTabBar('pages/class/index')
-  if (store.isLoggedIn.value && isTeacher.value && !store.isTeacherPending.value) {
+  // 班级分页查询仅教师可用，学生端不请求，避免弹出权限提示
+  if (canFetchClassList.value) {
     resetAndFetchClasses()
     return
   }
@@ -168,7 +220,7 @@ onShow(() => {
 })
 
 onReachBottom(() => {
-  if (isTeacher.value) {
+  if (canFetchClassList.value) {
     loadMore()
   }
 })
@@ -181,7 +233,7 @@ function handleAction() {
     return
   }
 
-  uni.showToast({ title: '功能开发中', icon: 'none' })
+  openJoinModal()
 }
 
 function openCreateModal() {
@@ -194,6 +246,16 @@ function openCreateModal() {
 function closeCreateModal() {
   if (creating.value) return
   showCreateModal.value = false
+}
+
+function openJoinModal() {
+  joinForm.inviteCode = ''
+  showJoinModal.value = true
+}
+
+function closeJoinModal() {
+  if (joining.value) return
+  showJoinModal.value = false
 }
 
 async function submitCreateClass() {
@@ -221,6 +283,55 @@ async function submitCreateClass() {
     uni.showToast({ title: message, icon: 'none' })
   } finally {
     creating.value = false
+  }
+}
+
+async function submitJoinClass() {
+  if (!canJoin.value || joining.value) return
+  if (!auth.guardPageAccess()) return
+
+  const studentId = Number(store.state.user?.id)
+  if (!studentId) {
+    uni.showToast({ title: '用户信息异常，请重新登录', icon: 'none' })
+    return
+  }
+
+  const openid = store.state.user?.openid || getUserStorage()?.openid || ''
+  if (!openid) {
+    uni.showToast({ title: '登录信息缺失，请重新登录', icon: 'none' })
+    return
+  }
+
+  joining.value = true
+  try {
+    const response = await studentJoinClass(
+      {
+        studentId,
+        inviteCode: joinForm.inviteCode.trim(),
+      },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          openid,
+        },
+      },
+    )
+    const result = response.data
+
+    if (result.code !== 0) {
+      throw new Error(result.message || '加入班级失败')
+    }
+
+    uni.showToast({ title: '加入成功', icon: 'success' })
+    showJoinModal.value = false
+    if (canFetchClassList.value) {
+      await resetAndFetchClasses()
+    }
+  } catch (error) {
+    const message = error instanceof Error ? error.message : '加入班级失败'
+    uni.showToast({ title: message, icon: 'none' })
+  } finally {
+    joining.value = false
   }
 }
 
@@ -277,7 +388,7 @@ async function resetAndFetchClasses() {
 }
 
 async function loadMore() {
-  if (!isTeacher.value || loading.value || !hasMore.value) return
+  if (!canFetchClassList.value || loading.value || !hasMore.value) return
   pageNum.value += 1
   await fetchClassList(false)
 }

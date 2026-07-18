@@ -2,8 +2,8 @@ package yfy.englishschoolmaster.service;
 
 import com.mybatisflex.core.paginate.Page;
 import com.mybatisflex.core.service.IService;
-import yfy.englishschoolmaster.model.dto.ClassInfoAddRequest;
-import yfy.englishschoolmaster.model.dto.ClassInfoQueryRequest;
+import yfy.englishschoolmaster.model.dto.ClassInfo.ClassInfoAddRequest;
+import yfy.englishschoolmaster.model.dto.ClassInfo.ClassInfoQueryRequest;
 import yfy.englishschoolmaster.model.entity.ClassInfo;
 import yfy.englishschoolmaster.model.vo.ClassInfoVO;
 import yfy.englishschoolmaster.model.vo.ClassStudentVO;

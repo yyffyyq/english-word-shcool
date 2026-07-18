@@ -1,5 +1,6 @@
 package yfy.englishschoolmaster.model.entity;
 
+import com.mybatisflex.annotation.Column;
 import com.mybatisflex.annotation.Id;
 import com.mybatisflex.annotation.KeyType;
 import com.mybatisflex.annotation.Table;
@@ -60,8 +61,11 @@ public class ClassStudent implements Serializable {
     private LocalDateTime exitedAt;
 
     /**
-     * 有效在班学生ID，用于限制一个学生只能加入一个当前班级
+     * 有效在班学生ID（数据库生成列）：
+     * IN_CLASS 时等于 student_id，否则为 NULL。
+     * 禁止 insert/update 手动赋值。
      */
+    @Column(ignore = true)
     private Long activeStudentId;
 
 }

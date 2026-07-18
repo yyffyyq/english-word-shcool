@@ -1,6 +1,7 @@
 package yfy.englishschoolmaster.controller;
 
 import com.mybatisflex.core.paginate.Page;
+import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,18 +10,24 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.resource.ResourceUrlProvider;
 import yfy.englishschoolmaster.annotation.AuthCheck;
 import yfy.englishschoolmaster.common.BaseResponse;
 import yfy.englishschoolmaster.common.ResultUtils;
+import yfy.englishschoolmaster.constant.RedisTypeConstant;
 import yfy.englishschoolmaster.constant.UserConstant;
+import yfy.englishschoolmaster.exception.BusinessException;
 import yfy.englishschoolmaster.exception.ErrorCode;
 import yfy.englishschoolmaster.exception.ThrowUtils;
-import yfy.englishschoolmaster.model.dto.ClassInfoAddRequest;
-import yfy.englishschoolmaster.model.dto.ClassInfoQueryRequest;
+import yfy.englishschoolmaster.model.dto.ClassInfo.ClassInfoAddRequest;
+import yfy.englishschoolmaster.model.dto.ClassInfo.ClassInfoQueryRequest;
+import yfy.englishschoolmaster.model.dto.ClassStudent.ClassStudentAddStudentRequest;
 import yfy.englishschoolmaster.model.vo.ClassInfoVO;
 import yfy.englishschoolmaster.model.vo.ClassStudentVO;
 import yfy.englishschoolmaster.model.vo.UserAccountVO;
 import yfy.englishschoolmaster.service.ClassInfoService;
+import yfy.englishschoolmaster.service.ClassStudentService;
+import yfy.englishschoolmaster.service.RedisService;
 
 import java.util.List;
 
@@ -33,8 +40,44 @@ import java.util.List;
 @RequestMapping("/classInfo")
 public class ClassInfoController {
 
-    @Autowired
+    @Resource
     private ClassInfoService classInfoService;
+
+    @Resource
+    private RedisService redisService;
+
+    @Resource
+    private ClassStudentService classStudentService;
+
+    /**
+     * 学生加入班级接口（学生权限)
+     */
+    @PostMapping("/add/student")
+    @AuthCheck
+    public BaseResponse<String> studentJoinClass(@RequestBody ClassStudentAddStudentRequest request){
+
+        // 1. 判断参数是否为空
+        if (request.getInviteCode() == null)
+            throw new BusinessException(ErrorCode.PARAMS_ERROR,"班级邀请码不可为空");
+
+        // 2. 通过邀请码获取redis中班级缓存信息，判断是否为空
+        String InviteCode = request.getInviteCode();
+        ClassInfoVO redisResult = redisService.read(InviteCode, RedisTypeConstant.CLASS_INFO_INVOITE_CODE,ClassInfoVO.class);
+
+        // a. 不为空说明已经有班级信息在redis中，获取classId，存入数据库中，并判断缓存剩余时间
+        if (redisResult != null){
+            int result = classStudentService.insertStudent(redisResult,request);
+            return ResultUtils.success(String.valueOf(result));
+        }
+
+        // b. 为空，通过邀请码去获取数据库中班级信息，判断是否存在，存在就将它存到redis中
+        int result = classStudentService.selectAndInsertStudent(request);
+
+        // 3. 返回小程序是否加入成功信息
+        return ResultUtils.success(String.valueOf(result));
+    }
+
+
 
     /**
      * 班级创建接口（教师权限）：

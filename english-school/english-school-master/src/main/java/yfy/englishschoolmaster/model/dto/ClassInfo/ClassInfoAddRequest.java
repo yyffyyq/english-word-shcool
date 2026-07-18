@@ -1,4 +1,4 @@
-package yfy.englishschoolmaster.model.dto;
+package yfy.englishschoolmaster.model.dto.ClassInfo;
 
 import lombok.Data;
 
