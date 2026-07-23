@@ -28,7 +28,7 @@
         </view>
         <view class="info-row">
           <text class="info-label">学生人数</text>
-          <text class="info-value">{{ classInfo.studentCount ?? studentList.length }}</text>
+          <text class="info-value">{{ studentCountDisplay }}</text>
         </view>
         <view v-if="isTeacher" class="info-row" @tap="handleInviteTap">
           <text class="info-label">邀请码</text>
@@ -101,6 +101,10 @@ const studentsLoading = ref(false)
 const refreshing = ref(false)
 
 const isTeacher = computed(() => store.isTeacher.value)
+const studentCountDisplay = computed(() => {
+  if (!studentsLoading.value) return studentList.value.length
+  return classInfo.value?.studentCount ?? 0
+})
 const statusLabel = computed(() => {
   const status = (classInfo.value?.status || '').toUpperCase()
   if (status === 'ACTIVE') return '正常'

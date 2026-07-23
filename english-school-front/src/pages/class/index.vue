@@ -12,7 +12,7 @@
       <text class="empty-text">{{ actionText }}</text>
     </view>
 
-    <view v-if="canFetchClassList || !isTeacher" class="class-list">
+    <view class="class-list">
       <view
         v-for="item in classList"
         :key="item.id"
@@ -21,7 +21,7 @@
       >
         <view class="class-card-top">
           <text class="class-name">{{ item.className || '-' }}</text>
-          <text class="class-arrow">›</text>
+          <text v-if="canEnterClassDetail" class="class-arrow">›</text>
         </view>
         <view class="info-row">
           <text class="info-label">年级</text>
@@ -30,10 +30,6 @@
         <view class="info-row">
           <text class="info-label">学校</text>
           <text class="info-value">{{ item.schoolName || '-' }}</text>
-        </view>
-        <view class="info-row">
-          <text class="info-label">学生人数</text>
-          <text class="info-value">{{ item.studentCount ?? 0 }}</text>
         </view>
         <view
           v-if="isTeacher"
@@ -192,9 +188,8 @@ const joinForm = reactive({
 })
 
 const isTeacher = computed(() => store.isTeacher.value)
-const canFetchClassList = computed(
-  () => store.isLoggedIn.value && isTeacher.value && !store.isTeacherPending.value,
-)
+const isStudent = computed(() => store.isStudent.value)
+const canEnterClassDetail = computed(() => !isStudent.value)
 const actionText = computed(() => (isTeacher.value ? '创建班级' : '加入班级'))
 const subtitle = computed(() =>
   isTeacher.value ? '创建班级，邀请学生加入' : '输入邀请码，加入班级学习',
@@ -208,21 +203,12 @@ const hasMore = computed(() => pageNum.value < totalPage.value)
 
 onShow(() => {
   syncCustomTabBar('pages/class/index')
-  // 班级分页查询仅教师可用，学生端不请求，避免弹出权限提示
-  if (canFetchClassList.value) {
-    resetAndFetchClasses()
-    return
-  }
-
-  classList.value = []
-  pageNum.value = 1
-  totalPage.value = 1
+  // 权限由后端控制，进入页面统一请求班级分页列表
+  resetAndFetchClasses()
 })
 
 onReachBottom(() => {
-  if (canFetchClassList.value) {
-    loadMore()
-  }
+  loadMore()
 })
 
 function handleAction() {
@@ -324,9 +310,7 @@ async function submitJoinClass() {
 
     uni.showToast({ title: '加入成功', icon: 'success' })
     showJoinModal.value = false
-    if (canFetchClassList.value) {
-      await resetAndFetchClasses()
-    }
+    await resetAndFetchClasses()
   } catch (error) {
     const message = error instanceof Error ? error.message : '加入班级失败'
     uni.showToast({ title: message, icon: 'none' })
@@ -336,7 +320,7 @@ async function submitJoinClass() {
 }
 
 function goClassDetail(id?: number) {
-  if (!id) return
+  if (!id || !canEnterClassDetail.value) return
   if (!auth.guardPageAccess()) return
   uni.navigateTo({ url: `/pages/class/detail?id=${id}` })
 }
@@ -388,7 +372,7 @@ async function resetAndFetchClasses() {
 }
 
 async function loadMore() {
-  if (!canFetchClassList.value || loading.value || !hasMore.value) return
+  if (loading.value || !hasMore.value) return
   pageNum.value += 1
   await fetchClassList(false)
 }
