@@ -14,14 +14,45 @@ NProgress.configure({ showSpinner: false })
 
 const whiteList = ['/login', '/register']
 
-const isWhiteList = (path) => {
-  return whiteList.some(pattern => isPathMatch(pattern, path))
+// 是否为首次获取登录用户（参考 access.ts）
+let firstFetchLoginUser = true
+
+const isWhiteList = (path) => whiteList.some(pattern => isPathMatch(pattern, path))
+
+function hasRouteRole(to, userRole) {
+  const needRoles = to.matched
+    .map(r => r.meta?.roles)
+    .filter(roles => Array.isArray(roles) && roles.length > 0)
+  if (!needRoles.length) return true
+  return needRoles.every(roles => roles.map(r => String(r).toUpperCase()).includes(userRole))
 }
 
+/**
+ * 全局登录/权限校验
+ */
 router.beforeEach(async (to, from) => {
   NProgress.start()
-  if (getToken()) {
+
+  const userStore = useUserStore()
+
+  // 刷新页面时，先拉取登录用户，再做权限判断
+  if (firstFetchLoginUser) {
+    try {
+      await userStore.fetchLoginUser()
+    } catch (e) {
+      // 拉取失败按未登录处理
+      await userStore.logOut()
+    } finally {
+      firstFetchLoginUser = false
+    }
+  }
+
+  const loginUser = userStore.loginUser
+  const hasLogin = Boolean(getToken() && loginUser && loginUser.id)
+
+  if (hasLogin) {
     to.meta.title && useSettingsStore().setTitle(to.meta.title)
+
     const isLock = useLockStore().isLock
     if (to.path === '/login') {
       NProgress.done()
@@ -38,37 +69,44 @@ router.beforeEach(async (to, from) => {
       NProgress.done()
       return { path: '/' }
     }
-    if (useUserStore().roles.length === 0) {
+
+    // 角色权限：词书等页面要求 ADMIN / TEACHER
+    const userRole = userStore.userRole
+    if (!hasRouteRole(to, userRole)) {
+      ElMessage.error('没有权限')
+      NProgress.done()
+      return { path: '/index' }
+    }
+
+    if (userStore.roles.length === 0) {
       isRelogin.show = true
       try {
-        // 拉取user_info信息
-        await useUserStore().getInfo()
+        await userStore.getInfo()
         isRelogin.show = false
-        // 根据roles权限生成可访问的路由
         const accessRoutes = await usePermissionStore().generateRoutes()
         accessRoutes.forEach(route => {
           if (!isHttp(route.path)) {
             router.addRoute(route)
           }
         })
-        // 重新导航到目标路由，确保动态路由已注册
         return { ...to, replace: true }
       } catch (err) {
-        await useUserStore().logOut()
-        ElMessage.error(err)
-        return { path: '/' }
+        await userStore.logOut()
+        ElMessage.error(typeof err === 'string' ? err : (err?.message || '请先登录'))
+        NProgress.done()
+        return `/login?redirect=${to.fullPath}`
       }
     }
     return true
-  } else {
-    // 没有token
-    if (isWhiteList(to.path)) {
-      // 在免登录白名单，直接进入
-      return true
-    }
-    NProgress.done()
-    return `/login?redirect=${to.fullPath}` // 否则全部重定向到登录页
   }
+
+  // 未登录
+  if (isWhiteList(to.path)) {
+    return true
+  }
+  ElMessage.warning('请先登录')
+  NProgress.done()
+  return `/login?redirect=${to.fullPath}`
 })
 
 router.afterEach(() => {

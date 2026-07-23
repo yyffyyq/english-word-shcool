@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { ElNotification , ElMessageBox, ElMessage, ElLoading } from 'element-plus'
+import { ElNotification, ElMessage, ElLoading } from 'element-plus'
 import { getToken } from '@/utils/auth'
 import errorCode from '@/utils/errorCode'
 import { tansParams, blobValidate } from '@/utils/ruoyi'
@@ -29,7 +29,18 @@ service.interceptors.request.use(config => {
   // 间隔时间(ms)，小于此时间视为重复提交
   const interval = (config.headers || {}).interval || 1000
   if (getToken() && !isToken) {
-    config.headers['Authorization'] = 'Bearer ' + getToken() // 让每个请求携带自定义token 请根据实际情况自行修改
+    config.headers['Authorization'] = 'Bearer ' + getToken()
+    // 对接 AuthInterceptor：
+    // - 有真实 openid → 走微信会话
+    // - 管理端无 openid → 传 userId，走 system.user.login.ids 会话
+    const loginUser = cache.session.getJSON('loginUser')
+    if (loginUser) {
+      if (loginUser.openid) {
+        config.headers['openid'] = loginUser.openid
+      } else if (loginUser.id !== undefined && loginUser.id !== null && loginUser.id !== '') {
+        config.headers['userId'] = String(loginUser.id)
+      }
+    }
   }
   // get请求映射params参数
   if (config.method === 'get' && config.params) {
@@ -84,18 +95,20 @@ service.interceptors.response.use(res => {
     }
     // 未登录：兼容若依 401 与本项目 40100
     if (code === 401 || code === 40100) {
-      if (!isRelogin.show) {
-        isRelogin.show = true
-        ElMessageBox.confirm('登录状态已过期，您可以继续留在该页面，或者重新登录', '系统提示', { confirmButtonText: '重新登录', cancelButtonText: '取消', type: 'warning' }).then(() => {
-          isRelogin.show = false
-          useUserStore().logOut().then(() => {
-            location.href = '/index'
+      const responseURL = res.request?.responseURL || ''
+      const onLoginPage = window.location.pathname.includes('/login')
+      // 参考 request.ts：业务未登录时直接跳转登录页
+      if (!responseURL.includes('/userAccount/system/login') && !onLoginPage) {
+        if (!isRelogin.show) {
+          isRelogin.show = true
+          ElMessage.warning(msg || '登录已失效，请重新登录')
+          useUserStore().logOut().finally(() => {
+            isRelogin.show = false
+            location.href = `/login?redirect=${encodeURIComponent(location.pathname + location.search + location.hash)}`
           })
-      }).catch(() => {
-        isRelogin.show = false
-      })
-    }
-      return Promise.reject('无效的会话，或者会话已过期，请重新登录。')
+        }
+      }
+      return Promise.reject(new Error(msg || '请先登录'))
     } else if (code === 500 || code === 50000) {
       ElMessage({ message: msg, type: 'error' })
       return Promise.reject(new Error(msg))
@@ -112,6 +125,10 @@ service.interceptors.response.use(res => {
   error => {
     console.log('err' + error)
     let { message } = error
+    // HTTP 404：后端无该接口时，避免刷屏打断业务（如若依遗留公告接口）
+    if (error.response && error.response.status === 404) {
+      return Promise.reject(error)
+    }
     if (message == "Network Error") {
       message = "后端接口连接异常"
     } else if (message.includes("timeout")) {

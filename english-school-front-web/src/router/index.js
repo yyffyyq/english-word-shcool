@@ -71,6 +71,27 @@ export const constantRoutes = [
     ]
   },
   {
+    path: '/word',
+    component: Layout,
+    redirect: '/word/book',
+    name: 'Word',
+    meta: { title: '词书管理', icon: 'education' },
+    children: [
+      {
+        path: 'book',
+        component: () => import('@/views/word/book/index'),
+        name: 'WordBook',
+        meta: { title: '单词书管理', icon: 'documentation', roles: ['ADMIN', 'TEACHER'] }
+      },
+      {
+        path: 'manage',
+        component: () => import('@/views/word/manage/index'),
+        name: 'WordManage',
+        meta: { title: '单词管理', icon: 'edit', roles: ['ADMIN', 'TEACHER'] }
+      }
+    ]
+  },
+  {
     path: '/lock',
     component: () => import('@/views/lock'),
     hidden: true,

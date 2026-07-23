@@ -73,8 +73,38 @@ const loginRules = {
 const loading = ref(false)
 const redirect = ref(undefined)
 
+/** 规范化回跳地址，避免把完整 URL 当成 path 导致 /http://... 404 */
+function normalizeRedirect(raw) {
+  if (!raw || typeof raw !== 'string') return '/'
+  const value = decodeURIComponent(raw).trim()
+  if (!value) return '/'
+  // 完整 URL：只取路径部分
+  if (/^https?:\/\//i.test(value)) {
+    try {
+      const url = new URL(value)
+      return url.pathname + url.search + url.hash || '/'
+    } catch (e) {
+      return '/'
+    }
+  }
+  // 必须以 / 开头的站内路径
+  if (value.startsWith('/')) {
+    // 防止历史错误链接：/http://localhost:5173/word/book
+    if (/^\/https?:\/\//i.test(value)) {
+      try {
+        const url = new URL(value.slice(1))
+        return url.pathname + url.search + url.hash || '/'
+      } catch (e) {
+        return '/'
+      }
+    }
+    return value
+  }
+  return '/'
+}
+
 watch(route, (newRoute) => {
-    redirect.value = newRoute.query && newRoute.query.redirect
+    redirect.value = normalizeRedirect(newRoute.query && newRoute.query.redirect)
 }, { immediate: true })
 
 function handleLogin() {
