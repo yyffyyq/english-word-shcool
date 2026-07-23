@@ -47,6 +47,8 @@ public class UserAccountController {
      *       判断是否需要注册
      *       a. 第一次登录需要注册
      *       b. 已经登录过了，就匹配数据库中openid。
+     * 登录成功后，会按用户 id 查询 class_student 中已加入的班级，
+     *       将 classId 列表写入 Redis（key: student.class.ids:{userId}）
      * 这里需要注意 教师登录需要再做一个判断，这里采用多表查询 通过openid先是拿到user_account表中id再拿id去查找审核表中审核状态是否通过
      * @param request
      * @return
@@ -58,6 +60,7 @@ public class UserAccountController {
         ThrowUtils.throwIf(request == null , ErrorCode.PARAMS_ERROR,"微信登录请求为空");
 
         // 2. 查询登录信息：优先读 Redis，未命中再查库；未注册时返回仅含 openid 的 VO
+        //    已注册用户登录成功后，会同步缓存其加入的班级 id 列表到 Redis
         UserAccountVO loginInfo = userAccountService.getLogin(request);
 
         // 3. 封装返回类型给前端（id 为空表示未注册，openid 供注册接口使用）

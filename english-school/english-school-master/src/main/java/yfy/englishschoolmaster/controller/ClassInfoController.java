@@ -103,8 +103,8 @@ public class ClassInfoController {
     }
 
     /**
-     * 班级分页查询接口（创建教师、管理员）：
-     * 教师仅查看自己创建的班级，管理员可查看全部。
+     * 班级分页查询接口（教师、学生、管理员）：
+     * 教师仅查看自己创建的班级，学生仅查看自己加入的班级，管理员可查看全部。
      * 请求头需携带 openid。
      *
      * @param request     分页查询请求
@@ -163,6 +163,7 @@ public class ClassInfoController {
     /**
      * 刷新班级邀请码接口（教师权限）：
      * 仅可刷新自己创建的班级邀请码。
+     * 刷新成功后会删除 Redis 中旧邀请码，并写入新邀请码对应的班级缓存。
      *
      * @param id          班级ID
      * @param httpRequest HTTP 请求

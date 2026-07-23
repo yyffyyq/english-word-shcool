@@ -72,6 +72,24 @@ public class RedisServiceImpl implements RedisService {
     }
 
     /**
+     * 删除 Redis 中指定 key
+     *
+     * @param id   业务编号（如邀请码）
+     * @param type key 前缀类型
+     * @return 是否删除成功
+     */
+    @Override
+    public boolean delete(String id, String type) {
+        // 1. 判断参数是否为空
+        if (StrUtil.isEmpty(type) || StrUtil.isEmpty(id)) {
+            return false;
+        }
+
+        // 2. 删除对应 key
+        return Boolean.TRUE.equals(redisTemplate.delete(buildKey(type, id)));
+    }
+
+    /**
      * 构建 redis key：type:id
      */
     private String buildKey(String type, String id) {

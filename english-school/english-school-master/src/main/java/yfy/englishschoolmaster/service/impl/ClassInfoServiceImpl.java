@@ -8,6 +8,8 @@ import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.spring.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import yfy.englishschoolmaster.config.RedisConfig;
+import yfy.englishschoolmaster.constant.RedisTypeConstant;
 import yfy.englishschoolmaster.constant.UserConstant;
 import yfy.englishschoolmaster.exception.BusinessException;
 import yfy.englishschoolmaster.exception.ErrorCode;
@@ -23,8 +25,10 @@ import yfy.englishschoolmaster.model.vo.ClassStudentVO;
 import yfy.englishschoolmaster.model.vo.UserAccountVO;
 import yfy.englishschoolmaster.service.ClassInfoService;
 import yfy.englishschoolmaster.service.ClassStudentService;
+import yfy.englishschoolmaster.service.RedisService;
 import yfy.englishschoolmaster.service.UserAccountService;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
@@ -47,6 +51,8 @@ public class ClassInfoServiceImpl extends ServiceImpl<ClassInfoMapper, ClassInfo
     private static final String INVITE_CODE_CHARS = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
     private static final int INVITE_CODE_LENGTH = 6;
     private static final int INVITE_CODE_MAX_RETRY = 10;
+    /** 班级邀请码 Redis 缓存时长：45 分钟（与学生加入班级写入时一致） */
+    private static final Duration INVITE_CODE_CACHE_TTL = Duration.ofSeconds(2700);
     private static final Set<String> SORT_FIELDS = Set.of("createdAt", "updatedAt", "className", "status");
 
     @Autowired
@@ -54,6 +60,9 @@ public class ClassInfoServiceImpl extends ServiceImpl<ClassInfoMapper, ClassInfo
 
     @Autowired
     private UserAccountService userAccountService;
+
+    @Autowired
+    private RedisService redisService;
 
     @Override
     public ClassInfoVO createClass(ClassInfoAddRequest request, UserAccountVO loginUser) {
@@ -97,15 +106,26 @@ public class ClassInfoServiceImpl extends ServiceImpl<ClassInfoMapper, ClassInfo
         String role = loginUser.getRole();
         boolean isAdmin = UserConstant.ADMIN_ROLE.equalsIgnoreCase(role);
         boolean isTeacher = UserConstant.TEACHER_ROLE.equalsIgnoreCase(role);
-        ThrowUtils.throwIf(!isAdmin && !isTeacher, ErrorCode.NO_AUTH_ERROR, "仅教师或管理员可查询班级");
+        boolean isStudent = UserConstant.STUDENT_ROLE.equalsIgnoreCase(role);
+        ThrowUtils.throwIf(!isAdmin && !isTeacher && !isStudent, ErrorCode.NO_AUTH_ERROR, "仅教师、学生或管理员可查询班级");
 
         int pageNum = request.getPageNum() <= 0 ? 1 : request.getPageNum();
         int pageSize = request.getPageSize() <= 0 ? 10 : request.getPageSize();
 
-        // 2. 组装查询条件：教师仅看自己的班级，管理员可按条件筛选
+        // 2. 组装查询条件：
+        //    教师仅看自己的班级；学生仅看自己加入的班级（优先读 Redis）；管理员可按条件筛选
         QueryWrapper queryWrapper = QueryWrapper.create();
         if (isTeacher) {
             queryWrapper.eq(ClassInfo::getTeacherId, loginUser.getId());
+        } else if (isStudent) {
+            List<Long> joinedClassIds = listStudentJoinedClassIds(loginUser.getId());
+            if (joinedClassIds.isEmpty()) {
+                Page<ClassInfo> emptyPage = Page.of(pageNum, pageSize);
+                emptyPage.setRecords(Collections.emptyList());
+                emptyPage.setTotalRow(0);
+                return emptyPage.map(this::toClassInfoVO);
+            }
+            queryWrapper.in(ClassInfo::getId, joinedClassIds);
         } else if (request.getTeacherId() != null && request.getTeacherId() > 0) {
             queryWrapper.eq(ClassInfo::getTeacherId, request.getTeacherId());
         }
@@ -128,6 +148,44 @@ public class ClassInfoServiceImpl extends ServiceImpl<ClassInfoMapper, ClassInfo
         // 3. 分页查询并转换 VO
         Page<ClassInfo> page = this.page(Page.of(pageNum, pageSize), queryWrapper);
         return page.map(this::toClassInfoVO);
+    }
+
+    /**
+     * 获取学生已加入的班级 ID 列表：
+     *       优先从 Redis 读取（key: student.class.ids:{studentId}）
+     *       未命中时回源 class_student 并回写缓存
+     *
+     * @param studentId 学生用户 id
+     * @return 班级 id 列表，无数据时返回空列表
+     */
+    private List<Long> listStudentJoinedClassIds(Long studentId) {
+        // 1. 优先读 Redis
+        List<?> cached = redisService.read(String.valueOf(studentId),
+                RedisTypeConstant.STUDENT_CLASS_IDS, List.class);
+        if (cached != null) {
+            return cached.stream()
+                    .filter(Objects::nonNull)
+                    .map(id -> Long.valueOf(id.toString()))
+                    .distinct()
+                    .collect(Collectors.toList());
+        }
+
+        // 2. Redis 未命中，回源数据库
+        List<ClassStudent> classStudents = classStudentService.list(QueryWrapper.create()
+                .eq(ClassStudent::getStudentId, studentId)
+                .eq(ClassStudent::getStatus, STATUS_IN_CLASS));
+        List<Long> classIds = classStudents == null || classStudents.isEmpty()
+                ? Collections.emptyList()
+                : classStudents.stream()
+                .map(ClassStudent::getClassId)
+                .filter(Objects::nonNull)
+                .distinct()
+                .collect(Collectors.toList());
+
+        // 3. 回写 Redis，与登录缓存过期时间保持一致
+        redisService.write(classIds, RedisConfig.DEFAULT_EXPIRE,
+                RedisTypeConstant.STUDENT_CLASS_IDS, String.valueOf(studentId));
+        return classIds;
     }
 
     @Override
@@ -182,13 +240,27 @@ public class ClassInfoServiceImpl extends ServiceImpl<ClassInfoMapper, ClassInfo
 
     @Override
     public ClassInfoVO refreshInviteCode(Long classId, UserAccountVO loginUser) {
+        // 1. 校验权限并拿到旧邀请码
         ClassInfo classInfo = getAccessibleClass(classId, loginUser, true);
-        String inviteCode = generateUniqueInviteCode();
-        classInfo.setInviteCode(inviteCode);
+        String oldInviteCode = classInfo.getInviteCode();
+
+        // 2. 生成新邀请码并更新数据库
+        String newInviteCode = generateUniqueInviteCode();
+        classInfo.setInviteCode(newInviteCode);
         classInfo.setUpdatedAt(LocalDateTime.now());
         boolean updated = this.updateById(classInfo);
         ThrowUtils.throwIf(!updated, ErrorCode.OPERATION_ERROR, "刷新邀请码失败");
-        return toClassInfoVO(classInfo);
+
+        // 3. 删除 Redis 中旧邀请码缓存，写入新邀请码缓存
+        ClassInfoVO classInfoVO = toClassInfoVO(classInfo);
+        if (StrUtil.isNotBlank(oldInviteCode)) {
+            redisService.delete(oldInviteCode, RedisTypeConstant.CLASS_INFO_INVOITE_CODE);
+        }
+        redisService.write(classInfoVO, INVITE_CODE_CACHE_TTL,
+                RedisTypeConstant.CLASS_INFO_INVOITE_CODE, newInviteCode);
+
+        // 4. 返回刷新后的班级信息
+        return classInfoVO;
     }
 
     /**

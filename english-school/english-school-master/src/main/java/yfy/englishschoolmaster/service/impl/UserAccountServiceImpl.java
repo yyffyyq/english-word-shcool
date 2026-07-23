@@ -8,6 +8,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+import yfy.englishschoolmaster.config.RedisConfig;
+import yfy.englishschoolmaster.constant.RedisTypeConstant;
 import yfy.englishschoolmaster.exception.ErrorCode;
 import yfy.englishschoolmaster.exception.ThrowUtils;
 import yfy.englishschoolmaster.mapper.UserAccountMapper;
@@ -16,8 +22,11 @@ import yfy.englishschoolmaster.model.dto.SystemRegisterRequest;
 import yfy.englishschoolmaster.model.dto.UserAccountLoginRequest;
 import yfy.englishschoolmaster.model.dto.UserAccountStudentRegisterRequest;
 import yfy.englishschoolmaster.model.dto.WxSessionResult;
+import yfy.englishschoolmaster.model.entity.ClassStudent;
 import yfy.englishschoolmaster.model.entity.UserAccount;
 import yfy.englishschoolmaster.model.vo.UserAccountVO;
+import yfy.englishschoolmaster.service.ClassStudentService;
+import yfy.englishschoolmaster.service.RedisService;
 import yfy.englishschoolmaster.service.UserAccountService;
 import yfy.englishschoolmaster.service.UserSessionRedisService;
 import yfy.englishschoolmaster.service.WxMiniAppService;
@@ -33,6 +42,7 @@ public class UserAccountServiceImpl extends ServiceImpl<UserAccountMapper, UserA
 
     private static final String STATUS_DISABLED = "DISABLED";
     private static final String STATUS_NORMAL = "NORMAL";
+    private static final String STATUS_IN_CLASS = "IN_CLASS";
     private static final String ROLE_STUDENT = "STUDENT";
     private static final String ROLE_ADMIN = "ADMIN";
 
@@ -41,6 +51,12 @@ public class UserAccountServiceImpl extends ServiceImpl<UserAccountMapper, UserA
 
     @Autowired
     private UserSessionRedisService userSessionRedisService;
+
+    @Autowired
+    private ClassStudentService classStudentService;
+
+    @Autowired
+    private RedisService redisService;
 
     /**
      * 获取登录用户信息
@@ -69,6 +85,8 @@ public class UserAccountServiceImpl extends ServiceImpl<UserAccountMapper, UserA
         if (cachedUser != null && cachedUser.getId() != null) {
             validateLoginUser(cachedUser, loginRole);
             userSessionRedisService.saveLoginUser(cachedUser);
+            // 登录成功后缓存该用户已加入的班级 ID 列表
+            cacheStudentClassIds(cachedUser);
             return cachedUser;
         }
 
@@ -85,7 +103,40 @@ public class UserAccountServiceImpl extends ServiceImpl<UserAccountMapper, UserA
         UserAccountVO userAccountVO = toUserAccountVO(userAccount);
         validateLoginUser(userAccountVO, loginRole);
         userSessionRedisService.saveLoginUser(userAccountVO);
+        // 登录成功后缓存该用户已加入的班级 ID 列表
+        cacheStudentClassIds(userAccountVO);
         return userAccountVO;
+    }
+
+    /**
+     * 登录成功后，按用户 id 查询 class_student 中在班班级，
+     *       将 classId 列表写入 Redis（key: student.class.ids:{userId}）
+     * @param userAccountVO 已登录用户
+     */
+    private void cacheStudentClassIds(UserAccountVO userAccountVO) {
+
+        // 1. 未注册用户或无 id 时跳过
+        if (userAccountVO == null || userAccountVO.getId() == null) {
+            return;
+        }
+
+        // 2. 按学生 id 查询在班班级关系
+        List<ClassStudent> classStudents = classStudentService.list(QueryWrapper.create()
+                .eq(ClassStudent::getStudentId, userAccountVO.getId())
+                .eq(ClassStudent::getStatus, STATUS_IN_CLASS));
+
+        // 3. 提取班级 id 列表（可能为空列表）
+        List<Long> classIds = classStudents == null || classStudents.isEmpty()
+                ? Collections.emptyList()
+                : classStudents.stream()
+                .map(ClassStudent::getClassId)
+                .filter(Objects::nonNull)
+                .distinct()
+                .collect(Collectors.toList());
+
+        // 4. 写入 Redis，过期时间与登录会话一致
+        redisService.write(classIds, RedisConfig.DEFAULT_EXPIRE,
+                RedisTypeConstant.STUDENT_CLASS_IDS, String.valueOf(userAccountVO.getId()));
     }
 
     /**
