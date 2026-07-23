@@ -69,11 +69,11 @@ public class UserAccountController {
 
     /**
      * Web 管理端登录接口：
-     * 校验管理员账号与密码，
-     *       密码会先使用固定盐值加密
-     *       再与数据库中 password_hash 字段比对
-     * @param request
-     * @return
+     * 校验管理员账号与密码，密码先加盐加密再与 password_hash 比对；
+     * 登录成功后将用户信息写入 Redis（key: system.user.login.ids:{userId}）。
+     *
+     * @param request 登录请求
+     * @return 登录用户信息
      */
     @PostMapping("/system/login")
     public BaseResponse<UserAccountVO> systemLogin(@RequestBody SystemLoginRequest request){
@@ -81,7 +81,7 @@ public class UserAccountController {
         // 1. 判断请求是否为空
         ThrowUtils.throwIf(request == null , ErrorCode.PARAMS_ERROR,"登录请求为空");
 
-        // 2. 校验账号密码并获取登录用户信息
+        // 2. 校验账号密码，登录成功后按用户 ID 缓存会话到 Redis
         UserAccountVO userAccountVO = userAccountService.systemLogin(request);
 
         // 3. 封装返回类型给前端

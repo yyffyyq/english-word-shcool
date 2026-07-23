@@ -31,7 +31,8 @@ public interface UserAccountService extends IService<UserAccount> {
     UserAccountVO registerStudent(UserAccountStudentRegisterRequest request);
 
     /**
-     * Web 管理端登录
+     * Web 管理端登录：
+     * 校验账号密码后，将用户信息写入 Redis（key: system.user.login.ids:{userId}）
      *
      * @param request 登录请求体
      * @return 登录用户信息

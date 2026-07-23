@@ -12,4 +12,9 @@ public interface RedisTypeConstant {
      */
     String STUDENT_CLASS_IDS = "student.class.ids";
 
+    /**
+     * 系统登录用户会话 Redis 键前缀（key: system.user.login.ids:{userId}）
+     */
+    String SYSTEM_USER_LOGIN_IDS = "system.user.login.ids";
+
 }

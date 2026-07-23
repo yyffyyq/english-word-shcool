@@ -17,6 +17,11 @@ public interface UserConstant {
     String OPENID_HEADER = "openid";
 
     /**
+     * 请求头中的系统用户 ID 字段名（管理端无 openid 时使用）
+     */
+    String USER_ID_HEADER = "userId";
+
+    /**
      * 请求属性中存放当前登录用户的 key
      */
     String LOGIN_USER_ATTR = "loginUser";

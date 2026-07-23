@@ -212,9 +212,12 @@ public class UserAccountServiceImpl extends ServiceImpl<UserAccountMapper, UserA
     /**
      * Web 管理端登录：
      * 校验 username 与加盐后的 password_hash 是否匹配，
-     *       密码会先使用固定盐值加密后再查询数据库
-     * @param request
-     * @return
+     *       密码会先使用固定盐值加密后再查询数据库；
+     * 登录成功后将用户信息写入 Redis（key: system.user.login.ids:{userId}），
+     *       供管理端无 openid 场景下的会话校验使用。
+     *
+     * @param request 登录请求
+     * @return 登录用户信息
      */
     @Override
     public UserAccountVO systemLogin(SystemLoginRequest request) {
@@ -233,9 +236,21 @@ public class UserAccountServiceImpl extends ServiceImpl<UserAccountMapper, UserA
                 .eq(UserAccount::getUsername, username)
                 .eq(UserAccount::getPasswordHash, passwordHash));
         ThrowUtils.throwIf(userAccount == null, ErrorCode.NOT_LOGIN_ERROR, "账号或密码错误");
+        ThrowUtils.throwIf(STATUS_DISABLED.equals(userAccount.getStatus()),
+                ErrorCode.FORBIDDEN_ERROR, "账号已被禁用，请联系管理员");
 
-        // 4. 返回封装后的用户信息
-        return toUserAccountVO(userAccount);
+        // 4. 封装登录用户，并按用户 ID 写入 Redis 会话（无 openid）
+        UserAccountVO userAccountVO = toUserAccountVO(userAccount);
+        ThrowUtils.throwIf(userAccountVO.getId() == null, ErrorCode.SYSTEM_ERROR, "用户 ID 异常");
+        redisService.write(
+                userAccountVO,
+                RedisConfig.DEFAULT_EXPIRE,
+                RedisTypeConstant.SYSTEM_USER_LOGIN_IDS,
+                String.valueOf(userAccountVO.getId())
+        );
+
+        // 5. 返回封装后的用户信息
+        return userAccountVO;
     }
 
     /**

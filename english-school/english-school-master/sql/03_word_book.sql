@@ -1,6 +1,46 @@
 -- 词书与单词模块
 -- 说明：存放平台内置词书、单词基础数据、四选一中文选项，以及词书和单词的关系。
 -- 单词内容由教师/管理员手工录入，不依赖机器翻译。
+--
+-- 注意：本脚本会重建 word、word_option、word_book_item，
+--       并清空学习模块中引用旧单词 ID 的答题记录和学习进度。
+--       正式环境执行前请先备份数据库。
+
+-- 1. 保存当前外键检查状态并临时关闭，避免删除父表时触发 3730 错误
+SET @OLD_FOREIGN_KEY_CHECKS = @@FOREIGN_KEY_CHECKS;
+SET FOREIGN_KEY_CHECKS = 0;
+
+-- 2. 如果学习模块已初始化，先清理引用旧 word.id 的业务数据，避免重建后出现孤儿记录
+SET @DELETE_ANSWER_RECORD_SQL = IF(
+  EXISTS(
+    SELECT 1
+    FROM information_schema.TABLES
+    WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'answer_record'
+  ),
+  'DELETE FROM answer_record',
+  'SELECT 1'
+);
+PREPARE delete_answer_record_stmt FROM @DELETE_ANSWER_RECORD_SQL;
+EXECUTE delete_answer_record_stmt;
+DEALLOCATE PREPARE delete_answer_record_stmt;
+
+SET @DELETE_WORD_PROGRESS_SQL = IF(
+  EXISTS(
+    SELECT 1
+    FROM information_schema.TABLES
+    WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'student_word_progress'
+  ),
+  'DELETE FROM student_word_progress',
+  'SELECT 1'
+);
+PREPARE delete_word_progress_stmt FROM @DELETE_WORD_PROGRESS_SQL;
+EXECUTE delete_word_progress_stmt;
+DEALLOCATE PREPARE delete_word_progress_stmt;
+
+-- 3. 按“子表 → 父表”顺序删除，解决 fk_word_book_item_word 外键阻止删除 word 的问题
+DROP TABLE IF EXISTS word_option;
+DROP TABLE IF EXISTS word_book_item;
+DROP TABLE IF EXISTS word;
 
 CREATE TABLE IF NOT EXISTS word_book (
   id BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT '词书ID',
@@ -54,3 +94,11 @@ CREATE TABLE IF NOT EXISTS word_book_item (
   CONSTRAINT fk_word_book_item_word
     FOREIGN KEY (word_id) REFERENCES word (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='词书与单词关系表';
+
+-- 4. 旧词书已无单词关联，重置缓存数量
+UPDATE word_book
+SET word_count = 0,
+    updated_at = NOW();
+
+-- 5. 恢复执行脚本前的外键检查状态
+SET FOREIGN_KEY_CHECKS = @OLD_FOREIGN_KEY_CHECKS;
