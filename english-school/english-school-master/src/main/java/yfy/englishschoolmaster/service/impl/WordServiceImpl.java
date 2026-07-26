@@ -1,24 +1,38 @@
 package yfy.englishschoolmaster.service.impl;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.spring.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import yfy.englishschoolmaster.constant.UserConstant;
 import yfy.englishschoolmaster.exception.ErrorCode;
 import yfy.englishschoolmaster.exception.ThrowUtils;
+import yfy.englishschoolmaster.mapper.WordBookMapper;
 import yfy.englishschoolmaster.mapper.WordMapper;
+import yfy.englishschoolmaster.model.dto.Word.WordUpdateRequest;
 import yfy.englishschoolmaster.model.dto.WordBook.WordImportItem;
 import yfy.englishschoolmaster.model.entity.Word;
+import yfy.englishschoolmaster.model.entity.WordBook;
+import yfy.englishschoolmaster.model.entity.WordBookItem;
+import yfy.englishschoolmaster.model.entity.WordOption;
+import yfy.englishschoolmaster.model.vo.UserAccountVO;
+import yfy.englishschoolmaster.model.vo.WordOptionVO;
+import yfy.englishschoolmaster.model.vo.WordVO;
+import yfy.englishschoolmaster.service.WordBookItemService;
 import yfy.englishschoolmaster.service.WordOptionService;
 import yfy.englishschoolmaster.service.WordService;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * 单词基础数据表 服务层实现（纯手工录入，无机器翻译）。
@@ -31,9 +45,15 @@ public class WordServiceImpl extends ServiceImpl<WordMapper, Word> implements Wo
     private static final int WRONG_OPTION_COUNT = 3;
 
     private final WordOptionService wordOptionService;
+    private final WordBookItemService wordBookItemService;
+    private final WordBookMapper wordBookMapper;
 
-    public WordServiceImpl(WordOptionService wordOptionService) {
+    public WordServiceImpl(WordOptionService wordOptionService,
+                           WordBookItemService wordBookItemService,
+                           WordBookMapper wordBookMapper) {
         this.wordOptionService = wordOptionService;
+        this.wordBookItemService = wordBookItemService;
+        this.wordBookMapper = wordBookMapper;
     }
 
     @Override
@@ -108,6 +128,118 @@ public class WordServiceImpl extends ServiceImpl<WordMapper, Word> implements Wo
         return word;
     }
 
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public WordVO updateWord(WordUpdateRequest request, UserAccountVO loginUser) {
+        // 1. 参数与权限校验
+        checkTeacherOrAdmin(loginUser);
+        ThrowUtils.throwIf(request == null, ErrorCode.PARAMS_ERROR, "修改单词请求为空");
+        ThrowUtils.throwIf(request.getId() == null || request.getId() <= 0, ErrorCode.PARAMS_ERROR, "单词ID不合法");
+
+        // 2. 查询原单词
+        Word word = this.getById(request.getId());
+        ThrowUtils.throwIf(word == null, ErrorCode.NOT_FOUND_ERROR, "单词不存在");
+
+        // 3. 按需更新字段
+        boolean dirty = false;
+        if (StrUtil.isNotBlank(request.getWordText())) {
+            String wordText = normalizeWordText(request.getWordText());
+            Word existWord = this.getOne(QueryWrapper.create()
+                    .eq(Word::getWordText, wordText)
+                    .ne(Word::getId, request.getId()));
+            ThrowUtils.throwIf(existWord != null, ErrorCode.OPERATION_ERROR, "英文单词已存在");
+            word.setWordText(wordText);
+            dirty = true;
+        }
+        if (StrUtil.isNotBlank(request.getPhonetic())) {
+            word.setPhonetic(request.getPhonetic().trim());
+            dirty = true;
+        }
+        if (StrUtil.isNotBlank(request.getCorrectMeaning())) {
+            word.setCorrectMeaning(request.getCorrectMeaning().trim());
+            dirty = true;
+        }
+        if (StrUtil.isNotBlank(request.getExampleSentence())) {
+            word.setExampleSentence(request.getExampleSentence().trim());
+            dirty = true;
+        }
+        if (StrUtil.isNotBlank(request.getExampleTranslation())) {
+            word.setExampleTranslation(request.getExampleTranslation().trim());
+            dirty = true;
+        }
+
+        boolean replaceOptions = CollUtil.isNotEmpty(request.getWrongMeanings())
+                || StrUtil.isNotBlank(request.getCorrectMeaning());
+        if (replaceOptions) {
+            // 覆盖选项时：正确释义以当前单词最终值为准，错误项必须传满 3 个
+            ThrowUtils.throwIf(CollUtil.isEmpty(request.getWrongMeanings()),
+                    ErrorCode.PARAMS_ERROR, "更新选项时需同时传入 3 个错误中文释义");
+            List<String> wrongMeanings = normalizeWrongMeanings(
+                    request.getWrongMeanings(),
+                    word.getCorrectMeaning()
+            );
+            wordOptionService.replaceOptions(word.getId(), word.getCorrectMeaning(), wrongMeanings);
+        }
+
+        if (dirty) {
+            word.setUpdatedAt(LocalDateTime.now());
+            boolean updated = this.updateById(word);
+            ThrowUtils.throwIf(!updated, ErrorCode.OPERATION_ERROR, "修改单词失败");
+        }
+
+        return toWordVO(word);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public boolean deleteWordPhysically(Long id, UserAccountVO loginUser) {
+        // 1. 参数与权限校验
+        checkTeacherOrAdmin(loginUser);
+        ThrowUtils.throwIf(id == null || id <= 0, ErrorCode.PARAMS_ERROR, "单词ID不合法");
+
+        Word word = this.getById(id);
+        ThrowUtils.throwIf(word == null, ErrorCode.NOT_FOUND_ERROR, "单词不存在");
+
+        // 2. 记录受影响词书，便于删除关联后回写 word_count
+        List<WordBookItem> relatedItems = wordBookItemService.list(QueryWrapper.create()
+                .eq(WordBookItem::getWordId, id));
+        Set<Long> affectedBookIds = relatedItems.stream()
+                .map(WordBookItem::getBookId)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
+
+        // 3. 物理删除：选项 → 词书关联 → 单词主表（WordMapper.xml）
+        this.getMapper().deleteWordOptionsByWordId(id);
+        this.getMapper().deleteWordBookItemsByWordId(id);
+        int deleted = this.getMapper().deleteWordById(id);
+        ThrowUtils.throwIf(deleted <= 0, ErrorCode.OPERATION_ERROR, "删除单词失败");
+
+        // 4. 回写受影响词书的单词数量
+        LocalDateTime now = LocalDateTime.now();
+        for (Long bookId : affectedBookIds) {
+            WordBook wordBook = wordBookMapper.selectOneById(bookId);
+            if (wordBook == null) {
+                continue;
+            }
+            long count = wordBookItemService.countByBookId(bookId);
+            wordBook.setWordCount((int) count);
+            wordBook.setUpdatedAt(now);
+            wordBookMapper.update(wordBook);
+        }
+        return true;
+    }
+
+    /**
+     * 校验当前用户为教师或管理员
+     */
+    private void checkTeacherOrAdmin(UserAccountVO loginUser) {
+        ThrowUtils.throwIf(loginUser == null || loginUser.getId() == null, ErrorCode.NOT_LOGIN_ERROR, "未登录");
+        String role = loginUser.getRole();
+        boolean isAdmin = UserConstant.ADMIN_ROLE.equalsIgnoreCase(role);
+        boolean isTeacher = UserConstant.TEACHER_ROLE.equalsIgnoreCase(role);
+        ThrowUtils.throwIf(!isAdmin && !isTeacher, ErrorCode.NO_AUTH_ERROR, "仅教师或管理员可操作单词");
+    }
+
     /**
      * 校验并规范化 3 个错误中文释义。
      */
@@ -130,5 +262,22 @@ public class WordServiceImpl extends ServiceImpl<WordMapper, Word> implements Wo
      */
     private static String normalizeWordText(String wordText) {
         return wordText.trim().toLowerCase();
+    }
+
+    private WordVO toWordVO(Word word) {
+        WordVO wordVO = new WordVO();
+        BeanUtil.copyProperties(word, wordVO);
+        List<WordOption> options = wordOptionService.listByWordId(word.getId());
+        if (CollUtil.isEmpty(options)) {
+            wordVO.setOptions(Collections.emptyList());
+            return wordVO;
+        }
+        List<WordOptionVO> optionVOList = options.stream().map(option -> {
+            WordOptionVO optionVO = new WordOptionVO();
+            BeanUtil.copyProperties(option, optionVO);
+            return optionVO;
+        }).toList();
+        wordVO.setOptions(optionVOList);
+        return wordVO;
     }
 }

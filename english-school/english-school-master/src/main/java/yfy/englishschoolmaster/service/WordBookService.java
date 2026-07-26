@@ -6,10 +6,12 @@ import yfy.englishschoolmaster.model.dto.WordBook.WordBookAddRequest;
 import yfy.englishschoolmaster.model.dto.WordBook.WordBookImportRequest;
 import yfy.englishschoolmaster.model.dto.WordBook.WordBookQueryRequest;
 import yfy.englishschoolmaster.model.dto.WordBook.WordBookUpdateRequest;
+import yfy.englishschoolmaster.model.dto.WordBook.WordBookWordQueryRequest;
 import yfy.englishschoolmaster.model.entity.WordBook;
 import yfy.englishschoolmaster.model.vo.UserAccountVO;
 import yfy.englishschoolmaster.model.vo.WordBookImportResultVO;
 import yfy.englishschoolmaster.model.vo.WordBookVO;
+import yfy.englishschoolmaster.model.vo.WordVO;
 
 /**
  * 平台内置词书表 服务层。
@@ -66,4 +68,15 @@ public interface WordBookService extends IService<WordBook> {
      * @return 导入结果
      */
     WordBookImportResultVO importWords(Long bookId, WordBookImportRequest request, UserAccountVO loginUser);
+
+    /**
+     * 词书内单词分页查询（教师、管理员）：
+     * 按词书 ID 查询关联单词，支持按英文单词、单元名称筛选。
+     *
+     * @param bookId    词书ID
+     * @param request   分页查询请求
+     * @param loginUser 当前登录用户
+     * @return 分页单词列表（含四选一选项）
+     */
+    Page<WordVO> listWordsByBookPage(Long bookId, WordBookWordQueryRequest request, UserAccountVO loginUser);
 }

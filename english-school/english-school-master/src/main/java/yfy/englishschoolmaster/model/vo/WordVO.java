@@ -47,6 +47,16 @@ public class WordVO implements Serializable {
     private String exampleTranslation;
 
     /**
+     * 所属单元名称（词书内单词列表填充）
+     */
+    private String unitName;
+
+    /**
+     * 单词在词书中的排序（词书内单词列表填充）
+     */
+    private Integer sortOrder;
+
+    /**
      * 中文选项列表（1 正确 + 3 干扰）
      */
     private List<WordOptionVO> options;

@@ -4,4 +4,22 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="yfy.englishschoolmaster.mapper.WordMapper">
 
+    <!-- 物理删除单词选项 -->
+    <delete id="deleteWordOptionsByWordId">
+        DELETE FROM word_option
+        WHERE word_id = #{id}
+    </delete>
+
+    <!-- 物理删除词书-单词关联 -->
+    <delete id="deleteWordBookItemsByWordId">
+        DELETE FROM word_book_item
+        WHERE word_id = #{id}
+    </delete>
+
+    <!-- 物理删除单词主表记录 -->
+    <delete id="deleteWordById">
+        DELETE FROM word
+        WHERE id = #{id}
+    </delete>
+
 </mapper>

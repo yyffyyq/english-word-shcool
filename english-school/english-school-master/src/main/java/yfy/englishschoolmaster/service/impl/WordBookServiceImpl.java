@@ -15,19 +15,31 @@ import yfy.englishschoolmaster.model.dto.WordBook.WordBookAddRequest;
 import yfy.englishschoolmaster.model.dto.WordBook.WordBookImportRequest;
 import yfy.englishschoolmaster.model.dto.WordBook.WordBookQueryRequest;
 import yfy.englishschoolmaster.model.dto.WordBook.WordBookUpdateRequest;
+import yfy.englishschoolmaster.model.dto.WordBook.WordBookWordQueryRequest;
 import yfy.englishschoolmaster.model.dto.WordBook.WordImportItem;
 import yfy.englishschoolmaster.model.entity.Word;
 import yfy.englishschoolmaster.model.entity.WordBook;
+import yfy.englishschoolmaster.model.entity.WordBookItem;
+import yfy.englishschoolmaster.model.entity.WordOption;
 import yfy.englishschoolmaster.model.vo.UserAccountVO;
 import yfy.englishschoolmaster.model.vo.WordBookImportResultVO;
 import yfy.englishschoolmaster.model.vo.WordBookVO;
 import yfy.englishschoolmaster.model.vo.WordImportFailVO;
+import yfy.englishschoolmaster.model.vo.WordOptionVO;
+import yfy.englishschoolmaster.model.vo.WordVO;
 import yfy.englishschoolmaster.service.WordBookItemService;
 import yfy.englishschoolmaster.service.WordBookService;
+import yfy.englishschoolmaster.service.WordOptionService;
 import yfy.englishschoolmaster.service.WordService;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * 平台内置词书表 服务层实现。
@@ -45,10 +57,14 @@ public class WordBookServiceImpl extends ServiceImpl<WordBookMapper, WordBook> i
 
     private final WordService wordService;
     private final WordBookItemService wordBookItemService;
+    private final WordOptionService wordOptionService;
 
-    public WordBookServiceImpl(WordService wordService, WordBookItemService wordBookItemService) {
+    public WordBookServiceImpl(WordService wordService,
+                               WordBookItemService wordBookItemService,
+                               WordOptionService wordOptionService) {
         this.wordService = wordService;
         this.wordBookItemService = wordBookItemService;
+        this.wordOptionService = wordOptionService;
     }
 
     @Override
@@ -213,6 +229,79 @@ public class WordBookServiceImpl extends ServiceImpl<WordBookMapper, WordBook> i
         return result;
     }
 
+    @Override
+    public Page<WordVO> listWordsByBookPage(Long bookId, WordBookWordQueryRequest request, UserAccountVO loginUser) {
+        // 1. 参数与权限校验
+        checkTeacherOrAdmin(loginUser);
+        ThrowUtils.throwIf(bookId == null || bookId <= 0, ErrorCode.PARAMS_ERROR, "词书ID不合法");
+        ThrowUtils.throwIf(request == null, ErrorCode.PARAMS_ERROR, "查询请求为空");
+
+        WordBook wordBook = this.getById(bookId);
+        ThrowUtils.throwIf(wordBook == null, ErrorCode.NOT_FOUND_ERROR, "词书不存在");
+
+        int pageNum = request.getPageNum() <= 0 ? 1 : request.getPageNum();
+        int pageSize = request.getPageSize() <= 0 ? 10 : request.getPageSize();
+
+        // 2. 组装词书关联查询条件
+        QueryWrapper itemQuery = QueryWrapper.create()
+                .eq(WordBookItem::getBookId, bookId);
+        if (StrUtil.isNotBlank(request.getUnitName())) {
+            itemQuery.eq(WordBookItem::getUnitName, request.getUnitName().trim());
+        }
+        if (StrUtil.isNotBlank(request.getWordText())) {
+            List<Word> matchedWords = wordService.list(QueryWrapper.create()
+                    .like(Word::getWordText, request.getWordText().trim()));
+            if (CollUtil.isEmpty(matchedWords)) {
+                Page<WordVO> emptyPage = Page.of(pageNum, pageSize);
+                emptyPage.setRecords(Collections.emptyList());
+                emptyPage.setTotalRow(0);
+                return emptyPage;
+            }
+            List<Long> matchedWordIds = matchedWords.stream()
+                    .map(Word::getId)
+                    .filter(Objects::nonNull)
+                    .toList();
+            itemQuery.in(WordBookItem::getWordId, matchedWordIds);
+        }
+
+        // 默认按词书内 sortOrder 升序
+        itemQuery.orderBy(WordBookItem::getSortOrder, true);
+
+        // 3. 分页查询词书关联
+        Page<WordBookItem> itemPage = wordBookItemService.page(Page.of(pageNum, pageSize), itemQuery);
+        List<WordBookItem> items = itemPage.getRecords();
+        if (CollUtil.isEmpty(items)) {
+            Page<WordVO> emptyPage = Page.of(pageNum, pageSize);
+            emptyPage.setRecords(Collections.emptyList());
+            emptyPage.setTotalRow(itemPage.getTotalRow());
+            return emptyPage;
+        }
+
+        // 4. 批量加载单词与选项，组装 VO（保持词书内排序）
+        List<Long> wordIds = items.stream()
+                .map(WordBookItem::getWordId)
+                .filter(Objects::nonNull)
+                .toList();
+        Map<Long, Word> wordMap = wordService.listByIds(wordIds).stream()
+                .collect(Collectors.toMap(Word::getId, Function.identity(), (a, b) -> a));
+
+        List<WordVO> wordVOList = items.stream()
+                .map(item -> {
+                    Word word = wordMap.get(item.getWordId());
+                    if (word == null) {
+                        return null;
+                    }
+                    return toWordVO(word, item);
+                })
+                .filter(Objects::nonNull)
+                .toList();
+
+        Page<WordVO> resultPage = Page.of(pageNum, pageSize);
+        resultPage.setRecords(wordVOList);
+        resultPage.setTotalRow(itemPage.getTotalRow());
+        return resultPage;
+    }
+
     /**
      * 校验当前用户为教师或管理员
      */
@@ -243,5 +332,28 @@ public class WordBookServiceImpl extends ServiceImpl<WordBookMapper, WordBook> i
         WordBookVO wordBookVO = new WordBookVO();
         BeanUtil.copyProperties(wordBook, wordBookVO);
         return wordBookVO;
+    }
+
+    /**
+     * 单词实体转 VO，并填充词书内排序、单元与四选一选项
+     */
+    private WordVO toWordVO(Word word, WordBookItem item) {
+        WordVO wordVO = new WordVO();
+        BeanUtil.copyProperties(word, wordVO);
+        wordVO.setUnitName(item.getUnitName());
+        wordVO.setSortOrder(item.getSortOrder());
+
+        List<WordOption> options = wordOptionService.listByWordId(word.getId());
+        if (CollUtil.isEmpty(options)) {
+            wordVO.setOptions(Collections.emptyList());
+            return wordVO;
+        }
+        List<WordOptionVO> optionVOList = options.stream().map(option -> {
+            WordOptionVO optionVO = new WordOptionVO();
+            BeanUtil.copyProperties(option, optionVO);
+            return optionVO;
+        }).toList();
+        wordVO.setOptions(optionVOList);
+        return wordVO;
     }
 }

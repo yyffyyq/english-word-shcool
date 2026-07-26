@@ -6,7 +6,6 @@ CREATE TABLE IF NOT EXISTS class_word_task (
   class_id BIGINT NOT NULL COMMENT '班级ID，关联 class_info.id',
   book_id BIGINT NOT NULL COMMENT '词书ID，关联 word_book.id',
   daily_new_count INT NOT NULL DEFAULT 10 COMMENT '每日新学单词数量',
-  daily_review_count INT NOT NULL DEFAULT 20 COMMENT '每日复习单词数量',
   start_date DATE NULL COMMENT '任务开始日期，为空表示立即开始',
   end_date DATE NULL COMMENT '任务结束日期，为空表示长期有效',
   status VARCHAR(20) NOT NULL DEFAULT 'ACTIVE' COMMENT '任务状态：ACTIVE 生效，STOPPED 停止',

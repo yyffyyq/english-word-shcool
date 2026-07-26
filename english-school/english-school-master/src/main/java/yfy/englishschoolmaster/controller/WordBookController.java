@@ -1,6 +1,7 @@
 package yfy.englishschoolmaster.controller;
 
 import com.mybatisflex.core.paginate.Page;
+import io.swagger.v3.oas.annotations.tags.Tags;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -20,9 +21,11 @@ import yfy.englishschoolmaster.model.dto.WordBook.WordBookAddRequest;
 import yfy.englishschoolmaster.model.dto.WordBook.WordBookImportRequest;
 import yfy.englishschoolmaster.model.dto.WordBook.WordBookQueryRequest;
 import yfy.englishschoolmaster.model.dto.WordBook.WordBookUpdateRequest;
+import yfy.englishschoolmaster.model.dto.WordBook.WordBookWordQueryRequest;
 import yfy.englishschoolmaster.model.vo.UserAccountVO;
 import yfy.englishschoolmaster.model.vo.WordBookImportResultVO;
 import yfy.englishschoolmaster.model.vo.WordBookVO;
+import yfy.englishschoolmaster.model.vo.WordVO;
 import yfy.englishschoolmaster.service.WordBookService;
 
 /**
@@ -152,6 +155,33 @@ public class WordBookController {
 
         // 3. 封装返回类型给前端
         return ResultUtils.success(result);
+    }
+
+    /**
+     * 词书内单词分页查询接口（教师、管理员）：
+     * 根据词书 ID 分页查询关联单词，支持按英文单词、单元名称筛选。
+     * 返回结果含四选一选项、单元名称与词书内排序。
+     * 请求头需携带 openid 或 userId。
+     *
+     * @param bookId      词书ID
+     * @param request     分页查询请求
+     * @param httpRequest HTTP 请求（用于取登录用户）
+     * @return 分页单词列表
+     */
+    @PostMapping("/{bookId}/words/list/page/vo")
+    @AuthCheck
+    public BaseResponse<Page<WordVO>> listWordsByBookPage(@PathVariable("bookId") Long bookId,
+                                                          @RequestBody WordBookWordQueryRequest request,
+                                                          HttpServletRequest httpRequest) {
+        // 1. 判断请求是否为空
+        ThrowUtils.throwIf(request == null, ErrorCode.PARAMS_ERROR, "查询请求为空");
+
+        // 2. 分页查询词书内单词
+        UserAccountVO loginUser = getLoginUser(httpRequest);
+        Page<WordVO> page = wordBookService.listWordsByBookPage(bookId, request, loginUser);
+
+        // 3. 封装返回类型给前端
+        return ResultUtils.success(page);
     }
 
     private UserAccountVO getLoginUser(HttpServletRequest httpRequest) {
