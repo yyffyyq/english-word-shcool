@@ -47,3 +47,13 @@ export function importWords(bookId, data) {
     data
   })
 }
+
+// list words in word book (page)
+export function listWordsByBookPage(bookId, data) {
+  return request({
+    url: '/wordBook/' + bookId + '/words/list/page/vo',
+    method: 'post',
+    headers: { repeatSubmit: false },
+    data
+  })
+}

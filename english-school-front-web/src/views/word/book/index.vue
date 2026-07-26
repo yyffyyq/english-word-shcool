@@ -47,8 +47,9 @@
       <el-table-column label="更新时间" align="center" prop="updatedAt" width="180">
         <template #default="scope"><span>{{ parseTime(scope.row.updatedAt) }}</span></template>
       </el-table-column>
-      <el-table-column label="操作" align="center" width="240" class-name="small-padding fixed-width">
+      <el-table-column label="操作" align="center" width="320" class-name="small-padding fixed-width">
         <template #default="scope">
+          <el-button link type="primary" icon="View" @click="goViewWords(scope.row)">查看单词</el-button>
           <el-button link type="primary" icon="Plus" @click="goAddWords(scope.row)">添加单词</el-button>
           <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)">修改</el-button>
           <el-button link type="primary" icon="Delete" @click="handleDelete(scope.row)">删除</el-button>
@@ -159,8 +160,12 @@ function handleAdd() {
   open.value = true
 }
 
+function goViewWords(row) {
+  router.push({ path: '/word/manage', query: { bookId: row.id, tab: 'list' } })
+}
+
 function goAddWords(row) {
-  router.push({ path: '/word/manage', query: { bookId: row.id } })
+  router.push({ path: '/word/manage', query: { bookId: row.id, tab: 'import' } })
 }
 
 function handleUpdate(row) {
