@@ -103,7 +103,8 @@ const refreshing = ref(false)
 const isTeacher = computed(() => store.isTeacher.value)
 const studentCountDisplay = computed(() => {
   if (!studentsLoading.value) return studentList.value.length
-  return classInfo.value?.studentCount ?? 0
+  const count = classInfo.value?.studentCount
+  return count == null ? 0 : count
 })
 const statusLabel = computed(() => {
   const status = (classInfo.value?.status || '').toUpperCase()
