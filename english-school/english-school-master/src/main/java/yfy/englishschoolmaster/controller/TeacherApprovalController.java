@@ -1,6 +1,8 @@
 package yfy.englishschoolmaster.controller;
 
 import com.mybatisflex.core.paginate.Page;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,6 +24,7 @@ import yfy.englishschoolmaster.service.TeacherApprovalService;
  *
  * @author <a href="https://github.com/yyffyyq">代码制造者yfy</a>
  */
+@Tag(name = "教师审批", description = "教师注册审批分页查询与审核接口（管理员）")
 @RestController
 @RequestMapping("/teacherApproval")
 public class TeacherApprovalController {
@@ -36,6 +39,8 @@ public class TeacherApprovalController {
      * @param request
      * @return
      */
+    @Operation(summary = "教师审批分页查询",
+            description = "支持按审批状态、姓名、学校名称筛选，返回分页后的教师审批记录。")
     @PostMapping("/list/page/vo")
     public BaseResponse<Page<TeacherApprovalVO>> listTeacherApprovalByPage(@RequestBody TeacherApprovalQueryRequest request){
 
@@ -58,6 +63,8 @@ public class TeacherApprovalController {
      * @param request 审核请求
      * @return 审批结果
      */
+    @Operation(summary = "审核教师注册申请",
+            description = "管理员审批教师注册：通过后创建教师账号，拒绝则记录拒绝原因。需管理员登录态。")
     @PostMapping("/audit")
     @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
     public BaseResponse<TeacherApprovalVO> auditTeacherApproval(@RequestBody TeacherApprovalAuditRequest request){

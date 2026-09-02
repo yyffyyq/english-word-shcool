@@ -7,7 +7,9 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
- * 词书信息 VO
+ * 词书信息 VO：
+ * 词书列表/详情接口返回，
+ *       含单词总数及启用状态
  */
 @Data
 public class WordBookVO implements Serializable {

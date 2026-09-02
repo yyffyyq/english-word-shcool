@@ -5,7 +5,9 @@ import lombok.Data;
 import java.io.Serializable;
 
 /**
- * 微信小程序学生注册请求类
+ * 微信小程序学生注册请求：
+ * 学生首次登录后提交姓名、学号，
+ *       写入 user_account 表并创建 STUDENT 角色账号
  */
 @Data
 public class UserAccountStudentRegisterRequest implements Serializable {

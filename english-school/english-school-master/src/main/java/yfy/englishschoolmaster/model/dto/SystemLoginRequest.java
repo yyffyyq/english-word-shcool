@@ -5,7 +5,9 @@ import lombok.Data;
 import java.io.Serializable;
 
 /**
- * Web 管理端登录请求
+ * Web 管理端登录请求：
+ * 管理员使用账号密码登录后台，
+ *       校验通过后返回 ADMIN 角色会话
  */
 @Data
 public class SystemLoginRequest implements Serializable {

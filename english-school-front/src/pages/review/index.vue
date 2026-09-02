@@ -33,7 +33,7 @@ function handleAction() {
 .page {
   min-height: 100vh;
   padding: 32rpx;
-  background: #f5f5f7;
+  background: #f3f8fd;
 }
 
 .header {
@@ -43,15 +43,15 @@ function handleAction() {
 .title {
   display: block;
   font-size: 44rpx;
-  font-weight: 600;
-  color: #1a1a1a;
+  font-weight: 700;
+  color: #1f2a37;
 }
 
 .subtitle {
   display: block;
   margin-top: 8rpx;
   font-size: 26rpx;
-  color: #8e8e93;
+  color: #7a8594;
 }
 
 .card {
@@ -61,21 +61,22 @@ function handleAction() {
   justify-content: center;
   height: 280rpx;
   margin-bottom: 40rpx;
-  border-radius: 24rpx;
+  border-radius: 32rpx;
   background: #fff;
-  box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.06);
+  box-shadow: 0 10rpx 28rpx rgba(75, 168, 245, 0.12);
+  border: 2rpx solid #e8f4fe;
 }
 
 .card-num {
   font-size: 72rpx;
-  font-weight: 300;
-  color: #ff7a30;
+  font-weight: 700;
+  color: #ff8a3d;
 }
 
 .card-label {
   margin-top: 8rpx;
   font-size: 26rpx;
-  color: #8e8e93;
+  color: #7a8594;
 }
 
 .start-btn {
@@ -84,12 +85,13 @@ function handleAction() {
   justify-content: center;
   height: 96rpx;
   border-radius: 48rpx;
-  background: #1a1a1a;
+  background: linear-gradient(135deg, #ff8a3d 0%, #ffb074 100%);
+  box-shadow: 0 10rpx 24rpx rgba(255, 138, 61, 0.3);
 }
 
 .btn-text {
   font-size: 30rpx;
-  font-weight: 500;
+  font-weight: 600;
   color: #fff;
   letter-spacing: 4rpx;
 }

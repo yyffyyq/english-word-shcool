@@ -15,7 +15,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- *  实体类。
+ * 班级学生关系实体：
+ * 对应 class_student 表，
+ *       记录学生加入/退出班级的关系及在班状态
  *
  * @author <a href="https://github.com/yyffyyq">代码制造者yfy</a>
  */

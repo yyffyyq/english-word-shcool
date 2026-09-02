@@ -8,7 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 词书单词导入结果 VO
+ * 词书单词导入结果 VO：
+ * 批量导入完成后返回，
+ *       汇总成功/失败数量及失败明细
  */
 @Data
 public class WordBookImportResultVO implements Serializable {

@@ -11,16 +11,16 @@
         />
         <view class="profile-info">
           <text class="name">{{ displayName }}</text>
-          <text v-if="store.isLoggedIn" class="role-tag">{{ roleLabel }}</text>
+          <text v-if="isLoggedIn" class="role-tag">{{ roleLabel }}</text>
         </view>
       </view>
 
       <view class="info-card">
-        <view v-if="store.isLoggedIn && store.isStudent.value" class="info-row">
+        <view v-if="isLoggedIn && isStudent" class="info-row">
           <text class="info-label">学号</text>
           <text class="info-value">{{ store.state.user?.studentId || '-' }}</text>
         </view>
-        <view v-if="store.isLoggedIn && store.isTeacher.value" class="info-row">
+        <view v-if="isLoggedIn && isTeacher" class="info-row">
           <text class="info-label">学校</text>
           <text class="info-value">{{ store.state.user?.school || '-' }}</text>
         </view>
@@ -30,9 +30,9 @@
         </view>
       </view>
 
-      <view class="action-btn" :class="{ login: !store.isLoggedIn }" @tap="handleAction">
-        <text class="action-text" :class="{ 'login-text': !store.isLoggedIn }">
-          {{ store.isLoggedIn ? '退出登录' : '请登录' }}
+      <view class="action-btn" :class="{ login: !isLoggedIn }" @tap="handleAction">
+        <text class="action-text" :class="{ 'login-text': !isLoggedIn }">
+          {{ isLoggedIn ? '退出登录' : '微信一键登录' }}
         </text>
       </view>
     </view>
@@ -51,6 +51,9 @@ import { syncCustomTabBar } from '@/utils/tabBar'
 
 const auth = useAuth()
 const store = useUserStore()
+const isLoggedIn = store.isLoggedIn
+const isStudent = store.isStudent
+const isTeacher = store.isTeacher
 
 onShow(() => {
   syncCustomTabBar('pages/mine/index')
@@ -100,7 +103,7 @@ function handleAction() {
 .page {
   min-height: 100vh;
   padding: 32rpx 32rpx calc(140rpx + env(safe-area-inset-bottom));
-  background: #f5f5f7;
+  background: #f3f8fd;
 }
 
 .profile-header {
@@ -108,15 +111,18 @@ function handleAction() {
   align-items: center;
   padding: 32rpx;
   margin-bottom: 24rpx;
-  border-radius: 24rpx;
+  border-radius: 32rpx;
   background: #fff;
+  box-shadow: 0 10rpx 28rpx rgba(75, 168, 245, 0.12);
+  border: 2rpx solid #e8f4fe;
 }
 
 .avatar {
   width: 120rpx;
   height: 120rpx;
   border-radius: 50%;
-  background: #e5e5ea;
+  background: #e8f4fe;
+  border: 4rpx solid #cfe9ff;
 }
 
 .profile-info {
@@ -126,8 +132,8 @@ function handleAction() {
 .name {
   display: block;
   font-size: 36rpx;
-  font-weight: 600;
-  color: #1a1a1a;
+  font-weight: 700;
+  color: #1f2a37;
 }
 
 .role-tag {
@@ -135,15 +141,17 @@ function handleAction() {
   margin-top: 12rpx;
   padding: 4rpx 16rpx;
   font-size: 22rpx;
-  color: #ff7a30;
-  border-radius: 8rpx;
-  background: rgba(255, 122, 48, 0.12);
+  color: #4ba8f5;
+  border-radius: 999rpx;
+  background: rgba(75, 168, 245, 0.12);
 }
 
 .info-card {
   padding: 8rpx 32rpx;
-  border-radius: 24rpx;
+  border-radius: 32rpx;
   background: #fff;
+  box-shadow: 0 10rpx 28rpx rgba(75, 168, 245, 0.1);
+  border: 2rpx solid #e8f4fe;
 }
 
 .info-row {
@@ -151,7 +159,7 @@ function handleAction() {
   align-items: center;
   justify-content: space-between;
   padding: 28rpx 0;
-  border-bottom: 1rpx solid #f0f0f0;
+  border-bottom: 1rpx solid #eef4fa;
 
   &:last-child {
     border-bottom: none;
@@ -160,16 +168,16 @@ function handleAction() {
 
 .info-label {
   font-size: 28rpx;
-  color: #8e8e93;
+  color: #7a8594;
 }
 
 .info-value {
   font-size: 28rpx;
-  color: #1a1a1a;
+  color: #1f2a37;
 }
 
 .status-guest {
-  color: #8e8e93;
+  color: #7a8594;
 }
 
 .status-approved {
@@ -177,7 +185,7 @@ function handleAction() {
 }
 
 .status-pending {
-  color: #ff7a30;
+  color: #ff8a3d;
 }
 
 .action-btn {
@@ -188,11 +196,12 @@ function handleAction() {
   margin-top: 48rpx;
   border-radius: 44rpx;
   background: #fff;
-  border: 1rpx solid #e5e5ea;
+  border: 2rpx solid #e3eaf2;
 
   &.login {
-    background: #1a1a1a;
-    border-color: #1a1a1a;
+    background: linear-gradient(135deg, #4ba8f5 0%, #6bc4ff 100%);
+    border-color: transparent;
+    box-shadow: 0 10rpx 24rpx rgba(75, 168, 245, 0.28);
   }
 }
 
@@ -204,5 +213,6 @@ function handleAction() {
 .login-text {
   color: #fff;
   letter-spacing: 2rpx;
+  font-weight: 600;
 }
 </style>

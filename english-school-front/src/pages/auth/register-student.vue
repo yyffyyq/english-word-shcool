@@ -237,16 +237,18 @@ async function handleSubmit() {
   height: 96rpx;
   margin-top: 64rpx;
   border-radius: 48rpx;
-  background: #ff7a30;
+  background: linear-gradient(135deg, #ff8a3d 0%, #ffb074 100%);
+  box-shadow: 0 10rpx 24rpx rgba(255, 138, 61, 0.3);
 
   &.disabled {
     opacity: 0.45;
+    box-shadow: none;
   }
 }
 
 .submit-text {
   font-size: 30rpx;
-  font-weight: 500;
+  font-weight: 600;
   color: #fff;
   letter-spacing: 4rpx;
 }

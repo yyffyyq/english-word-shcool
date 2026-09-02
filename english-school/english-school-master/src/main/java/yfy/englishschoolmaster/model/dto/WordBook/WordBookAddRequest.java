@@ -3,7 +3,9 @@ package yfy.englishschoolmaster.model.dto.WordBook;
 import lombok.Data;
 
 /**
- * 词书创建请求
+ * 词书创建请求：
+ * 管理员新建词书并写入 word_book 表，
+ *       初始状态为 ACTIVE
  */
 @Data
 public class WordBookAddRequest {

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="yfy.englishschoolmaster.mapper.StudentDailyReviewMapper">
+
+    <!-- 前一日答错次数超过 3 次的单词 -->
+    <select id="selectHighWrongWords"
+            resultType="yfy.englishschoolmaster.model.dto.StudentReview.HighWrongWordStat">
+        SELECT
+            ar.student_id AS studentId,
+            ar.word_id AS wordId,
+            ar.class_id AS classId,
+            COUNT(*) AS wrongCount
+        FROM answer_record ar
+        WHERE ar.is_correct = 0
+          AND ar.answered_at &gt;= #{startInclusive}
+          AND ar.answered_at &lt; #{endExclusive}
+        GROUP BY ar.student_id, ar.word_id, ar.class_id
+        HAVING COUNT(*) &gt; 3
+    </select>
+
+</mapper>

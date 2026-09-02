@@ -71,6 +71,22 @@ export const constantRoutes = [
     ]
   },
   {
+    path: '/approval',
+    component: Layout,
+    redirect: '/approval/teacher',
+    name: 'Approval',
+    alwaysShow: true,
+    meta: { title: '审批', icon: 'peoples' },
+    children: [
+      {
+        path: 'teacher',
+        component: () => import('@/views/approval/teacher/index'),
+        name: 'TeacherApproval',
+        meta: { title: '教师注册申请', icon: 'form', roles: ['ADMIN'] }
+      }
+    ]
+  },
+  {
     path: '/word',
     component: Layout,
     redirect: '/word/book',

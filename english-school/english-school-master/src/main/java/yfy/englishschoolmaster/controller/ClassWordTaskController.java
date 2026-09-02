@@ -1,6 +1,9 @@
 package yfy.englishschoolmaster.controller;
 
 import com.mybatisflex.core.paginate.Page;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -26,6 +29,7 @@ import yfy.englishschoolmaster.service.ClassWordTaskService;
  *
  * @author <a href="https://github.com/yyffyyq">代码制造者yfy</a>
  */
+@Tag(name = "班级词书任务", description = "班级与词书绑定/解绑，以及任务分页查询")
 @RestController
 @RequestMapping("/classWordTask")
 public class ClassWordTaskController {
@@ -42,6 +46,8 @@ public class ClassWordTaskController {
      * @param httpRequest HTTP 请求（用于取登录用户）
      * @return 班级词书任务信息
      */
+    @Operation(summary = "班级绑定词书",
+            description = "为班级创建生效中的词书学习任务，可配置每日新学数量与起止日期；已 STOPPED 可重新激活。")
     @PostMapping("/bind")
     @AuthCheck
     public BaseResponse<ClassWordTaskVO> bindClassWordBook(@RequestBody ClassWordTaskBindRequest request,
@@ -66,10 +72,13 @@ public class ClassWordTaskController {
      * @param httpRequest HTTP 请求（用于取登录用户）
      * @return 是否解绑成功
      */
+    @Operation(summary = "解除班级词书绑定",
+            description = "将任务状态置为 STOPPED（软解除，保留历史记录）。")
     @DeleteMapping("/{id}")
     @AuthCheck
-    public BaseResponse<Boolean> unbindClassWordBook(@PathVariable("id") Long id,
-                                                     HttpServletRequest httpRequest) {
+    public BaseResponse<Boolean> unbindClassWordBook(
+            @Parameter(description = "班级学习任务ID", required = true) @PathVariable("id") Long id,
+            HttpServletRequest httpRequest) {
         // 1. 获取当前登录用户并解除绑定
         UserAccountVO loginUser = getLoginUser(httpRequest);
         boolean result = classWordTaskService.unbindClassWordBook(id, loginUser);
@@ -88,6 +97,8 @@ public class ClassWordTaskController {
      * @param httpRequest HTTP 请求（用于取登录用户）
      * @return 分页任务列表
      */
+    @Operation(summary = "班级词书任务分页查询",
+            description = "教师仅查自己创建的任务，管理员可查全部；支持按班级、词书、状态、创建人筛选。")
     @PostMapping("/list/page/vo")
     @AuthCheck
     public BaseResponse<Page<ClassWordTaskVO>> listClassWordTaskByPage(

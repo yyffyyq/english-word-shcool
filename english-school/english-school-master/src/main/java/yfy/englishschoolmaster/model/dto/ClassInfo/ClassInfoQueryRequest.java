@@ -5,7 +5,9 @@ import lombok.EqualsAndHashCode;
 import yfy.englishschoolmaster.common.PageRequest;
 
 /**
- * 班级分页查询请求
+ * 班级分页查询请求：
+ * 支持按班级名、年级、学校、状态筛选，
+ *       管理员可按教师 ID 过滤
  */
 @Data
 @EqualsAndHashCode(callSuper = true)

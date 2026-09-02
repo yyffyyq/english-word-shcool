@@ -8,7 +8,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 /**
- * 班级词书任务 VO
+ * 班级词书任务 VO：
+ * 班级学习任务列表/详情返回，
+ *       含每日新学数量及任务生效周期
  */
 @Data
 public class ClassWordTaskVO implements Serializable {

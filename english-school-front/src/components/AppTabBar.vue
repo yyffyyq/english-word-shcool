@@ -54,8 +54,9 @@ function handleSwitchTab(pagePath: string) {
   align-items: center;
   justify-content: space-around;
   min-height: 56px;
-  background: #fff;
-  border-top: 1rpx solid rgba(0, 0, 0, 0.08);
+  background: rgba(255, 255, 255, 0.98);
+  border-top: 1rpx solid rgba(75, 168, 245, 0.12);
+  box-shadow: 0 -8rpx 24rpx rgba(75, 168, 245, 0.08);
 }
 
 .tab-item {
@@ -68,23 +69,28 @@ function handleSwitchTab(pagePath: string) {
 }
 
 .tab-dot {
-  width: 20rpx;
-  height: 20rpx;
+  width: 18rpx;
+  height: 18rpx;
   border-radius: 50%;
-  background: #9b9ba1;
+  background: #b7c0cc;
 
   &.active {
-    background: #1a1a1a;
+    width: 36rpx;
+    height: 18rpx;
+    border-radius: 999rpx;
+    background: #4ba8f5;
+    box-shadow: 0 4rpx 10rpx rgba(75, 168, 245, 0.35);
   }
 }
 
 .tab-text {
   margin-top: 8rpx;
   font-size: 20rpx;
-  color: #8e8e93;
+  color: #7a8594;
 
   &.active {
-    color: #1a1a1a;
+    color: #4ba8f5;
+    font-weight: 600;
   }
 }
 </style>

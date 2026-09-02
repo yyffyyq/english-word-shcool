@@ -126,6 +126,10 @@ public class AliyunTtsClient {
         }
     }
 
+    /**
+     * 销毁 NLS 客户端：
+     * Spring 容器关闭时释放阿里云 TTS 连接资源
+     */
     @PreDestroy
     public void destroy() {
         if (nlsClient != null) {

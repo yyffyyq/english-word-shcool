@@ -9,7 +9,8 @@ import yfy.englishschoolmaster.model.vo.ClassWordTaskVO;
 import yfy.englishschoolmaster.model.vo.UserAccountVO;
 
 /**
- * 班级词书与每日学习规则表 服务层。
+ * 班级词书任务服务：
+ * 管理班级与词书的绑定关系及每日新学单词数量规则。
  *
  * @author <a href="https://github.com/yyffyyq">代码制造者yfy</a>
  */

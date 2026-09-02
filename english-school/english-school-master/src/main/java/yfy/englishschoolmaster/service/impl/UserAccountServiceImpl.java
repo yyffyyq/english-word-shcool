@@ -27,13 +27,18 @@ import yfy.englishschoolmaster.model.entity.UserAccount;
 import yfy.englishschoolmaster.model.vo.UserAccountVO;
 import yfy.englishschoolmaster.service.ClassStudentService;
 import yfy.englishschoolmaster.service.RedisService;
+import yfy.englishschoolmaster.service.StudentReviewService;
+import yfy.englishschoolmaster.service.StudentStudyService;
 import yfy.englishschoolmaster.service.UserAccountService;
 import yfy.englishschoolmaster.service.UserSessionRedisService;
 import yfy.englishschoolmaster.service.WxMiniAppService;
 import yfy.englishschoolmaster.utils.PasswordUtils;
 
+import org.springframework.context.annotation.Lazy;
+
 /**
- * 用户账号表，统一存管理员、教师、学生基础信息 服务层实现。
+ * 用户账号服务实现：
+ * 处理微信登录会话、学生注册及 Web 管理端账号认证。
  *
  * @author <a href="https://github.com/yyffyyq">代码制造者yfy</a>
  */
@@ -57,6 +62,14 @@ public class UserAccountServiceImpl extends ServiceImpl<UserAccountMapper, UserA
 
     @Autowired
     private RedisService redisService;
+
+    @Lazy
+    @Autowired
+    private StudentStudyService studentStudyService;
+
+    @Lazy
+    @Autowired
+    private StudentReviewService studentReviewService;
 
     /**
      * 获取登录用户信息
@@ -87,6 +100,10 @@ public class UserAccountServiceImpl extends ServiceImpl<UserAccountMapper, UserA
             userSessionRedisService.saveLoginUser(cachedUser);
             // 登录成功后缓存该用户已加入的班级 ID 列表
             cacheStudentClassIds(cachedUser);
+            // 学生登录后刷新今日作业单词缓存
+            cacheStudentHomework(cachedUser);
+            // 学生登录后刷新今日复习单词缓存
+            cacheStudentReview(cachedUser);
             return cachedUser;
         }
 
@@ -105,6 +122,10 @@ public class UserAccountServiceImpl extends ServiceImpl<UserAccountMapper, UserA
         userSessionRedisService.saveLoginUser(userAccountVO);
         // 登录成功后缓存该用户已加入的班级 ID 列表
         cacheStudentClassIds(userAccountVO);
+        // 学生登录后刷新今日作业单词缓存
+        cacheStudentHomework(userAccountVO);
+        // 学生登录后刷新今日复习单词缓存
+        cacheStudentReview(userAccountVO);
         return userAccountVO;
     }
 
@@ -137,6 +158,32 @@ public class UserAccountServiceImpl extends ServiceImpl<UserAccountMapper, UserA
         // 4. 写入 Redis，过期时间与登录会话一致
         redisService.write(classIds, RedisConfig.DEFAULT_EXPIRE,
                 RedisTypeConstant.STUDENT_CLASS_IDS, String.valueOf(userAccountVO.getId()));
+    }
+
+    /**
+     * 学生登录成功后，重建今日作业单词列表缓存（key: student.homework.list:{userId}，TTL 3h）
+     */
+    private void cacheStudentHomework(UserAccountVO userAccountVO) {
+        if (userAccountVO == null || userAccountVO.getId() == null) {
+            return;
+        }
+        if (!ROLE_STUDENT.equalsIgnoreCase(userAccountVO.getRole())) {
+            return;
+        }
+        studentStudyService.refreshHomeworkCache(userAccountVO.getId());
+    }
+
+    /**
+     * 学生登录成功后，重建今日复习单词列表缓存（key: student.review.list:{userId}，TTL 3h）
+     */
+    private void cacheStudentReview(UserAccountVO userAccountVO) {
+        if (userAccountVO == null || userAccountVO.getId() == null) {
+            return;
+        }
+        if (!ROLE_STUDENT.equalsIgnoreCase(userAccountVO.getRole())) {
+            return;
+        }
+        studentReviewService.refreshReviewCache(userAccountVO.getId());
     }
 
     /**

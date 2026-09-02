@@ -5,13 +5,14 @@ import lombok.Data;
 import java.io.Serializable;
 
 /**
- * 删除请求包装类
+ * 通用删除请求 DTO：
+ * 封装待删除记录的主键 ID
  */
 @Data
 public class DeleteRequest implements Serializable {
 
     /**
-     * id
+     * 待删除记录 ID
      */
     private Long id;
 

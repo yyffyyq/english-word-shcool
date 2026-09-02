@@ -1,8 +1,8 @@
 package yfy.englishschoolmaster.constant;
 
 /**
- *
- * 用户常量
+ * 用户相关常量：
+ * 定义登录态请求头、Redis 键前缀、角色标识及密码盐值
  */
 public interface UserConstant {
 

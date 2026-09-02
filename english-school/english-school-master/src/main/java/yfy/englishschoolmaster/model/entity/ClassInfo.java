@@ -14,7 +14,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- *  实体类。
+ * 班级信息实体：
+ * 对应 class_info 表，
+ *       存储教师创建的班级基础信息及邀请码
  *
  * @author <a href="https://github.com/yyffyyq">代码制造者yfy</a>
  */

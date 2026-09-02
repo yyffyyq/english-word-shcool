@@ -7,7 +7,9 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
- * 教师注册审批信息 VO
+ * 教师注册审批信息 VO：
+ * 分页查询审批列表时返回，
+ *       展示申请人姓名、学校及审批状态
  */
 @Data
 public class TeacherApprovalVO implements Serializable {

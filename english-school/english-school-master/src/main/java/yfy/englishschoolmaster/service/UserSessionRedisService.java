@@ -3,7 +3,8 @@ package yfy.englishschoolmaster.service;
 import yfy.englishschoolmaster.model.vo.UserAccountVO;
 
 /**
- * 用户登录会话 Redis 服务
+ * 用户登录会话 Redis 服务：
+ * 管理小程序用户 openid 维度的登录缓存与续期。
  */
 public interface UserSessionRedisService {
 

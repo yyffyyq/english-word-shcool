@@ -3,7 +3,9 @@ package yfy.englishschoolmaster.common;
 import lombok.Data;
 
 /**
- * 请求封装类
+ * 分页查询请求基类：
+ * 封装页码、页大小及排序参数，
+ *       供各业务分页接口继承复用
  */
 @Data
 public class PageRequest {

@@ -7,7 +7,9 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
- * 班级学生信息 VO
+ * 班级学生信息 VO：
+ * 班级成员列表接口返回，
+ *       展示学生基本资料及在班状态
  */
 @Data
 public class ClassStudentVO implements Serializable {

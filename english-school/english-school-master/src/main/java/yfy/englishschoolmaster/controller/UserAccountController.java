@@ -1,14 +1,13 @@
 package yfy.englishschoolmaster.controller;
 
 import com.mybatisflex.core.paginate.Page;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RestController;
 import yfy.englishschoolmaster.common.BaseResponse;
 import yfy.englishschoolmaster.common.ResultUtils;
 import yfy.englishschoolmaster.exception.ErrorCode;
@@ -18,19 +17,17 @@ import yfy.englishschoolmaster.model.dto.SystemRegisterRequest;
 import yfy.englishschoolmaster.model.dto.UserAccountLoginRequest;
 import yfy.englishschoolmaster.model.dto.UserAccountStudentRegisterRequest;
 import yfy.englishschoolmaster.model.dto.UserAccountTeacherRegisterRequest;
-import yfy.englishschoolmaster.model.entity.UserAccount;
 import yfy.englishschoolmaster.model.vo.TeacherApprovalVO;
 import yfy.englishschoolmaster.model.vo.UserAccountVO;
 import yfy.englishschoolmaster.service.TeacherApprovalService;
 import yfy.englishschoolmaster.service.UserAccountService;
-import org.springframework.web.bind.annotation.RestController;
-import java.util.List;
 
 /**
  * 用户账号表，统一存管理员、教师、学生基础信息 控制层。
  *
  * @author <a href="https://github.com/yyffyyq">代码制造者yfy</a>
  */
+@Tag(name = "用户账号", description = "微信登录/注册、Web 管理端登录注册等账号相关接口")
 @RestController
 @RequestMapping("/userAccount")
 public class UserAccountController {
@@ -53,6 +50,9 @@ public class UserAccountController {
      * @param request
      * @return
      */
+    @Operation(summary = "微信一键登录",
+            description = "小程序通过 code + 登录角色登录。优先读 Redis 会话，未命中再查库；"
+                    + "未注册时返回仅含 openid 的 VO。学生登录成功后会缓存已加入班级 ID，并刷新今日作业/复习词表缓存。")
     @PostMapping("/login")
     public BaseResponse<UserAccountVO> loginUser(@RequestBody UserAccountLoginRequest request){
 
@@ -75,6 +75,9 @@ public class UserAccountController {
      * @param request 登录请求
      * @return 登录用户信息
      */
+    @Operation(summary = "Web 管理端登录",
+            description = "校验管理员账号与密码（MD5 加盐后与 password_hash 比对），"
+                    + "登录成功后将会话写入 Redis：system.user.login.ids:{userId}。后续请求头携带 userId。")
     @PostMapping("/system/login")
     public BaseResponse<UserAccountVO> systemLogin(@RequestBody SystemLoginRequest request){
 
@@ -96,6 +99,8 @@ public class UserAccountController {
      * @param request
      * @return
      */
+    @Operation(summary = "Web 管理端注册管理员",
+            description = "创建管理员账号：密码使用固定盐值 MD5 加密后写入 password_hash，角色默认 ADMIN。")
     @PostMapping("/system/register")
     public BaseResponse<UserAccountVO> systemRegister(@RequestBody SystemRegisterRequest request){
 
@@ -117,6 +122,8 @@ public class UserAccountController {
      * @param request
      * @return
      */
+    @Operation(summary = "学生注册",
+            description = "小程序提交 openid、姓名、学号等，校验通过后直接写入 user_account；学生注册无需审批。")
     @PostMapping("/register/student")
     public BaseResponse<UserAccountVO> registerStudent(@RequestBody UserAccountStudentRegisterRequest request){
 
@@ -138,6 +145,8 @@ public class UserAccountController {
      * @param request
      * @return
      */
+    @Operation(summary = "教师注册申请",
+            description = "小程序提交教师注册信息，写入 teacher_approval 待审批记录；审批通过前不创建 user_account。")
     @PostMapping("/register/teacher")
     public BaseResponse<TeacherApprovalVO> registerTeacher(@RequestBody UserAccountTeacherRegisterRequest request){
 

@@ -6,7 +6,9 @@ import java.io.Serial;
 import java.io.Serializable;
 
 /**
- * 单词导入失败明细 VO
+ * 单词导入失败明细 VO：
+ * 批量导入时记录失败单词及原因，
+ *       供前端展示错误详情
  */
 @Data
 public class WordImportFailVO implements Serializable {

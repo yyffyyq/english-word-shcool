@@ -15,7 +15,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * 班级词书与每日学习规则表 实体类。
+ * 班级词书学习任务实体：
+ * 对应 class_word_task 表，
+ *       定义班级绑定的词书及每日新学数量、生效周期
  *
  * @author <a href="https://github.com/yyffyyq">代码制造者yfy</a>
  */

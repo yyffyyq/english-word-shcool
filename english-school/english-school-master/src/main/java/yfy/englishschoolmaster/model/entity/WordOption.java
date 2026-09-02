@@ -13,8 +13,9 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
- * 单词中文选项表 实体类：
- * 每个单词包含 1 个正确项（isCorrect=1）与 3 个干扰项（isCorrect=0）。
+ * 单词中文选项实体：
+ * 对应 word_option 表，
+ *       每个单词含 1 个正确项与 3 个干扰项，供四选一出题
  *
  * @author <a href="https://github.com/yyffyyq">代码制造者yfy</a>
  */

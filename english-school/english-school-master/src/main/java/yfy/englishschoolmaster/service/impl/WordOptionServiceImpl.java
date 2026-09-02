@@ -17,7 +17,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 单词中文选项表 服务层实现。
+ * 单词中文选项服务实现：
+ * 维护每个单词 1 个正确项与 3 个干扰项。
  *
  * @author <a href="https://github.com/yyffyyq">代码制造者yfy</a>
  */
@@ -29,6 +30,7 @@ public class WordOptionServiceImpl extends ServiceImpl<WordOptionMapper, WordOpt
     private static final int WRONG_FLAG = 0;
     private static final int WRONG_OPTION_COUNT = 3;
 
+    /** 实现选项覆盖保存：先删后插 1 正确 + 3 错误 */
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void replaceOptions(Long wordId, String correctMeaning, List<String> wrongMeanings) {
@@ -69,6 +71,7 @@ public class WordOptionServiceImpl extends ServiceImpl<WordOptionMapper, WordOpt
         ThrowUtils.throwIf(!saved, ErrorCode.OPERATION_ERROR, "保存单词选项失败");
     }
 
+    /** 实现按 wordId 查询全部选项 */
     @Override
     public List<WordOption> listByWordId(Long wordId) {
         return this.list(QueryWrapper.create()
@@ -76,6 +79,7 @@ public class WordOptionServiceImpl extends ServiceImpl<WordOptionMapper, WordOpt
                 .orderBy(WordOption::getSortOrder, true));
     }
 
+    /** 实现四选一完整性校验（1 正确 + 3 错误） */
     @Override
     public boolean hasCompleteOptions(Long wordId) {
         List<WordOption> options = listByWordId(wordId);

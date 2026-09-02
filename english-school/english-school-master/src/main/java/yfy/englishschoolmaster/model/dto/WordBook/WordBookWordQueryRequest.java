@@ -5,7 +5,9 @@ import lombok.EqualsAndHashCode;
 import yfy.englishschoolmaster.common.PageRequest;
 
 /**
- * 词书内单词分页查询请求
+ * 词书内单词分页查询请求：
+ * 查询指定词书下的单词列表，
+ *       支持按英文单词、单元名称筛选
  */
 @Data
 @EqualsAndHashCode(callSuper = true)

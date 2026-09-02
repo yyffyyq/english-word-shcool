@@ -5,7 +5,9 @@ import lombok.Data;
 import java.io.Serializable;
 
 /**
- * 微信小程序登录请求类
+ * 微信小程序登录请求：
+ * 前端 wx.login() 获取 code 后提交，
+ *       后端换取 openid 并按角色查询账号
  */
 @Data
 public class UserAccountLoginRequest implements Serializable {

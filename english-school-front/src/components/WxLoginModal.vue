@@ -36,8 +36,8 @@
         {{ buttonText }}
       </button>
 
-      <view class="cancel-btn" @tap="handleClose">
-        <text class="cancel-text">取消</text>
+      <view class="cancel-btn" :class="{ disabled: loading }" @tap.stop="handleClose">
+        <text class="cancel-text">取消登录</text>
       </view>
     </view>
   </view>
@@ -82,7 +82,7 @@ function handleConfirm() {
 .modal-mask {
   position: fixed;
   inset: 0;
-  z-index: 1001;
+  z-index: 2001;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -154,7 +154,7 @@ function handleConfirm() {
   margin-top: 16rpx;
   padding: 12rpx 20rpx;
   font-size: 22rpx;
-  color: #ff7a30;
+  color: #ff8a3d;
   border-radius: 8rpx;
   background: rgba(255, 122, 48, 0.12);
 }
@@ -219,12 +219,20 @@ function handleConfirm() {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 80rpx;
+  height: 88rpx;
   margin-top: 20rpx;
+  border-radius: 44rpx;
+  border: 2rpx solid rgba(255, 255, 255, 0.28);
+  background: rgba(255, 255, 255, 0.08);
+
+  &.disabled {
+    opacity: 0.45;
+  }
 }
 
 .cancel-text {
-  font-size: 26rpx;
-  color: rgba(255, 255, 255, 0.45);
+  font-size: 28rpx;
+  font-weight: 500;
+  color: #fff;
 }
 </style>

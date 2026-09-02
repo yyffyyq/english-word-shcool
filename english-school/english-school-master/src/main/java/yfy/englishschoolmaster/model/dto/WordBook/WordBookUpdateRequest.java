@@ -3,7 +3,9 @@ package yfy.englishschoolmaster.model.dto.WordBook;
 import lombok.Data;
 
 /**
- * 词书修改请求
+ * 词书修改请求：
+ * 更新词书名称、说明、封面或启用状态，
+ *       按 id 定位目标词书
  */
 @Data
 public class WordBookUpdateRequest {

@@ -5,7 +5,9 @@ import lombok.Data;
 import java.io.Serializable;
 
 /**
- * 教师审批审核请求
+ * 教师审批审核请求：
+ * 管理员对 PENDING 记录执行通过或拒绝，
+ *       通过时创建教师账号，拒绝时填写原因
  */
 @Data
 public class TeacherApprovalAuditRequest implements Serializable {

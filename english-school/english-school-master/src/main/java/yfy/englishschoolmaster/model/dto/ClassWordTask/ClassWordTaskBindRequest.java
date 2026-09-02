@@ -5,7 +5,9 @@ import lombok.Data;
 import java.time.LocalDate;
 
 /**
- * 班级绑定词书请求
+ * 班级绑定词书请求：
+ * 为班级创建词书学习任务并写入 class_word_task 表，
+ *       指定每日新学数量及生效日期范围
  */
 @Data
 public class ClassWordTaskBindRequest {

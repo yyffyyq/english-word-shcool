@@ -5,7 +5,9 @@ import lombok.Data;
 import java.io.Serializable;
 
 /**
- * Web 管理端注册请求
+ * Web 管理端注册请求：
+ * 创建管理员账号并写入 user_account 表，
+ *       密码入库前加盐加密存储
  */
 @Data
 public class SystemRegisterRequest implements Serializable {

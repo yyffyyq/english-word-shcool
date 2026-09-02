@@ -14,7 +14,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * 用户账号表，统一存管理员、教师、学生基础信息 实体类。
+ * 用户账号实体：
+ * 对应 user_account 表，
+ *       统一存储管理员、教师、学生的基础账号信息
  *
  * @author <a href="https://github.com/yyffyyq">代码制造者yfy</a>
  */

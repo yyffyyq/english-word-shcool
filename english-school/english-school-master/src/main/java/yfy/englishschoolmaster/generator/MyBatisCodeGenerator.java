@@ -9,7 +9,8 @@ import com.zaxxer.hikari.HikariDataSource;
 import java.util.Map;
 
 /**
- * mybatis flex 代码生成器
+ * MyBatis-Flex 代码生成器：
+ * 根据数据库表结构生成 Entity、Mapper、Service、Controller 等代码
  */
 public class MyBatisCodeGenerator {
 

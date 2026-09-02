@@ -1,16 +1,17 @@
 package yfy.englishschoolmaster.controller;
 
 import com.mybatisflex.core.paginate.Page;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.resource.ResourceUrlProvider;
 import yfy.englishschoolmaster.annotation.AuthCheck;
 import yfy.englishschoolmaster.common.BaseResponse;
 import yfy.englishschoolmaster.common.ResultUtils;
@@ -36,6 +37,7 @@ import java.util.List;
  *
  * @author <a href="https://github.com/yyffyyq">代码制造者yfy</a>
  */
+@Tag(name = "班级管理", description = "班级创建、查询、学生入班、邀请码刷新等接口")
 @RestController
 @RequestMapping("/classInfo")
 public class ClassInfoController {
@@ -52,6 +54,8 @@ public class ClassInfoController {
     /**
      * 学生加入班级接口（学生权限)
      */
+    @Operation(summary = "学生加入班级",
+            description = "学生通过邀请码加入班级：优先读 Redis 邀请码缓存，未命中则查库并回写缓存。需学生登录态。")
     @PostMapping("/add/student")
     @AuthCheck
     public BaseResponse<String> studentJoinClass(@RequestBody ClassStudentAddStudentRequest request){
@@ -87,6 +91,8 @@ public class ClassInfoController {
      * @param httpRequest HTTP 请求（用于取登录用户）
      * @return 班级信息
      */
+    @Operation(summary = "创建班级",
+            description = "教师创建班级，系统生成邀请码。需教师登录态。")
     @PostMapping("/add")
     @AuthCheck(mustRole = UserConstant.TEACHER_ROLE)
     public BaseResponse<ClassInfoVO> addClassInfo(@RequestBody ClassInfoAddRequest request,
@@ -111,6 +117,8 @@ public class ClassInfoController {
      * @param httpRequest HTTP 请求（用于取登录用户）
      * @return 分页班级列表
      */
+    @Operation(summary = "班级分页查询",
+            description = "教师仅看自己创建的班级，学生仅看已加入班级，管理员可查看全部并筛选。")
     @PostMapping("/list/page/vo")
     @AuthCheck
     public BaseResponse<Page<ClassInfoVO>> listClassInfoByPage(@RequestBody ClassInfoQueryRequest request,
@@ -134,10 +142,13 @@ public class ClassInfoController {
      * @param httpRequest HTTP 请求
      * @return 班级详情
      */
+    @Operation(summary = "班级详情",
+            description = "查询班级详情（含在班学生数）。教师仅可查看自己的班级，管理员可查看全部。")
     @GetMapping("/{id}")
     @AuthCheck
-    public BaseResponse<ClassInfoVO> getClassInfo(@PathVariable("id") Long id,
-                                                  HttpServletRequest httpRequest) {
+    public BaseResponse<ClassInfoVO> getClassInfo(
+            @Parameter(description = "班级ID", required = true) @PathVariable("id") Long id,
+            HttpServletRequest httpRequest) {
         UserAccountVO loginUser = getLoginUser(httpRequest);
         ClassInfoVO classInfoVO = classInfoService.getClassDetail(id, loginUser);
         return ResultUtils.success(classInfoVO);
@@ -151,10 +162,13 @@ public class ClassInfoController {
      * @param httpRequest HTTP 请求
      * @return 学生列表
      */
+    @Operation(summary = "班级学生列表",
+            description = "返回当前在班学生列表。教师仅可查看自己的班级，管理员可查看全部。")
     @GetMapping("/{id}/students")
     @AuthCheck
-    public BaseResponse<List<ClassStudentVO>> listClassStudents(@PathVariable("id") Long id,
-                                                                HttpServletRequest httpRequest) {
+    public BaseResponse<List<ClassStudentVO>> listClassStudents(
+            @Parameter(description = "班级ID", required = true) @PathVariable("id") Long id,
+            HttpServletRequest httpRequest) {
         UserAccountVO loginUser = getLoginUser(httpRequest);
         List<ClassStudentVO> students = classInfoService.listClassStudents(id, loginUser);
         return ResultUtils.success(students);
@@ -169,10 +183,13 @@ public class ClassInfoController {
      * @param httpRequest HTTP 请求
      * @return 刷新后的班级信息
      */
+    @Operation(summary = "刷新班级邀请码",
+            description = "教师刷新自己班级的邀请码：删除 Redis 旧码并写入新码缓存。")
     @PostMapping("/{id}/refresh-invite")
     @AuthCheck(mustRole = UserConstant.TEACHER_ROLE)
-    public BaseResponse<ClassInfoVO> refreshInviteCode(@PathVariable("id") Long id,
-                                                       HttpServletRequest httpRequest) {
+    public BaseResponse<ClassInfoVO> refreshInviteCode(
+            @Parameter(description = "班级ID", required = true) @PathVariable("id") Long id,
+            HttpServletRequest httpRequest) {
         UserAccountVO loginUser = getLoginUser(httpRequest);
         ClassInfoVO classInfoVO = classInfoService.refreshInviteCode(id, loginUser);
         return ResultUtils.success(classInfoVO);

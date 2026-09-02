@@ -12,7 +12,8 @@ import yfy.englishschoolmaster.model.vo.UserAccountVO;
 import java.util.List;
 
 /**
- * 班级信息服务层
+ * 班级信息服务：
+ * 提供班级创建、分页查询、详情、在班学生列表及邀请码刷新能力。
  *
  * @author <a href="https://github.com/yyffyyq">代码制造者yfy</a>
  */

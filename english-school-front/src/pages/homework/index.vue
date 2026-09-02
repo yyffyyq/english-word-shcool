@@ -311,6 +311,10 @@ const canSubmit = computed(() => {
 
 onShow(() => {
   syncCustomTabBar('pages/homework/index')
+  if (!store.isLoggedIn.value) {
+    homeworkList.value = []
+    return
+  }
   if (store.isLoggedIn.value && !store.isTeacher.value) {
     uni.switchTab({ url: '/pages/index/index' })
     return
@@ -697,7 +701,7 @@ async function submitCreateHomework() {
 .page {
   min-height: 100vh;
   padding: 32rpx 32rpx calc(140rpx + env(safe-area-inset-bottom));
-  background: #f5f5f7;
+  background: #f3f8fd;
 }
 
 .header {
@@ -707,15 +711,15 @@ async function submitCreateHomework() {
 .title {
   display: block;
   font-size: 44rpx;
-  font-weight: 600;
-  color: #1a1a1a;
+  font-weight: 700;
+  color: #1f2a37;
 }
 
 .subtitle {
   display: block;
   margin-top: 8rpx;
   font-size: 26rpx;
-  color: #8e8e93;
+  color: #7a8594;
 }
 
 .empty-card {
@@ -724,20 +728,21 @@ async function submitCreateHomework() {
   align-items: center;
   justify-content: center;
   height: 320rpx;
-  border: 2rpx dashed #d1d1d6;
-  border-radius: 24rpx;
+  border: 2rpx dashed #cfe9ff;
+  border-radius: 32rpx;
   background: #fff;
+  box-shadow: 0 10rpx 28rpx rgba(75, 168, 245, 0.08);
 }
 
 .empty-icon {
   font-size: 64rpx;
-  color: #ff7a30;
+  color: #4ba8f5;
 }
 
 .empty-text {
   margin-top: 16rpx;
   font-size: 28rpx;
-  color: #8e8e93;
+  color: #7a8594;
 }
 
 .homework-list {
@@ -747,8 +752,10 @@ async function submitCreateHomework() {
 .homework-card {
   padding: 8rpx 32rpx;
   margin-bottom: 24rpx;
-  border-radius: 24rpx;
+  border-radius: 32rpx;
   background: #fff;
+  box-shadow: 0 10rpx 28rpx rgba(75, 168, 245, 0.1);
+  border: 2rpx solid #e8f4fe;
 }
 
 .homework-card-top {
@@ -761,17 +768,17 @@ async function submitCreateHomework() {
 .homework-name {
   flex: 1;
   font-size: 32rpx;
-  font-weight: 600;
-  color: #1a1a1a;
+  font-weight: 700;
+  color: #1f2a37;
 }
 
 .homework-status {
   margin-left: 12rpx;
   padding: 4rpx 12rpx;
   font-size: 22rpx;
-  border-radius: 8rpx;
-  color: #ff7a30;
-  background: rgba(255, 122, 48, 0.12);
+  border-radius: 999rpx;
+  color: #4ba8f5;
+  background: rgba(75, 168, 245, 0.12);
 }
 
 .info-row {
@@ -779,7 +786,7 @@ async function submitCreateHomework() {
   align-items: center;
   justify-content: space-between;
   padding: 24rpx 0;
-  border-bottom: 1rpx solid #f0f0f0;
+  border-bottom: 1rpx solid #eef4fa;
 
   &:last-child {
     border-bottom: none;
@@ -788,13 +795,13 @@ async function submitCreateHomework() {
 
 .info-label {
   font-size: 28rpx;
-  color: #8e8e93;
+  color: #7a8594;
 }
 
 .info-value {
   max-width: 420rpx;
   font-size: 28rpx;
-  color: #1a1a1a;
+  color: #1f2a37;
   text-align: right;
 }
 
@@ -812,7 +819,7 @@ async function submitCreateHomework() {
   width: 100%;
   padding: 40rpx 32rpx calc(40rpx + env(safe-area-inset-bottom));
   border-radius: 32rpx 32rpx 0 0;
-  background: #f5f5f7;
+  background: #f3f8fd;
 }
 
 .picker-panel {
@@ -826,26 +833,27 @@ async function submitCreateHomework() {
 .modal-title {
   display: block;
   font-size: 36rpx;
-  font-weight: 600;
-  color: #1a1a1a;
+  font-weight: 700;
+  color: #1f2a37;
 }
 
 .modal-subtitle {
   display: block;
   margin-top: 8rpx;
   font-size: 24rpx;
-  color: #8e8e93;
+  color: #7a8594;
 }
 
 .form-card {
   padding: 8rpx 32rpx;
-  border-radius: 24rpx;
+  border-radius: 28rpx;
   background: #fff;
+  border: 2rpx solid #e8f4fe;
 }
 
 .form-item {
   padding: 24rpx 0;
-  border-bottom: 1rpx solid #f0f0f0;
+  border-bottom: 1rpx solid #eef4fa;
 
   &:last-child {
     border-bottom: none;
@@ -856,18 +864,18 @@ async function submitCreateHomework() {
   display: block;
   margin-bottom: 12rpx;
   font-size: 24rpx;
-  color: #8e8e93;
+  color: #7a8594;
 }
 
 .input {
   height: 56rpx;
   width: 100%;
   font-size: 30rpx;
-  color: #1a1a1a;
+  color: #1f2a37;
 }
 
 .placeholder {
-  color: #c7c7cc;
+  color: #a8b0bc;
 }
 
 .select-row {
@@ -880,20 +888,21 @@ async function submitCreateHomework() {
 .field-text {
   flex: 1;
   font-size: 30rpx;
-  color: #1a1a1a;
+  color: #1f2a37;
 }
 
 .select-arrow {
   margin-left: 12rpx;
   font-size: 32rpx;
-  color: #c7c7cc;
+  color: #b7c0cc;
 }
 
 .picker-scroll {
   max-height: 52vh;
   margin-bottom: 8rpx;
-  border-radius: 24rpx;
+  border-radius: 28rpx;
   background: #fff;
+  border: 2rpx solid #e8f4fe;
 }
 
 .picker-item {
@@ -901,7 +910,7 @@ async function submitCreateHomework() {
   align-items: center;
   justify-content: space-between;
   padding: 28rpx 32rpx;
-  border-bottom: 1rpx solid #f0f0f0;
+  border-bottom: 1rpx solid #eef4fa;
 
   &:last-child {
     border-bottom: none;
@@ -917,21 +926,21 @@ async function submitCreateHomework() {
   display: block;
   font-size: 30rpx;
   font-weight: 500;
-  color: #1a1a1a;
+  color: #1f2a37;
 }
 
 .picker-item-desc {
   display: block;
   margin-top: 8rpx;
   font-size: 24rpx;
-  color: #8e8e93;
+  color: #7a8594;
 }
 
 .picker-check {
   margin-left: 16rpx;
   font-size: 28rpx;
   font-weight: 600;
-  color: #ff7a30;
+  color: #4ba8f5;
 }
 
 .list-tip {
@@ -943,7 +952,7 @@ async function submitCreateHomework() {
 
 .list-tip-text {
   font-size: 24rpx;
-  color: #8e8e93;
+  color: #7a8594;
 }
 
 .submit-btn {
@@ -953,16 +962,18 @@ async function submitCreateHomework() {
   height: 88rpx;
   margin-top: 40rpx;
   border-radius: 44rpx;
-  background: #ff7a30;
+  background: linear-gradient(135deg, #ff8a3d 0%, #ffb074 100%);
+  box-shadow: 0 10rpx 24rpx rgba(255, 138, 61, 0.28);
 
   &.disabled {
     opacity: 0.45;
+    box-shadow: none;
   }
 }
 
 .submit-text {
   font-size: 30rpx;
-  font-weight: 500;
+  font-weight: 600;
   color: #fff;
   letter-spacing: 2rpx;
 }

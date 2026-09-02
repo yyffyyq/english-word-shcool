@@ -4,11 +4,20 @@ import cn.hutool.core.util.StrUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ScanOptions;
 import org.springframework.stereotype.Service;
 import yfy.englishschoolmaster.service.RedisService;
 
 import java.time.Duration;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
+/**
+ * Redis 缓存读写服务实现：
+ * 基于 RedisTemplate 提供泛型读写，兼容 Jackson 反序列化类型转换。
+ */
 @Service
 public class RedisServiceImpl implements RedisService {
 
@@ -18,15 +27,7 @@ public class RedisServiceImpl implements RedisService {
     @Autowired
     private ObjectMapper objectMapper;
 
-    /**
-     * 泛型 redis 读操作。
-     * 注意：Jackson 反序列化后 value 经常是 LinkedHashMap，不能只用 isInstance 判断。
-     *
-     * @param id    业务编号（如邀请码）
-     * @param type  key 前缀类型
-     * @param clazz 期望转换的目标类型
-     * @return 转换后的对象，未命中返回 null
-     */
+    /** 实现 Redis 泛型读操作 */
     @Override
     public <T> T read(String id, String type, Class<T> clazz) {
         // 1. 判断参数是否为空
@@ -49,14 +50,7 @@ public class RedisServiceImpl implements RedisService {
         return objectMapper.convertValue(value, clazz);
     }
 
-    /**
-     * 写入 Redis 中信息
-     *
-     * @param value 存入的值
-     * @param ttl   过期时间
-     * @param type  存入类型
-     * @param id    编号(用于查找)
-     */
+    /** 实现 Redis 写入，key 格式 type:id */
     @Override
     public <T> void write(T value, Duration ttl, String type, String id) {
         // 1. 判断参数是否为空
@@ -71,13 +65,7 @@ public class RedisServiceImpl implements RedisService {
         redisTemplate.opsForValue().set(key, value, ttl);
     }
 
-    /**
-     * 删除 Redis 中指定 key
-     *
-     * @param id   业务编号（如邀请码）
-     * @param type key 前缀类型
-     * @return 是否删除成功
-     */
+    /** 实现 Redis key 删除 */
     @Override
     public boolean delete(String id, String type) {
         // 1. 判断参数是否为空
@@ -87,6 +75,40 @@ public class RedisServiceImpl implements RedisService {
 
         // 2. 删除对应 key
         return Boolean.TRUE.equals(redisTemplate.delete(buildKey(type, id)));
+    }
+
+    /** 实现过期时间查询：key 不存在或无 TTL 返回 null */
+    @Override
+    public Duration getExpire(String id, String type) {
+        if (StrUtil.isEmpty(type) || StrUtil.isEmpty(id)) {
+            return null;
+        }
+        Long seconds = redisTemplate.getExpire(buildKey(type, id), TimeUnit.SECONDS);
+        if (seconds == null || seconds < 0) {
+            return null;
+        }
+        return Duration.ofSeconds(seconds);
+    }
+
+    /** 扫描指定 type 前缀下的全部业务 id（key 格式 type:id） */
+    @Override
+    public Set<String> listIdsByType(String type) {
+        if (StrUtil.isEmpty(type)) {
+            return Collections.emptySet();
+        }
+        String pattern = type + ":*";
+        Set<String> ids = new HashSet<>();
+        ScanOptions options = ScanOptions.scanOptions().match(pattern).count(200).build();
+        try (var cursor = redisTemplate.scan(options)) {
+            while (cursor.hasNext()) {
+                String key = cursor.next();
+                if (StrUtil.isBlank(key) || !key.startsWith(type + ":")) {
+                    continue;
+                }
+                ids.add(key.substring(type.length() + 1));
+            }
+        }
+        return ids;
     }
 
     /**

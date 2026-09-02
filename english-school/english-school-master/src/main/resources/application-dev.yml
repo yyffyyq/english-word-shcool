@@ -3,8 +3,10 @@ spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/englishworddb
-    username: root
-    password: root
+    username: englishworddb
+    password: xyxt6d2zy4WdweWX
+#    username: root
+#    password: root
   # redis
   data:
     redis:

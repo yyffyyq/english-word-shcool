@@ -12,7 +12,8 @@ import yfy.englishschoolmaster.model.dto.WxSessionResult;
 import yfy.englishschoolmaster.service.WxMiniAppService;
 
 /**
- * 微信小程序服务实现
+ * 微信小程序服务实现：
+ * 调用微信 code2Session 接口换取 openid，并校验响应有效性。
  */
 @Service
 public class WxMiniAppServiceImpl implements WxMiniAppService {
@@ -23,11 +24,7 @@ public class WxMiniAppServiceImpl implements WxMiniAppService {
     @Autowired
     private WxMiniAppProperties wxMiniAppProperties;
 
-    /**
-     * 通过code 获取 用户登录信息
-     * @param code 临时登录凭证
-     * @return
-     */
+    /** 实现 code2Session：请求微信接口并校验 openid */
     @Override
     public WxSessionResult code2Session(String code) {
         // 1. 拿到微信小程序id和秘钥

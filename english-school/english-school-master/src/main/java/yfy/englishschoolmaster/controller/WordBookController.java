@@ -1,7 +1,9 @@
 package yfy.englishschoolmaster.controller;
 
 import com.mybatisflex.core.paginate.Page;
-import io.swagger.v3.oas.annotations.tags.Tags;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -33,6 +35,7 @@ import yfy.englishschoolmaster.service.WordBookService;
  *
  * @author <a href="https://github.com/yyffyyq">代码制造者yfy</a>
  */
+@Tag(name = "词书管理", description = "词书创建/查询/修改/删除，以及词书内单词导入与分页查询")
 @RestController
 @RequestMapping("/wordBook")
 public class WordBookController {
@@ -49,6 +52,8 @@ public class WordBookController {
      * @param httpRequest HTTP 请求（用于取登录用户）
      * @return 词书信息
      */
+    @Operation(summary = "创建词书",
+            description = "教师/管理员创建词书，可填写名称、说明、封面。")
     @PostMapping("/add")
     @AuthCheck
     public BaseResponse<WordBookVO> addWordBook(@RequestBody WordBookAddRequest request,
@@ -73,6 +78,8 @@ public class WordBookController {
      * @param httpRequest HTTP 请求（用于取登录用户）
      * @return 分页词书列表
      */
+    @Operation(summary = "词书分页查询",
+            description = "教师/管理员分页查询词书，支持按名称、状态筛选。")
     @PostMapping("/list/page/vo")
     @AuthCheck
     public BaseResponse<Page<WordBookVO>> listWordBookByPage(@RequestBody WordBookQueryRequest request,
@@ -97,6 +104,8 @@ public class WordBookController {
      * @param httpRequest HTTP 请求（用于取登录用户）
      * @return 修改后的词书信息
      */
+    @Operation(summary = "修改词书",
+            description = "教师/管理员修改词书名称、说明、封面、状态。")
     @PutMapping("/update")
     @AuthCheck
     public BaseResponse<WordBookVO> updateWordBook(@RequestBody WordBookUpdateRequest request,
@@ -121,10 +130,13 @@ public class WordBookController {
      * @param httpRequest HTTP 请求（用于取登录用户）
      * @return 是否删除成功
      */
+    @Operation(summary = "删除词书（软删除）",
+            description = "将词书状态置为 DISABLED，不物理删除。")
     @DeleteMapping("/{id}")
     @AuthCheck
-    public BaseResponse<Boolean> deleteWordBook(@PathVariable("id") Long id,
-                                                HttpServletRequest httpRequest) {
+    public BaseResponse<Boolean> deleteWordBook(
+            @Parameter(description = "词书ID", required = true) @PathVariable("id") Long id,
+            HttpServletRequest httpRequest) {
         UserAccountVO loginUser = getLoginUser(httpRequest);
         boolean result = wordBookService.deleteWordBook(id, loginUser);
         return ResultUtils.success(result);
@@ -141,11 +153,14 @@ public class WordBookController {
      * @param httpRequest HTTP 请求（用于取登录用户）
      * @return 导入结果（含成功数、失败明细、词书单词总数）
      */
+    @Operation(summary = "批量导入词书单词",
+            description = "手工录入英文、音标、正确中文、3 个错误中文、例句及翻译；正确项写入 word_option.is_correct=1。")
     @PostMapping("/{bookId}/words/import")
     @AuthCheck
-    public BaseResponse<WordBookImportResultVO> importWords(@PathVariable("bookId") Long bookId,
-                                                            @RequestBody WordBookImportRequest request,
-                                                            HttpServletRequest httpRequest) {
+    public BaseResponse<WordBookImportResultVO> importWords(
+            @Parameter(description = "词书ID", required = true) @PathVariable("bookId") Long bookId,
+            @RequestBody WordBookImportRequest request,
+            HttpServletRequest httpRequest) {
         // 1. 判断请求是否为空
         ThrowUtils.throwIf(request == null, ErrorCode.PARAMS_ERROR, "导入请求为空");
 
@@ -168,11 +183,14 @@ public class WordBookController {
      * @param httpRequest HTTP 请求（用于取登录用户）
      * @return 分页单词列表
      */
+    @Operation(summary = "词书内单词分页查询",
+            description = "按词书 ID 分页查询关联单词，支持按英文、单元筛选；返回含四选一选项。")
     @PostMapping("/{bookId}/words/list/page/vo")
     @AuthCheck
-    public BaseResponse<Page<WordVO>> listWordsByBookPage(@PathVariable("bookId") Long bookId,
-                                                          @RequestBody WordBookWordQueryRequest request,
-                                                          HttpServletRequest httpRequest) {
+    public BaseResponse<Page<WordVO>> listWordsByBookPage(
+            @Parameter(description = "词书ID", required = true) @PathVariable("bookId") Long bookId,
+            @RequestBody WordBookWordQueryRequest request,
+            HttpServletRequest httpRequest) {
         // 1. 判断请求是否为空
         ThrowUtils.throwIf(request == null, ErrorCode.PARAMS_ERROR, "查询请求为空");
 

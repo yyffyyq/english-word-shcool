@@ -62,7 +62,7 @@ function handleMaskTap() {
 .modal-mask {
   position: fixed;
   inset: 0;
-  z-index: 1000;
+  z-index: 2000;
   display: flex;
   align-items: flex-end;
   background: rgba(0, 0, 0, 0.55);
@@ -71,9 +71,10 @@ function handleMaskTap() {
 
 .modal-panel {
   width: 100%;
-  padding: 48rpx 40rpx calc(48rpx + env(safe-area-inset-bottom));
+  padding: 48rpx 40rpx calc(48rpx + 56px + env(safe-area-inset-bottom));
   background: rgba(28, 28, 30, 0.96);
   border-radius: 32rpx 32rpx 0 0;
+  box-sizing: border-box;
 }
 
 .modal-header {
@@ -133,7 +134,7 @@ function handleMaskTap() {
 .role-icon-text {
   font-size: 32rpx;
   font-weight: 600;
-  color: #ff7a30;
+  color: #ff8a3d;
 }
 
 .role-info {
@@ -170,11 +171,13 @@ function handleMaskTap() {
   justify-content: center;
   height: 88rpx;
   border-radius: 44rpx;
+  border: 2rpx solid rgba(255, 255, 255, 0.28);
   background: rgba(255, 255, 255, 0.08);
 }
 
 .cancel-text {
   font-size: 28rpx;
-  color: rgba(255, 255, 255, 0.65);
+  font-weight: 500;
+  color: #fff;
 }
 </style>

@@ -8,7 +8,8 @@ import yfy.englishschoolmaster.model.vo.UserAccountVO;
 import yfy.englishschoolmaster.model.vo.WordVO;
 
 /**
- * 单词基础数据表 服务层。
+ * 单词基础数据服务：
+ * 提供单词手工录入、修改及物理删除（含选项与词书关联清理）。
  *
  * @author <a href="https://github.com/yyffyyq">代码制造者yfy</a>
  */

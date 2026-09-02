@@ -35,7 +35,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- * 单词基础数据表 服务层实现（纯手工录入，无机器翻译）。
+ * 单词基础数据服务实现（纯手工录入，无机器翻译）。
  *
  * @author <a href="https://github.com/yyffyyq">代码制造者yfy</a>
  */
@@ -56,6 +56,7 @@ public class WordServiceImpl extends ServiceImpl<WordMapper, Word> implements Wo
         this.wordBookMapper = wordBookMapper;
     }
 
+    /** 实现单词录入：已存在则补齐缺失字段与选项 */
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Word enrichAndSave(WordImportItem item) {
@@ -128,6 +129,7 @@ public class WordServiceImpl extends ServiceImpl<WordMapper, Word> implements Wo
         return word;
     }
 
+    /** 实现单词修改：更新选项时整体覆盖四选一 */
     @Override
     @Transactional(rollbackFor = Exception.class)
     public WordVO updateWord(WordUpdateRequest request, UserAccountVO loginUser) {
@@ -190,6 +192,7 @@ public class WordServiceImpl extends ServiceImpl<WordMapper, Word> implements Wo
         return toWordVO(word);
     }
 
+    /** 实现物理删除：级联清理选项与词书关联，回写 word_count */
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean deleteWordPhysically(Long id, UserAccountVO loginUser) {
@@ -264,6 +267,7 @@ public class WordServiceImpl extends ServiceImpl<WordMapper, Word> implements Wo
         return wordText.trim().toLowerCase();
     }
 
+    /** 实体转 VO 并填充四选一选项 */
     private WordVO toWordVO(Word word) {
         WordVO wordVO = new WordVO();
         BeanUtil.copyProperties(word, wordVO);

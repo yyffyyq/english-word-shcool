@@ -35,7 +35,7 @@ function handleAction() {
 .page {
   min-height: 100vh;
   padding: 32rpx;
-  background: #f5f5f7;
+  background: #f3f8fd;
 }
 
 .header {
@@ -45,15 +45,15 @@ function handleAction() {
 .title {
   display: block;
   font-size: 44rpx;
-  font-weight: 600;
-  color: #1a1a1a;
+  font-weight: 700;
+  color: #1f2a37;
 }
 
 .subtitle {
   display: block;
   margin-top: 8rpx;
   font-size: 26rpx;
-  color: #8e8e93;
+  color: #7a8594;
 }
 
 .stats-grid {
@@ -68,20 +68,21 @@ function handleAction() {
   align-items: center;
   justify-content: center;
   height: 200rpx;
-  border-radius: 24rpx;
+  border-radius: 32rpx;
   background: #fff;
-  box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.06);
+  box-shadow: 0 10rpx 28rpx rgba(75, 168, 245, 0.12);
+  border: 2rpx solid #e8f4fe;
 }
 
 .stat-num {
   font-size: 56rpx;
-  font-weight: 300;
-  color: #ff7a30;
+  font-weight: 700;
+  color: #4ba8f5;
 }
 
 .stat-label {
   margin-top: 8rpx;
   font-size: 24rpx;
-  color: #8e8e93;
+  color: #7a8594;
 }
 </style>

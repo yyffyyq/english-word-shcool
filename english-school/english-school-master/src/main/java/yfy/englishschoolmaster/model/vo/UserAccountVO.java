@@ -8,7 +8,9 @@ import java.io.Serial;
 import java.io.Serializable;
 
 /**
- * 封装用户信息类
+ * 用户信息 VO：
+ * 登录/注册成功后返回给前端的用户摘要，
+ *       未注册用户额外返回 openid 供引导注册
  */
 @Data
 public class UserAccountVO implements Serializable {

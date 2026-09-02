@@ -6,13 +6,19 @@
         "navigationStyle": "custom",
         "navigationBarTitleText": "首页",
         "enablePullDownRefresh": false,
-        "backgroundColor": "#1e4d3b"
+        "backgroundColor": "#4BA8F5"
       }
     },
     {
       "path": "pages/study/index",
       "style": {
         "navigationBarTitleText": "学习"
+      }
+    },
+    {
+      "path": "pages/study/learn",
+      "style": {
+        "navigationBarTitleText": "单词学习"
       }
     },
     {
@@ -71,14 +77,14 @@
   "globalStyle": {
     "navigationBarTextStyle": "black",
     "navigationBarTitleText": "校园背单词",
-    "navigationBarBackgroundColor": "#F8F8F8",
-    "backgroundColor": "#F5F5F7"
+    "navigationBarBackgroundColor": "#FFFFFF",
+    "backgroundColor": "#F3F8FD"
   },
   "tabBar": {
-    "color": "#8E8E93",
-    "selectedColor": "#1A1A1A",
+    "color": "#7A8594",
+    "selectedColor": "#4BA8F5",
     "backgroundColor": "#FFFFFF",
-    "borderStyle": "black",
+    "borderStyle": "white",
     "list": [
       {
         "pagePath": "pages/index/index",

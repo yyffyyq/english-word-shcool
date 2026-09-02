@@ -1,4 +1,4 @@
-const BASE_URL = 'http://localhost:8081/api'
+const BASE_URL = 'https://www.englishwordminiproject.cn/api'
 const DEFAULT_TIMEOUT = 60000
 
 type RequestMethod =

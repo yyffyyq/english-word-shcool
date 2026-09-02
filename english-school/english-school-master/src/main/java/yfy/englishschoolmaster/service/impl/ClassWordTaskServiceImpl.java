@@ -29,7 +29,8 @@ import java.util.Objects;
 import java.util.Set;
 
 /**
- * 班级词书与每日学习规则表 服务层实现。
+ * 班级词书任务服务实现：
+ * 教师仅可操作自己班级的词书绑定。
  *
  * @author <a href="https://github.com/yyffyyq">代码制造者yfy</a>
  */
@@ -53,6 +54,7 @@ public class ClassWordTaskServiceImpl extends ServiceImpl<ClassWordTaskMapper, C
         this.wordBookMapper = wordBookMapper;
     }
 
+    /** 实现词书绑定：已 STOPPED 的同班级同词书记录会重新激活 */
     @Override
     @Transactional(rollbackFor = Exception.class)
     public ClassWordTaskVO bindClassWordBook(ClassWordTaskBindRequest request, UserAccountVO loginUser) {
@@ -124,6 +126,7 @@ public class ClassWordTaskServiceImpl extends ServiceImpl<ClassWordTaskMapper, C
         return toClassWordTaskVO(task);
     }
 
+    /** 实现解除绑定：状态置为 STOPPED */
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean unbindClassWordBook(Long id, UserAccountVO loginUser) {
@@ -150,6 +153,7 @@ public class ClassWordTaskServiceImpl extends ServiceImpl<ClassWordTaskMapper, C
         return true;
     }
 
+    /** 实现分页查询：教师仅看自己创建的任务 */
     @Override
     public Page<ClassWordTaskVO> listClassWordTaskByPage(ClassWordTaskQueryRequest request, UserAccountVO loginUser) {
         // 1. 参数与权限校验
@@ -206,6 +210,7 @@ public class ClassWordTaskServiceImpl extends ServiceImpl<ClassWordTaskMapper, C
                 ErrorCode.NO_AUTH_ERROR, "无权操作该班级");
     }
 
+    /** 按白名单字段排序，默认按创建时间倒序 */
     private void applySort(QueryWrapper queryWrapper, String sortField, String sortOrder) {
         boolean isAsc = "ascend".equalsIgnoreCase(sortOrder);
         if (StrUtil.isNotBlank(sortField) && SORT_FIELDS.contains(sortField)) {
@@ -222,10 +227,12 @@ public class ClassWordTaskServiceImpl extends ServiceImpl<ClassWordTaskMapper, C
         queryWrapper.orderBy(ClassWordTask::getCreatedAt, false);
     }
 
+    /** LocalDate 转 java.sql.Date */
     private Date toSqlDate(LocalDate localDate) {
         return localDate == null ? null : Date.valueOf(localDate);
     }
 
+    /** 实体转 VO，日期字段转为 LocalDate */
     private ClassWordTaskVO toClassWordTaskVO(ClassWordTask task) {
         ClassWordTaskVO vo = new ClassWordTaskVO();
         BeanUtil.copyProperties(task, vo);

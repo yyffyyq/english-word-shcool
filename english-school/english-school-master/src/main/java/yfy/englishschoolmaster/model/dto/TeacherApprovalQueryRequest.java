@@ -5,7 +5,9 @@ import lombok.EqualsAndHashCode;
 import yfy.englishschoolmaster.common.PageRequest;
 
 /**
- * 教师审批分页查询请求
+ * 教师审批分页查询请求：
+ * 管理员按审批状态、姓名、学校筛选，
+ *       分页返回 teacher_approval 记录
  */
 @Data
 @EqualsAndHashCode(callSuper = true)

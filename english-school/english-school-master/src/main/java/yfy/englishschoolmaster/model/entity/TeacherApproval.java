@@ -14,7 +14,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- *  实体类。
+ * 教师注册审批实体：
+ * 对应 teacher_approval 表，
+ *       存储微信小程序教师注册申请及管理员审批结果
  *
  * @author <a href="https://github.com/yyffyyq">代码制造者yfy</a>
  */

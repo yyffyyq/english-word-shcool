@@ -124,7 +124,7 @@ onLoad((options) => {
 
 onShow(() => {
   if (!classId.value) return
-  if (!auth.guardPageAccess()) return
+  if (!auth.guardPageAccess({ silent: true })) return
   loadDetail()
 })
 
@@ -220,7 +220,7 @@ function formatJoinedAt(value?: string) {
 .page {
   min-height: 100vh;
   padding: 32rpx 32rpx calc(48rpx + env(safe-area-inset-bottom));
-  background: #f5f5f7;
+  background: #f3f8fd;
 }
 
 .header {
@@ -230,28 +230,30 @@ function formatJoinedAt(value?: string) {
 .title {
   display: block;
   font-size: 44rpx;
-  font-weight: 600;
-  color: #1a1a1a;
+  font-weight: 700;
+  color: #1f2a37;
 }
 
 .subtitle {
   display: block;
   margin-top: 8rpx;
   font-size: 26rpx;
-  color: #8e8e93;
+  color: #7a8594;
 }
 
 .section-title {
   margin: 8rpx 0 16rpx;
   font-size: 26rpx;
-  color: #8e8e93;
+  color: #7a8594;
 }
 
 .info-card {
   padding: 8rpx 32rpx;
   margin-bottom: 32rpx;
-  border-radius: 24rpx;
+  border-radius: 32rpx;
   background: #fff;
+  box-shadow: 0 10rpx 28rpx rgba(75, 168, 245, 0.1);
+  border: 2rpx solid #e8f4fe;
 }
 
 .info-row {
@@ -259,7 +261,7 @@ function formatJoinedAt(value?: string) {
   align-items: center;
   justify-content: space-between;
   padding: 28rpx 0;
-  border-bottom: 1rpx solid #f0f0f0;
+  border-bottom: 1rpx solid #eef4fa;
 
   &:last-child {
     border-bottom: none;
@@ -268,13 +270,13 @@ function formatJoinedAt(value?: string) {
 
 .info-label {
   font-size: 28rpx;
-  color: #8e8e93;
+  color: #7a8594;
 }
 
 .info-value {
   max-width: 420rpx;
   font-size: 28rpx;
-  color: #1a1a1a;
+  color: #1f2a37;
   text-align: right;
 }
 
@@ -286,7 +288,7 @@ function formatJoinedAt(value?: string) {
 .invite-code {
   font-size: 28rpx;
   font-weight: 600;
-  color: #ff7a30;
+  color: #ff8a3d;
   letter-spacing: 2rpx;
 }
 
@@ -294,9 +296,9 @@ function formatJoinedAt(value?: string) {
   margin-left: 16rpx;
   padding: 4rpx 12rpx;
   font-size: 22rpx;
-  color: #ff7a30;
-  border-radius: 8rpx;
-  background: rgba(255, 122, 48, 0.12);
+  color: #4ba8f5;
+  border-radius: 999rpx;
+  background: rgba(75, 168, 245, 0.12);
 }
 
 .student-list {
@@ -309,8 +311,10 @@ function formatJoinedAt(value?: string) {
   display: flex;
   align-items: center;
   padding: 24rpx 28rpx;
-  border-radius: 24rpx;
+  border-radius: 28rpx;
   background: #fff;
+  box-shadow: 0 8rpx 20rpx rgba(75, 168, 245, 0.08);
+  border: 2rpx solid #e8f4fe;
 }
 
 .student-avatar {

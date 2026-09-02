@@ -5,6 +5,12 @@ declare namespace API {
     message?: string;
   };
 
+  type BaseResponseClassDailyAssignmentRunResultVO = {
+    code?: number;
+    data?: ClassDailyAssignmentRunResultVO;
+    message?: string;
+  };
+
   type BaseResponseClassInfoVO = {
     code?: number;
     data?: ClassInfoVO;
@@ -59,6 +65,18 @@ declare namespace API {
     message?: string;
   };
 
+  type BaseResponseStudentAnswerResultVO = {
+    code?: number;
+    data?: StudentAnswerResultVO;
+    message?: string;
+  };
+
+  type BaseResponseStudentHomeworkCacheVO = {
+    code?: number;
+    data?: StudentHomeworkCacheVO;
+    message?: string;
+  };
+
   type BaseResponseTeacherApprovalVO = {
     code?: number;
     data?: TeacherApprovalVO;
@@ -87,6 +105,20 @@ declare namespace API {
     code?: number;
     data?: WordVO;
     message?: string;
+  };
+
+  type ClassDailyAssignmentRunRequest = {
+    assignDate?: string;
+  };
+
+  type ClassDailyAssignmentRunResultVO = {
+    assignDate?: string;
+    taskCount?: number;
+    createdCount?: number;
+    skippedExistCount?: number;
+    skippedEmptyCount?: number;
+    successCount?: number;
+    partialCount?: number;
   };
 
   type ClassInfoAddRequest = {
@@ -239,6 +271,55 @@ declare namespace API {
 
   type refreshInviteCodeParams = {
     id: number;
+  };
+
+  type StudentAnswerResultVO = {
+    correct?: boolean;
+    wordId?: number;
+    correctAnswer?: string;
+    progressStatus?: string;
+  };
+
+  type StudentChoiceAnswerRequest = {
+    wordId?: number;
+    optionId?: number;
+  };
+
+  type StudentHomeworkCacheVO = {
+    studentId?: number;
+    classId?: number;
+    wordCount?: number;
+    words?: StudentHomeworkWordVO[];
+    progressSynced?: boolean;
+  };
+
+  type StudentHomeworkWordVO = {
+    wordId?: number;
+    wordText?: string;
+    phonetic?: string;
+    correctMeaning?: string;
+    exampleSentence?: string;
+    exampleTranslation?: string;
+    progressStatus?: string;
+    correctCount?: number;
+    wrongCount?: number;
+    options?: StudentStudyOptionVO[];
+  };
+
+  type StudentSpellAnswerRequest = {
+    wordId?: number;
+    spelledText?: string;
+  };
+
+  type StudentStudyOptionVO = {
+    id?: number;
+    optionText?: string;
+    sortOrder?: number;
+  };
+
+  type StudentWordStatusUpdateRequest = {
+    wordId?: number;
+    status?: string;
   };
 
   type SystemLoginRequest = {

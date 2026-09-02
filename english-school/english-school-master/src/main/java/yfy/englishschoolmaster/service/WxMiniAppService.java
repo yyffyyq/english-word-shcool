@@ -3,7 +3,8 @@ package yfy.englishschoolmaster.service;
 import yfy.englishschoolmaster.model.dto.WxSessionResult;
 
 /**
- * 微信小程序服务
+ * 微信小程序服务：
+ * 封装微信 jscode2session 接口，用于换取用户 openid。
  */
 public interface WxMiniAppService {
 

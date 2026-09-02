@@ -5,6 +5,7 @@ import com.aliyun.oss.OSSClientBuilder;
 import com.aliyun.oss.model.PutObjectRequest;
 import com.aliyun.oss.model.PutObjectResult;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;
@@ -19,6 +20,8 @@ import java.nio.charset.StandardCharsets;
  * 注意：本测试不启动 Spring，避免依赖本机 MySQL/Redis。
  * AccessKey 属于敏感信息，测完后请勿提交到 Git。
  */
+
+@Disabled
 class EnglishSchoolMasterApplicationTests {
 
     // ========================= 【需要你手动填写】 =========================

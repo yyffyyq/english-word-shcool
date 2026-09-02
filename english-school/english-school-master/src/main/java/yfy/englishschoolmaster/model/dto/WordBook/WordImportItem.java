@@ -5,8 +5,9 @@ import lombok.Data;
 import java.util.List;
 
 /**
- * 单词导入条目（全部手工录入，不调用机器翻译）：
- * 英文单词、音标、正确中文、3 个错误中文、英文例句、例句中文翻译。
+ * 单词导入条目 DTO：
+ * 词书批量导入时的单条单词数据，
+ *       全部手工录入，含 3 个错误中文释义
  */
 @Data
 public class WordImportItem {

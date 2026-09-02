@@ -4,15 +4,19 @@
 // API 唯一标识：
 import * as wordBookController from "./wordBookController";
 import * as wordController from "./wordController";
+import * as studentStudyController from "./studentStudyController";
 import * as userAccountController from "./userAccountController";
 import * as teacherApprovalController from "./teacherApprovalController";
 import * as classWordTaskController from "./classWordTaskController";
 import * as classInfoController from "./classInfoController";
+import * as classDailyAssignmentController from "./classDailyAssignmentController";
 export default {
   wordBookController,
   wordController,
+  studentStudyController,
   userAccountController,
   teacherApprovalController,
   classWordTaskController,
   classInfoController,
+  classDailyAssignmentController,
 };

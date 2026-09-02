@@ -14,7 +14,8 @@ import yfy.englishschoolmaster.model.vo.WordBookVO;
 import yfy.englishschoolmaster.model.vo.WordVO;
 
 /**
- * 平台内置词书表 服务层。
+ * 平台词书服务：
+ * 提供词书 CRUD、批量导入单词及词书内单词分页查询。
  *
  * @author <a href="https://github.com/yyffyyq">代码制造者yfy</a>
  */

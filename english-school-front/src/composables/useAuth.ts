@@ -1,5 +1,5 @@
 import { computed, reactive, ref } from 'vue'
-import { loginUser, registerStudent } from '@/api/userAccountController'
+import { loginUser, registerStudent, registerTeacher } from '@/api/userAccountController'
 import { useUserStore } from '@/store/user'
 import type { PendingRegisterAuth, UserInfo, UserRole, UserStatus } from '@/types/user'
 import { normalizeRole } from '@/types/user'
@@ -42,6 +42,7 @@ export function useAuth() {
 
   function closeWxLogin() {
     authState.showWxLoginModal = false
+    authState.showRoleModal = false
     pendingRole.value = null
   }
 
@@ -120,14 +121,18 @@ export function useAuth() {
     }
   }
 
-  function guardPageAccess(): boolean {
+  function guardPageAccess(options?: { silent?: boolean }): boolean {
     if (!store.isLoggedIn.value) {
-      openRoleSelect()
+      if (!options?.silent) {
+        uni.showToast({ title: '请先登录', icon: 'none' })
+      }
       return false
     }
 
     if (store.isTeacherPending.value) {
-      uni.showToast({ title: '账号审核中，请耐心等待', icon: 'none' })
+      if (!options?.silent) {
+        uni.showToast({ title: '账号审核中，请耐心等待', icon: 'none' })
+      }
       return false
     }
 
@@ -135,10 +140,6 @@ export function useAuth() {
   }
 
   function handleMineTabAccess(): boolean {
-    if (!store.isLoggedIn.value) {
-      openRoleSelect()
-      return false
-    }
     return true
   }
 
@@ -185,14 +186,62 @@ export function useAuth() {
   }
 
   async function submitTeacherRegister(name: string, school: string) {
-    if (store.state.pendingRegisterAuth?.role !== 'teacher') {
+    const pendingAuth = store.state.pendingRegisterAuth
+    if (pendingAuth?.role !== 'teacher') {
       uni.showToast({ title: '请先完成微信授权', icon: 'none' })
       return
     }
 
-    void name
-    void school
-    uni.showToast({ title: '注册接口暂未实现', icon: 'none' })
+    if (!pendingAuth.openid) {
+      uni.showToast({ title: '微信身份信息缺失，请重新授权', icon: 'none' })
+      return
+    }
+
+    const realName = name.trim()
+    const schoolName = school.trim()
+    if (!realName || !schoolName) {
+      uni.showToast({ title: '请完整填写注册信息', icon: 'none' })
+      return
+    }
+
+    loading.value = true
+    try {
+      const response = await registerTeacher({
+        openid: pendingAuth.openid,
+        realName,
+        schoolName,
+      })
+      const result = response.data
+      const approval = result.data
+
+      if (result.code !== 0 || !approval?.id) {
+        throw new Error(result.message || '提交申请失败，请重试')
+      }
+
+      // 审批通过前不创建 user_account，本地先保存待审核教师信息便于展示
+      const user: UserInfo = {
+        id: `approval_${approval.id}`,
+        openid: pendingAuth.openid,
+        role: 'teacher',
+        name: approval.realName || realName,
+        school: approval.schoolName || schoolName,
+        status: normalizeStatus(approval.status || 'pending'),
+        avatar: pendingAuth.avatarUrl,
+      }
+      store.setUser(user, `pending_teacher_${approval.id}`)
+      store.clearPendingAuth()
+
+      uni.showToast({ title: '申请已提交，请等待审批', icon: 'none' })
+      setTimeout(() => {
+        uni.switchTab({ url: '/pages/mine/index' })
+        syncCustomTabBar('pages/mine/index')
+      }, 800)
+    } catch (error) {
+      const message = error instanceof Error ? error.message : '提交申请失败，请重试'
+      uni.showToast({ title: message, icon: 'none' })
+    } finally {
+      loading.value = false
+    }
   }
 
   function logout() {
@@ -272,8 +321,9 @@ function isUnregisteredUser(
 }
 
 function normalizeStatus(status?: string): UserStatus {
-  if (status === 'pending' || status === 'approved' || status === 'rejected') {
-    return status
+  const value = (status || '').toLowerCase()
+  if (value === 'pending' || value === 'approved' || value === 'rejected') {
+    return value
   }
   return 'approved'
 }

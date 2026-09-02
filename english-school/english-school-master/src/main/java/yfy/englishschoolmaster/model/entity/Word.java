@@ -13,7 +13,9 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
- * 单词基础数据表 实体类（手工录入）。
+ * 单词基础数据实体：
+ * 对应 word 表，
+ *       存储英文单词、音标、释义及例句（手工录入）
  *
  * @author <a href="https://github.com/yyffyyq">代码制造者yfy</a>
  */

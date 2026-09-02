@@ -28,6 +28,7 @@ public class OssServiceImpl implements OssService {
         this.aliyunProperties = aliyunProperties;
     }
 
+    /** 实现 OSS 字节流上传 */
     @Override
     public String uploadBytes(String objectKey, byte[] content, String contentType) {
         // 1. 参数与配置校验
@@ -60,6 +61,7 @@ public class OssServiceImpl implements OssService {
         return buildFileUrl(oss.getEndpoint(), oss.getBucketName(), objectKey);
     }
 
+    /** 懒加载 OSS 客户端（双重检查锁） */
     private OSS getClient() {
         if (ossClient == null) {
             synchronized (this) {
@@ -75,11 +77,13 @@ public class OssServiceImpl implements OssService {
         return ossClient;
     }
 
+    /** 拼接 OSS 公网访问 URL */
     private static String buildFileUrl(String endpoint, String bucketName, String objectKey) {
         String host = endpoint.replace("https://", "").replace("http://", "");
         return "https://" + bucketName + "." + host + "/" + objectKey;
     }
 
+    /** 容器销毁时关闭 OSS 客户端 */
     @PreDestroy
     public void destroy() {
         if (ossClient != null) {

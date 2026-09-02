@@ -4,7 +4,8 @@ import { fileURLToPath } from 'url'
 import createVitePlugins from './vite/plugins/index.js'
 
 const __dirname = fileURLToPath(new URL('.', import.meta.url))
-const baseUrl = 'http://localhost:8081'
+// 本地开发代理到服务器后端
+const baseUrl = 'http://8.130.45.129'
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode, command }) => {

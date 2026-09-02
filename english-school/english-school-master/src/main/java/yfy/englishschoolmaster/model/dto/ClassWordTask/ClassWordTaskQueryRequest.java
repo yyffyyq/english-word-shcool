@@ -5,7 +5,9 @@ import lombok.EqualsAndHashCode;
 import yfy.englishschoolmaster.common.PageRequest;
 
 /**
- * 班级词书任务分页查询请求
+ * 班级词书任务分页查询请求：
+ * 支持按班级、词书、任务状态筛选，
+ *       教师端强制限定为本人创建的任务
  */
 @Data
 @EqualsAndHashCode(callSuper = true)

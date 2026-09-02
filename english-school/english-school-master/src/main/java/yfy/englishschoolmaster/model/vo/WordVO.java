@@ -8,7 +8,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 /**
- * 单词信息 VO（含四选一选项）
+ * 单词信息 VO：
+ * 单词详情或词书内列表返回，
+ *       含四选一选项（管理端可见 isCorrect）
  */
 @Data
 public class WordVO implements Serializable {

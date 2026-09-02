@@ -5,7 +5,9 @@ import lombok.Data;
 import java.util.List;
 
 /**
- * 单词修改请求
+ * 单词修改请求：
+ * 更新单词基础信息及四选一选项，
+ *       wrongMeanings 传入时整体覆盖干扰项
  */
 @Data
 public class WordUpdateRequest {

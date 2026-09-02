@@ -203,6 +203,10 @@ const hasMore = computed(() => pageNum.value < totalPage.value)
 
 onShow(() => {
   syncCustomTabBar('pages/class/index')
+  if (!store.isLoggedIn.value) {
+    classList.value = []
+    return
+  }
   // 权限由后端控制，进入页面统一请求班级分页列表
   resetAndFetchClasses()
 })
@@ -415,7 +419,7 @@ async function fetchClassList(replace: boolean) {
 .page {
   min-height: 100vh;
   padding: 32rpx 32rpx calc(140rpx + env(safe-area-inset-bottom));
-  background: #f5f5f7;
+  background: #f3f8fd;
 }
 
 .header {
@@ -425,15 +429,15 @@ async function fetchClassList(replace: boolean) {
 .title {
   display: block;
   font-size: 44rpx;
-  font-weight: 600;
-  color: #1a1a1a;
+  font-weight: 700;
+  color: #1f2a37;
 }
 
 .subtitle {
   display: block;
   margin-top: 8rpx;
   font-size: 26rpx;
-  color: #8e8e93;
+  color: #7a8594;
 }
 
 .empty-card {
@@ -442,20 +446,21 @@ async function fetchClassList(replace: boolean) {
   align-items: center;
   justify-content: center;
   height: 320rpx;
-  border: 2rpx dashed #d1d1d6;
-  border-radius: 24rpx;
+  border: 2rpx dashed #cfe9ff;
+  border-radius: 32rpx;
   background: #fff;
+  box-shadow: 0 10rpx 28rpx rgba(75, 168, 245, 0.08);
 }
 
 .empty-icon {
   font-size: 64rpx;
-  color: #ff7a30;
+  color: #4ba8f5;
 }
 
 .empty-text {
   margin-top: 16rpx;
   font-size: 28rpx;
-  color: #8e8e93;
+  color: #7a8594;
 }
 
 .class-list {
@@ -465,8 +470,10 @@ async function fetchClassList(replace: boolean) {
 .class-card {
   padding: 8rpx 32rpx 8rpx;
   margin-bottom: 24rpx;
-  border-radius: 24rpx;
+  border-radius: 32rpx;
   background: #fff;
+  box-shadow: 0 10rpx 28rpx rgba(75, 168, 245, 0.1);
+  border: 2rpx solid #e8f4fe;
 }
 
 .class-card-top {
@@ -479,14 +486,14 @@ async function fetchClassList(replace: boolean) {
 .class-name {
   flex: 1;
   font-size: 32rpx;
-  font-weight: 600;
-  color: #1a1a1a;
+  font-weight: 700;
+  color: #1f2a37;
 }
 
 .class-arrow {
   margin-left: 12rpx;
   font-size: 36rpx;
-  color: #c7c7cc;
+  color: #b7c0cc;
 }
 
 .info-row {
@@ -494,7 +501,7 @@ async function fetchClassList(replace: boolean) {
   align-items: center;
   justify-content: space-between;
   padding: 24rpx 0;
-  border-bottom: 1rpx solid #f0f0f0;
+  border-bottom: 1rpx solid #eef4fa;
 
   &:last-child {
     border-bottom: none;
@@ -503,13 +510,13 @@ async function fetchClassList(replace: boolean) {
 
 .info-label {
   font-size: 28rpx;
-  color: #8e8e93;
+  color: #7a8594;
 }
 
 .info-value {
   max-width: 420rpx;
   font-size: 28rpx;
-  color: #1a1a1a;
+  color: #1f2a37;
   text-align: right;
 }
 
@@ -521,7 +528,7 @@ async function fetchClassList(replace: boolean) {
 .invite-code {
   font-size: 28rpx;
   font-weight: 600;
-  color: #ff7a30;
+  color: #ff8a3d;
   letter-spacing: 2rpx;
 }
 
@@ -529,9 +536,9 @@ async function fetchClassList(replace: boolean) {
   margin-left: 16rpx;
   padding: 4rpx 12rpx;
   font-size: 22rpx;
-  color: #ff7a30;
-  border-radius: 8rpx;
-  background: rgba(255, 122, 48, 0.12);
+  color: #4ba8f5;
+  border-radius: 999rpx;
+  background: rgba(75, 168, 245, 0.12);
 }
 
 .list-tip {
@@ -543,7 +550,7 @@ async function fetchClassList(replace: boolean) {
 
 .list-tip-text {
   font-size: 24rpx;
-  color: #8e8e93;
+  color: #7a8594;
 }
 
 .modal-mask {
@@ -560,7 +567,7 @@ async function fetchClassList(replace: boolean) {
   width: 100%;
   padding: 40rpx 32rpx calc(40rpx + env(safe-area-inset-bottom));
   border-radius: 32rpx 32rpx 0 0;
-  background: #f5f5f7;
+  background: #f3f8fd;
 }
 
 .modal-header {
@@ -570,26 +577,27 @@ async function fetchClassList(replace: boolean) {
 .modal-title {
   display: block;
   font-size: 36rpx;
-  font-weight: 600;
-  color: #1a1a1a;
+  font-weight: 700;
+  color: #1f2a37;
 }
 
 .modal-subtitle {
   display: block;
   margin-top: 8rpx;
   font-size: 24rpx;
-  color: #8e8e93;
+  color: #7a8594;
 }
 
 .form-card {
   padding: 8rpx 32rpx;
-  border-radius: 24rpx;
+  border-radius: 28rpx;
   background: #fff;
+  border: 2rpx solid #e8f4fe;
 }
 
 .form-item {
   padding: 24rpx 0;
-  border-bottom: 1rpx solid #f0f0f0;
+  border-bottom: 1rpx solid #eef4fa;
 
   &:last-child {
     border-bottom: none;
@@ -600,17 +608,17 @@ async function fetchClassList(replace: boolean) {
   display: block;
   margin-bottom: 12rpx;
   font-size: 24rpx;
-  color: #8e8e93;
+  color: #7a8594;
 }
 
 .input {
   height: 56rpx;
   font-size: 30rpx;
-  color: #1a1a1a;
+  color: #1f2a37;
 }
 
 .placeholder {
-  color: #c7c7cc;
+  color: #a8b0bc;
 }
 
 .submit-btn {
@@ -620,16 +628,18 @@ async function fetchClassList(replace: boolean) {
   height: 88rpx;
   margin-top: 40rpx;
   border-radius: 44rpx;
-  background: #ff7a30;
+  background: linear-gradient(135deg, #ff8a3d 0%, #ffb074 100%);
+  box-shadow: 0 10rpx 24rpx rgba(255, 138, 61, 0.28);
 
   &.disabled {
     opacity: 0.45;
+    box-shadow: none;
   }
 }
 
 .submit-text {
   font-size: 30rpx;
-  font-weight: 500;
+  font-weight: 600;
   color: #fff;
   letter-spacing: 2rpx;
 }
@@ -644,6 +654,6 @@ async function fetchClassList(replace: boolean) {
 
 .cancel-text {
   font-size: 26rpx;
-  color: #8e8e93;
+  color: #7a8594;
 }
 </style>

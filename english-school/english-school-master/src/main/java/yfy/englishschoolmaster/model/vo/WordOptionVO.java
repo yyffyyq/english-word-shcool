@@ -7,7 +7,8 @@ import java.io.Serializable;
 
 /**
  * 单词中文选项 VO：
- * 管理端可返回 isCorrect；学生端出题时应隐藏该字段。
+ * 管理端返回完整选项信息，
+ *       学生端出题时应隐藏 isCorrect 字段
  */
 @Data
 public class WordOptionVO implements Serializable {

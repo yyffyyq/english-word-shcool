@@ -1,5 +1,8 @@
 package yfy.englishschoolmaster.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -24,6 +27,7 @@ import yfy.englishschoolmaster.service.WordService;
  *
  * @author <a href="https://github.com/yyffyyq">代码制造者yfy</a>
  */
+@Tag(name = "单词管理", description = "单词修改与物理删除接口（教师/管理员）")
 @RestController
 @RequestMapping("/word")
 public class WordController {
@@ -41,6 +45,8 @@ public class WordController {
      * @param httpRequest HTTP 请求（用于取登录用户）
      * @return 修改后的单词信息
      */
+    @Operation(summary = "修改单词",
+            description = "可修改英文、音标、正确释义、错误选项、例句等；更新选项时需同时传入 3 个错误中文释义。")
     @PutMapping("/update")
     @AuthCheck
     public BaseResponse<WordVO> updateWord(@RequestBody WordUpdateRequest request,
@@ -65,10 +71,13 @@ public class WordController {
      * @param httpRequest HTTP 请求（用于取登录用户）
      * @return 是否删除成功
      */
+    @Operation(summary = "物理删除单词",
+            description = "物理删除单词及其选项、词书关联，并回写相关词书 word_count。")
     @DeleteMapping("/{id}")
     @AuthCheck
-    public BaseResponse<Boolean> deleteWord(@PathVariable("id") Long id,
-                                            HttpServletRequest httpRequest) {
+    public BaseResponse<Boolean> deleteWord(
+            @Parameter(description = "单词ID", required = true) @PathVariable("id") Long id,
+            HttpServletRequest httpRequest) {
         // 1. 获取当前登录用户并物理删除单词
         UserAccountVO loginUser = getLoginUser(httpRequest);
         boolean result = wordService.deleteWordPhysically(id, loginUser);

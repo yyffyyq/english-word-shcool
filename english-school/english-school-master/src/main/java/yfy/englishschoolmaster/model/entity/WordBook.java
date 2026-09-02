@@ -14,7 +14,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * 平台内置词书表 实体类。
+ * 平台词书实体：
+ * 对应 word_book 表，
+ *       存储系统内置词书的基础信息及启用状态
  *
  * @author <a href="https://github.com/yyffyyq">代码制造者yfy</a>
  */

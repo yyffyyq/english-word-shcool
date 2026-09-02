@@ -42,7 +42,8 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
- * 平台内置词书表 服务层实现。
+ * 平台词书服务实现：
+ * 导入单词单条失败不影响整批，结束后回写 word_count。
  *
  * @author <a href="https://github.com/yyffyyq">代码制造者yfy</a>
  */
@@ -67,6 +68,7 @@ public class WordBookServiceImpl extends ServiceImpl<WordBookMapper, WordBook> i
         this.wordOptionService = wordOptionService;
     }
 
+    /** 实现词书创建 */
     @Override
     public WordBookVO createWordBook(WordBookAddRequest request, UserAccountVO loginUser) {
         // 1. 参数与权限校验
@@ -100,6 +102,7 @@ public class WordBookServiceImpl extends ServiceImpl<WordBookMapper, WordBook> i
         return toWordBookVO(wordBook);
     }
 
+    /** 实现词书分页查询 */
     @Override
     public Page<WordBookVO> listWordBookByPage(WordBookQueryRequest request, UserAccountVO loginUser) {
         // 1. 参数与权限校验
@@ -125,6 +128,7 @@ public class WordBookServiceImpl extends ServiceImpl<WordBookMapper, WordBook> i
         return page.map(this::toWordBookVO);
     }
 
+    /** 实现词书信息修改 */
     @Override
     public WordBookVO updateWordBook(WordBookUpdateRequest request, UserAccountVO loginUser) {
         // 1. 参数与权限校验
@@ -164,6 +168,7 @@ public class WordBookServiceImpl extends ServiceImpl<WordBookMapper, WordBook> i
         return toWordBookVO(wordBook);
     }
 
+    /** 实现词书软删除：状态置为 DISABLED */
     @Override
     public boolean deleteWordBook(Long id, UserAccountVO loginUser) {
         // 1. 参数与权限校验
@@ -183,6 +188,7 @@ public class WordBookServiceImpl extends ServiceImpl<WordBookMapper, WordBook> i
         return true;
     }
 
+    /** 实现批量导入：单次最多 50 条，逐条 enrichAndSave + linkIfAbsent */
     @Override
     public WordBookImportResultVO importWords(Long bookId, WordBookImportRequest request, UserAccountVO loginUser) {
         // 1. 参数与权限校验
@@ -229,6 +235,7 @@ public class WordBookServiceImpl extends ServiceImpl<WordBookMapper, WordBook> i
         return result;
     }
 
+    /** 实现词书内单词分页查询，保持词书 sortOrder 排序 */
     @Override
     public Page<WordVO> listWordsByBookPage(Long bookId, WordBookWordQueryRequest request, UserAccountVO loginUser) {
         // 1. 参数与权限校验
@@ -313,6 +320,7 @@ public class WordBookServiceImpl extends ServiceImpl<WordBookMapper, WordBook> i
         ThrowUtils.throwIf(!isAdmin && !isTeacher, ErrorCode.NO_AUTH_ERROR, "仅教师或管理员可操作词书");
     }
 
+    /** 按白名单字段排序，默认按创建时间倒序 */
     private void applySort(QueryWrapper queryWrapper, String sortField, String sortOrder) {
         boolean isAsc = "ascend".equalsIgnoreCase(sortOrder);
         if (StrUtil.isNotBlank(sortField) && SORT_FIELDS.contains(sortField)) {

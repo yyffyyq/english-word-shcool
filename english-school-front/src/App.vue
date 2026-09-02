@@ -20,5 +20,7 @@ page {
   font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, 'PingFang SC',
     'Microsoft YaHei', sans-serif;
   -webkit-font-smoothing: antialiased;
+  background-color: #f3f8fd;
+  color: #1f2a37;
 }
 </style>

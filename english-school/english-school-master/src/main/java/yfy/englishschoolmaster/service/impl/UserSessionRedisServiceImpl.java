@@ -15,7 +15,8 @@ import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 
 /**
- * 用户登录会话 Redis 服务实现
+ * 用户登录会话 Redis 服务实现：
+ * key 格式为 wx.login:{openid}，支持会话续期。
  */
 @Service
 public class UserSessionRedisServiceImpl implements UserSessionRedisService {
@@ -26,10 +27,7 @@ public class UserSessionRedisServiceImpl implements UserSessionRedisService {
     @Autowired
     private ObjectMapper objectMapper;
 
-    /**
-     * 将登录后的用户信息存入redis
-     * @param userAccountVO 登录用户信息
-     */
+    /** 实现登录用户缓存写入 */
     @Override
     public void saveLoginUser(UserAccountVO userAccountVO) {
 
@@ -45,11 +43,7 @@ public class UserSessionRedisServiceImpl implements UserSessionRedisService {
         redisTemplate.opsForValue().set(key, userAccountVO, RedisConfig.DEFAULT_EXPIRE);
     }
 
-    /**
-     * 根据 openid 获取redis中用户信息
-     * @param openid 微信 openid
-     * @return
-     */
+    /** 实现按 openid 读取登录用户，兼容 Jackson 反序列化 */
     @Override
     public UserAccountVO getLoginUserByOpenid(String openid) {
 

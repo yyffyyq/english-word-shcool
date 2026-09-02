@@ -39,7 +39,8 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
- * 班级信息服务层实现
+ * 班级信息服务实现：
+ * 处理班级 CRUD、权限校验及邀请码 Redis 缓存维护。
  *
  * @author <a href="https://github.com/yyffyyq">代码制造者yfy</a>
  */
@@ -64,6 +65,7 @@ public class ClassInfoServiceImpl extends ServiceImpl<ClassInfoMapper, ClassInfo
     @Autowired
     private RedisService redisService;
 
+    /** 实现班级创建：生成唯一 6 位邀请码 */
     @Override
     public ClassInfoVO createClass(ClassInfoAddRequest request, UserAccountVO loginUser) {
         // 1. 参数校验
@@ -97,6 +99,7 @@ public class ClassInfoServiceImpl extends ServiceImpl<ClassInfoMapper, ClassInfo
         return toClassInfoVO(classInfo);
     }
 
+    /** 实现班级分页查询：教师/学生/管理员按角色过滤可见范围 */
     @Override
     public Page<ClassInfoVO> listClassInfoByPage(ClassInfoQueryRequest request, UserAccountVO loginUser) {
         // 1. 参数与权限校验
@@ -188,6 +191,7 @@ public class ClassInfoServiceImpl extends ServiceImpl<ClassInfoMapper, ClassInfo
         return classIds;
     }
 
+    /** 实现班级详情查询，附带当前在班学生数 */
     @Override
     public ClassInfoVO getClassDetail(Long classId, UserAccountVO loginUser) {
         ClassInfo classInfo = getAccessibleClass(classId, loginUser, false);
@@ -199,6 +203,7 @@ public class ClassInfoServiceImpl extends ServiceImpl<ClassInfoMapper, ClassInfo
         return classInfoVO;
     }
 
+    /** 实现在班学生列表查询，按入班时间升序 */
     @Override
     public List<ClassStudentVO> listClassStudents(Long classId, UserAccountVO loginUser) {
         getAccessibleClass(classId, loginUser, false);
@@ -238,6 +243,7 @@ public class ClassInfoServiceImpl extends ServiceImpl<ClassInfoMapper, ClassInfo
         }).toList();
     }
 
+    /** 实现邀请码刷新：更新数据库并同步 Redis 缓存 */
     @Override
     public ClassInfoVO refreshInviteCode(Long classId, UserAccountVO loginUser) {
         // 1. 校验权限并拿到旧邀请码
@@ -312,6 +318,7 @@ public class ClassInfoServiceImpl extends ServiceImpl<ClassInfoMapper, ClassInfo
         throw new BusinessException(ErrorCode.OPERATION_ERROR, "邀请码生成失败，请重试");
     }
 
+    /** 按白名单字段排序，默认按创建时间倒序 */
     private void applySort(QueryWrapper queryWrapper, String sortField, String sortOrder) {
         boolean isAsc = "ascend".equalsIgnoreCase(sortOrder);
         if (StrUtil.isNotBlank(sortField) && SORT_FIELDS.contains(sortField)) {
@@ -326,6 +333,7 @@ public class ClassInfoServiceImpl extends ServiceImpl<ClassInfoMapper, ClassInfo
         queryWrapper.orderBy(ClassInfo::getCreatedAt, false);
     }
 
+    /** 实体转 VO */
     private ClassInfoVO toClassInfoVO(ClassInfo classInfo) {
         ClassInfoVO classInfoVO = new ClassInfoVO();
         BeanUtil.copyProperties(classInfo, classInfoVO);

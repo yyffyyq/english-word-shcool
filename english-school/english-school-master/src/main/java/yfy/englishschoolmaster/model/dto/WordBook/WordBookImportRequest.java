@@ -5,7 +5,9 @@ import lombok.Data;
 import java.util.List;
 
 /**
- * 词书单词批量导入请求
+ * 词书单词批量导入请求：
+ * 向指定词书批量导入手工录入的单词，
+ *       单次最多 50 条，同步写入 word 与 word_option
  */
 @Data
 public class WordBookImportRequest {

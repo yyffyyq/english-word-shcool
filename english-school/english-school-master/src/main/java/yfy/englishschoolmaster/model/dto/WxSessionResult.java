@@ -5,7 +5,9 @@ import lombok.Data;
 import java.io.Serializable;
 
 /**
- * 微信 jscode2session 接口返回结果
+ * 微信 jscode2session 接口返回结果：
+ * 后端调用微信 code2Session 接口后解析，
+ *       获取 openid 及会话密钥
  */
 @Data
 public class WxSessionResult implements Serializable {

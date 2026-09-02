@@ -24,7 +24,8 @@ import java.time.LocalDateTime;
 import java.util.Set;
 
 /**
- *  服务层实现。
+ * 教师审批服务实现：
+ * 负责教师注册申请落库、分页查询及审核通过后创建教师账号。
  *
  * @author <a href="https://github.com/yyffyyq">代码制造者yfy</a>
  */
@@ -43,6 +44,7 @@ public class TeacherApprovalServiceImpl extends ServiceImpl<TeacherApprovalMappe
     @Autowired
     private UserAccountService userAccountService;
 
+    /** 实现教师注册：校验 openid 后写入待审批记录 */
     @Override
     public TeacherApprovalVO registerTeacher(UserAccountTeacherRegisterRequest request) {
         ThrowUtils.throwIf(request == null, ErrorCode.PARAMS_ERROR, "教师注册请求为空");
@@ -79,6 +81,7 @@ public class TeacherApprovalServiceImpl extends ServiceImpl<TeacherApprovalMappe
         return toTeacherApprovalVO(teacherApproval);
     }
 
+    /** 实现审批记录分页查询 */
     @Override
     public Page<TeacherApprovalVO> listTeacherApprovalByPage(TeacherApprovalQueryRequest request) {
         ThrowUtils.throwIf(request == null, ErrorCode.PARAMS_ERROR, "查询请求为空");
@@ -103,6 +106,7 @@ public class TeacherApprovalServiceImpl extends ServiceImpl<TeacherApprovalMappe
         return page.map(this::toTeacherApprovalVO);
     }
 
+    /** 实现审批：通过时同事务创建 user_account，拒绝时记录原因 */
     @Override
     @Transactional(rollbackFor = Exception.class)
     public TeacherApprovalVO auditTeacherApproval(TeacherApprovalAuditRequest request) {
@@ -159,6 +163,7 @@ public class TeacherApprovalServiceImpl extends ServiceImpl<TeacherApprovalMappe
         return toTeacherApprovalVO(teacherApproval);
     }
 
+    /** 按白名单字段排序，默认按创建时间倒序 */
     private void applySort(QueryWrapper queryWrapper, String sortField, String sortOrder) {
         boolean isAsc = "ascend".equalsIgnoreCase(sortOrder);
         if (StrUtil.isNotBlank(sortField) && SORT_FIELDS.contains(sortField)) {
@@ -172,6 +177,7 @@ public class TeacherApprovalServiceImpl extends ServiceImpl<TeacherApprovalMappe
         queryWrapper.orderBy(TeacherApproval::getCreatedAt, false);
     }
 
+    /** 实体转 VO */
     private TeacherApprovalVO toTeacherApprovalVO(TeacherApproval teacherApproval) {
         TeacherApprovalVO teacherApprovalVO = new TeacherApprovalVO();
         BeanUtil.copyProperties(teacherApproval, teacherApprovalVO);

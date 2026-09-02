@@ -16,8 +16,7 @@ import yfy.englishschoolmaster.model.dto.ClassStudent.ClassStudentAddStudentRequ
 import yfy.englishschoolmaster.model.entity.ClassInfo;
 import yfy.englishschoolmaster.model.entity.ClassStudent;
 import yfy.englishschoolmaster.model.vo.ClassInfoVO;
-import yfy.englishschoolmaster.model.vo.ClassStudentVO;
-import yfy.englishschoolmaster.service.ClassInfoService;
+import yfy.englishschoolmaster.service.ClassDailyAssignmentService;
 import yfy.englishschoolmaster.service.ClassStudentService;
 import yfy.englishschoolmaster.service.RedisService;
 
@@ -25,7 +24,8 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 
 /**
- *  服务层实现。
+ * 班级学生关系服务实现：
+ * 处理学生入班及当日词表补发。
  *
  * @author <a href="https://github.com/yyffyyq">代码制造者yfy</a>
  */
@@ -42,12 +42,11 @@ public class ClassStudentServiceImpl extends ServiceImpl<ClassStudentMapper, Cla
     @Resource
     private RedisService redisService;
 
-    /**
-     * 学生加入班级方法（缓存命中）
-     * @param redisResult 缓冲中的班级信息
-     * @param request 学生加入班级请求
-     * @return
-     */
+    @Lazy
+    @Resource
+    private ClassDailyAssignmentService classDailyAssignmentService;
+
+    /** 实现缓存命中路径的入班逻辑 */
     @Override
     public int insertStudent(ClassInfoVO redisResult, ClassStudentAddStudentRequest request) {
 
@@ -67,15 +66,17 @@ public class ClassStudentServiceImpl extends ServiceImpl<ClassStudentMapper, Cla
         classStudent.setJoinedAt(LocalDateTime.now());
         // active_student_id 为数据库生成列，禁止手动赋值
 
-        // 3. 封装并返回
-        return classStudentMapper.insert(classStudent);
+        // 3. 写入入班关系
+        int rows = classStudentMapper.insert(classStudent);
+
+        // 4. 补发当日已分配词表到该学生进度
+        if (rows > 0) {
+            classDailyAssignmentService.backfillTodayForStudent(redisResult.getId(), request.getStudentId());
+        }
+        return rows;
     }
 
-    /**
-     * 查找邀请码，并且加入学生
-     * @param request 学生加入班级请求
-     * @return
-     */
+    /** 实现邀请码查库入班，并回写 Redis 缓存 */
     @Override
     public int selectAndInsertStudent(ClassStudentAddStudentRequest request) {
 
@@ -95,13 +96,19 @@ public class ClassStudentServiceImpl extends ServiceImpl<ClassStudentMapper, Cla
         redisService.write(classInfoVO, Duration.ofSeconds(2700),
                 RedisTypeConstant.CLASS_INFO_INVOITE_CODE, request.getInviteCode());
 
-        // 4. 加入学生到班级中，并返回
+        // 4. 加入学生到班级中
         ClassStudent classStudent = new ClassStudent();
         classStudent.setClassId(classInfo.getId());
         classStudent.setStudentId(request.getStudentId());
         classStudent.setStatus("IN_CLASS");
         classStudent.setJoinedAt(LocalDateTime.now());
         // active_student_id 为数据库生成列，禁止手动赋值
-        return classStudentMapper.insert(classStudent);
+        int rows = classStudentMapper.insert(classStudent);
+
+        // 5. 补发当日已分配词表到该学生进度
+        if (rows > 0) {
+            classDailyAssignmentService.backfillTodayForStudent(classInfo.getId(), request.getStudentId());
+        }
+        return rows;
     }
 }

@@ -9,6 +9,18 @@
         <text class="form-subtitle">提交后需等待管理员审批</text>
       </view>
 
+      <view class="auth-card">
+        <view class="auth-icon">
+          <text class="auth-icon-text">微</text>
+        </view>
+        <view class="auth-info">
+          <text class="auth-title">微信授权已完成</text>
+          <text class="auth-desc">
+            {{ pendingAuth?.openid ? '已获取微信身份，将用于提交教师注册申请' : '微信身份信息缺失，请返回重新授权' }}
+          </text>
+        </view>
+      </view>
+
       <view class="form-card">
         <view class="form-item">
           <text class="label">姓名</text>
@@ -17,6 +29,7 @@
             class="input"
             placeholder="请输入真实姓名"
             placeholder-class="placeholder"
+            maxlength="20"
           />
         </view>
         <view class="form-item">
@@ -26,9 +39,12 @@
             class="input"
             placeholder="请输入所在学校"
             placeholder-class="placeholder"
+            maxlength="50"
           />
         </view>
       </view>
+
+      <text class="form-tip">请填写真实信息，管理员审批通过后即可使用教师功能</text>
 
       <view class="submit-btn" :class="{ disabled: !canSubmit }" @tap="handleSubmit">
         <text class="submit-text">{{ auth.loading ? '提交中...' : '提交申请' }}</text>
@@ -48,19 +64,35 @@ const store = useUserStore()
 
 const name = ref('')
 const school = ref('')
+const pendingAuth = computed(() => store.state.pendingRegisterAuth)
 
 const canSubmit = computed(
-  () => name.value.trim() && school.value.trim() && !auth.loading.value,
+  () =>
+    Boolean(
+      pendingAuth.value?.role === 'teacher' &&
+        pendingAuth.value.openid &&
+        name.value.trim() &&
+        school.value.trim() &&
+        !auth.loading.value,
+    ),
 )
 
 onLoad(() => {
-  if (store.state.pendingRole !== 'teacher') {
+  if (pendingAuth.value?.role !== 'teacher') {
+    uni.showToast({ title: '请先完成微信授权', icon: 'none' })
     uni.navigateBack()
+    return
   }
+
+  name.value = pendingAuth.value.realName || ''
+  school.value = pendingAuth.value.schoolName || ''
 })
 
 async function handleSubmit() {
-  if (!canSubmit.value) return
+  if (!canSubmit.value) {
+    uni.showToast({ title: '请完整填写注册信息', icon: 'none' })
+    return
+  }
   await auth.submitTeacherRegister(name.value, school.value)
 }
 </script>
@@ -111,6 +143,52 @@ async function handleSubmit() {
   color: rgba(255, 255, 255, 0.5);
 }
 
+.auth-card {
+  display: flex;
+  align-items: center;
+  margin-bottom: 28rpx;
+  padding: 28rpx 32rpx;
+  border-radius: 24rpx;
+  background: rgba(7, 193, 96, 0.12);
+  backdrop-filter: blur(12px);
+}
+
+.auth-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 72rpx;
+  height: 72rpx;
+  border-radius: 50%;
+  background: #07c160;
+}
+
+.auth-icon-text {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #fff;
+}
+
+.auth-info {
+  flex: 1;
+  margin-left: 22rpx;
+}
+
+.auth-title {
+  display: block;
+  font-size: 28rpx;
+  font-weight: 500;
+  color: #fff;
+}
+
+.auth-desc {
+  display: block;
+  margin-top: 8rpx;
+  font-size: 22rpx;
+  line-height: 1.4;
+  color: rgba(255, 255, 255, 0.55);
+}
+
 .form-card {
   padding: 8rpx 32rpx;
   border-radius: 24rpx;
@@ -144,6 +222,14 @@ async function handleSubmit() {
   color: rgba(255, 255, 255, 0.25);
 }
 
+.form-tip {
+  display: block;
+  margin-top: 20rpx;
+  font-size: 22rpx;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.42);
+}
+
 .submit-btn {
   display: flex;
   align-items: center;
@@ -151,16 +237,18 @@ async function handleSubmit() {
   height: 96rpx;
   margin-top: 64rpx;
   border-radius: 48rpx;
-  background: #ff7a30;
+  background: linear-gradient(135deg, #ff8a3d 0%, #ffb074 100%);
+  box-shadow: 0 10rpx 24rpx rgba(255, 138, 61, 0.3);
 
   &.disabled {
     opacity: 0.45;
+    box-shadow: none;
   }
 }
 
 .submit-text {
   font-size: 30rpx;
-  font-weight: 500;
+  font-weight: 600;
   color: #fff;
   letter-spacing: 4rpx;
 }
