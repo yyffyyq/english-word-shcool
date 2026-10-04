@@ -1,5 +1,6 @@
 -- 班级每日单词分配模块
--- 说明：存放按作业计划每日抽出的班级词表，保证全班一致且不重复分配。
+-- 说明：按班级词书任务生成每日批次；词表明细按学生记录。
+--       学生学完当日计划后次日发全新词；未学完则结转未完成词并补足到每日额度。
 
 CREATE TABLE IF NOT EXISTS class_daily_assignment (
   id BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT '班级每日分配批次ID',
@@ -25,18 +26,22 @@ CREATE TABLE IF NOT EXISTS class_daily_assignment (
 CREATE TABLE IF NOT EXISTS class_daily_assignment_word (
   id BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT '班级每日分配单词明细ID',
   assignment_id BIGINT NOT NULL COMMENT '分配批次ID，关联 class_daily_assignment.id',
+  student_id BIGINT NULL COMMENT '学生ID；按学生补足每日词表。历史全班分配可为空',
   task_id BIGINT NOT NULL COMMENT '班级学习任务ID，关联 class_word_task.id',
   word_id BIGINT NOT NULL COMMENT '单词ID，关联 word.id',
   assign_date DATE NOT NULL COMMENT '学习日期（业务日）',
   sort_order INT NOT NULL DEFAULT 0 COMMENT '展示排序，从 1 开始',
   created_at DATETIME NOT NULL COMMENT '创建时间',
-  UNIQUE KEY uk_class_daily_assignment_word (assignment_id, word_id),
+  UNIQUE KEY uk_class_daily_assignment_word_student (assignment_id, student_id, word_id),
   KEY idx_class_daily_assignment_word_task_word (task_id, word_id),
   KEY idx_class_daily_assignment_word_date (assign_date),
+  KEY idx_class_daily_assignment_word_student_date (student_id, assign_date),
   CONSTRAINT fk_class_daily_assignment_word_assignment
     FOREIGN KEY (assignment_id) REFERENCES class_daily_assignment (id),
+  CONSTRAINT fk_class_daily_assignment_word_student
+    FOREIGN KEY (student_id) REFERENCES user_account (id),
   CONSTRAINT fk_class_daily_assignment_word_task
     FOREIGN KEY (task_id) REFERENCES class_word_task (id),
   CONSTRAINT fk_class_daily_assignment_word_word
     FOREIGN KEY (word_id) REFERENCES word (id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='班级每日分配单词明细表，同时作为任务维度已分配标记';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='学生每日学习词表明细：含未完成结转词与当日新词';

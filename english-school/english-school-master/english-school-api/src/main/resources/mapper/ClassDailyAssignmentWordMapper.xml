@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="yfy.englishschoolmaster.mapper.ClassDailyAssignmentWordMapper">
+
+    <!-- 按词书关系 ID 顺序，抽取该学生尚未出现在学习进度里的单词 -->
+    <select id="selectUnlearnedWordIdsInOrder" resultType="java.lang.Long">
+        SELECT wbi.word_id
+        FROM word_book_item wbi
+        WHERE wbi.book_id = #{bookId}
+          AND NOT EXISTS (
+            SELECT 1
+            FROM student_word_progress p
+            WHERE p.student_id = #{studentId}
+              AND p.word_id = wbi.word_id
+          )
+        ORDER BY wbi.id ASC
+        LIMIT #{limit}
+    </select>
+
+</mapper>

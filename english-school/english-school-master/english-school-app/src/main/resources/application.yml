@@ -1,0 +1,21 @@
+spring:
+  application:
+    name: english-school-master
+  profiles:
+    active: prd
+
+# 扫描各业务 jar 中的 Mapper XML，保证多模块拆分后 SQL 映射仍生效
+mybatis-flex:
+  mapper-locations: classpath*:/mapper/**/*.xml
+
+#springdoc - openapi
+springdoc:
+  group-configs:
+    - group: 'default'
+      packages-to-scan: yfy.englishschoolmaster.controller
+
+# knife4j
+knife4j:
+  enable: true
+  setting:
+    language: zh_cn

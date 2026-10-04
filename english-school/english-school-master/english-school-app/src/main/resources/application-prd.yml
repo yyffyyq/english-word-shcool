@@ -1,0 +1,48 @@
+spring:
+  # mysql
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/englishworddb
+    username: englishworddb
+    password: xyxt6d2zy4WdweWX
+  #    username: root
+  #    password: root
+  # redis
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      database: 0
+      timeout: 72000ms
+      lettuce:
+        pool:
+          max-active: 8
+          max-idle: 8
+          min-idle: 0
+server:
+  port: 8081
+  servlet:
+    context-path: /api
+    multipart:
+      # 大小限制
+      max-file-size: 10MB
+debug: true
+
+# 微信小程序配置
+wx:
+  miniapp:
+    app-id: wx8c09855557bbb289
+    app-secret: 94b82ea1429702ff7f8b7163432acfa4
+
+# 阿里云配置（OSS / TTS，词书封面等存储用；单词内容为手工录入，不使用机器翻译）
+# AccessKey 建议用 RAM 子用户；正式环境可用环境变量覆盖
+aliyun:
+  access-key-id: # 填写 AccessKey ID
+  access-key-secret: # 填写 AccessKey Secret
+  oss:
+    endpoint: https://oss-cn-hangzhou.aliyuncs.com
+    bucket-name: # 填写 Bucket 名称
+  tts:
+    app-key: # 填写智能语音交互项目 AppKey
+    gateway-url: wss://nls-gateway-cn-shanghai.aliyuncs.com/ws/v1
+    voice: Betty

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="yfy.englishschoolmaster.mapper.StudentWordProgressMapper">
+
+    <!-- 词书范围内未掌握单词，按首次下发时间结转 -->
+    <select id="selectUnfinishedWordIds" resultType="java.lang.Long">
+        SELECT p.word_id
+        FROM student_word_progress p
+                 INNER JOIN word_book_item wbi
+                            ON wbi.word_id = p.word_id
+                                AND wbi.book_id = #{bookId}
+        WHERE p.student_id = #{studentId}
+          AND p.class_id = #{classId}
+          AND p.status IN ('NEW', 'LEARNING')
+        ORDER BY p.created_at ASC, p.id ASC
+    </select>
+
+</mapper>
