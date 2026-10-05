@@ -1,5 +1,5 @@
 import { computed, reactive, ref } from 'vue'
-import { loginUser, registerStudent, registerTeacher } from '@/api/userAccountController'
+import { loginUser, registerStudent, registerTeacher } from '@/api/yonghuzhanghao'
 import { useUserStore } from '@/store/user'
 import type { PendingRegisterAuth, UserInfo, UserRole, UserStatus } from '@/types/user'
 import { normalizeRole } from '@/types/user'

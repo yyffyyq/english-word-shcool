@@ -28,7 +28,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { onShow } from '@dcloudio/uni-app'
-import { getTodayHomework } from '@/api/studentStudyController'
+import { getTodayHomework } from '@/api/xueshengxuexi'
 import AuthModals from '@/components/AuthModals.vue'
 import { useAuth } from '@/composables/useAuth'
 import {

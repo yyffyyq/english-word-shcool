@@ -17,6 +17,12 @@ declare namespace API {
     message?: string;
   };
 
+  type BaseResponseClassUnitPlanAssignResultVO = {
+    code?: number;
+    data?: ClassUnitPlanAssignResultVO;
+    message?: string;
+  };
+
   type BaseResponseClassWordTaskVO = {
     code?: number;
     data?: ClassWordTaskVO;
@@ -74,6 +80,18 @@ declare namespace API {
   type BaseResponseStudentHomeworkCacheVO = {
     code?: number;
     data?: StudentHomeworkCacheVO;
+    message?: string;
+  };
+
+  type BaseResponseStudentReviewCacheVO = {
+    code?: number;
+    data?: StudentReviewCacheVO;
+    message?: string;
+  };
+
+  type BaseResponseStudentReviewPlanRunResultVO = {
+    code?: number;
+    data?: StudentReviewPlanRunResultVO;
     message?: string;
   };
 
@@ -168,6 +186,25 @@ declare namespace API {
     status?: string;
   };
 
+  type ClassUnitPlanAssignRequest = {
+    classId?: number;
+    bookId?: number;
+    week?: number;
+    unitName?: number;
+  };
+
+  type ClassUnitPlanAssignResultVO = {
+    assignDate?: string;
+    classId?: number;
+    bookId?: number;
+    week?: number;
+    unitName?: number;
+    wordCount?: number;
+    classCount?: number;
+    studentCount?: number;
+    addedCount?: number;
+  };
+
   type ClassWordTaskBindRequest = {
     classId?: number;
     bookId?: number;
@@ -201,26 +238,32 @@ declare namespace API {
   };
 
   type deleteWordBookParams = {
+    /** 词书ID */
     id: number;
   };
 
   type deleteWordParams = {
+    /** 单词ID */
     id: number;
   };
 
   type getClassInfoParams = {
+    /** 班级ID */
     id: number;
   };
 
   type importWordsParams = {
+    /** 词书ID */
     bookId: number;
   };
 
   type listClassStudentsParams = {
+    /** 班级ID */
     id: number;
   };
 
   type listWordsByBookPageParams = {
+    /** 词书ID */
     bookId: number;
   };
 
@@ -270,6 +313,7 @@ declare namespace API {
   };
 
   type refreshInviteCodeParams = {
+    /** 班级ID */
     id: number;
   };
 
@@ -303,6 +347,47 @@ declare namespace API {
     progressStatus?: string;
     correctCount?: number;
     wrongCount?: number;
+    options?: StudentStudyOptionVO[];
+  };
+
+  type StudentReviewCacheVO = {
+    studentId?: number;
+    classId?: number;
+    wordCount?: number;
+    words?: StudentReviewWordVO[];
+  };
+
+  type StudentReviewChoiceAnswerRequest = {
+    wordId?: number;
+    optionId?: number;
+  };
+
+  type StudentReviewPlanRunRequest = {
+    reviewDate?: string;
+  };
+
+  type StudentReviewPlanRunResultVO = {
+    reviewDate?: string;
+    highWrongCount?: number;
+    day1FollowupCount?: number;
+    ebbinghausCount?: number;
+    totalUpsertCount?: number;
+  };
+
+  type StudentReviewSpellAnswerRequest = {
+    wordId?: number;
+    spelledText?: string;
+  };
+
+  type StudentReviewWordVO = {
+    wordId?: number;
+    wordText?: string;
+    phonetic?: string;
+    correctMeaning?: string;
+    exampleSentence?: string;
+    exampleTranslation?: string;
+    reason?: string;
+    progressStatus?: string;
     options?: StudentStudyOptionVO[];
   };
 
@@ -362,6 +447,7 @@ declare namespace API {
   };
 
   type unbindClassWordBookParams = {
+    /** 班级学习任务ID */
     id: number;
   };
 
@@ -400,7 +486,8 @@ declare namespace API {
   };
 
   type WordBookImportRequest = {
-    unitName?: string;
+    week?: number;
+    unitName?: number;
     words?: WordImportItem[];
   };
 
@@ -445,7 +532,8 @@ declare namespace API {
     sortField?: string;
     sortOrder?: string;
     wordText?: string;
-    unitName?: string;
+    week?: number;
+    unitName?: number;
   };
 
   type WordImportFailVO = {
@@ -486,7 +574,8 @@ declare namespace API {
     correctMeaning?: string;
     exampleSentence?: string;
     exampleTranslation?: string;
-    unitName?: string;
+    week?: number;
+    unitName?: number;
     sortOrder?: number;
     options?: WordOptionVO[];
     createdAt?: string;

@@ -154,7 +154,7 @@ import {
   listClassInfoByPage,
   refreshInviteCode,
   studentJoinClass,
-} from '@/api/classInfoController'
+} from '@/api/banjiguanli'
 import AuthModals from '@/components/AuthModals.vue'
 import AppTabBar from '@/components/AppTabBar.vue'
 import { useAuth } from '@/composables/useAuth'

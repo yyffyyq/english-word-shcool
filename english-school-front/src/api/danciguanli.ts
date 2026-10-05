@@ -2,7 +2,7 @@
 /* eslint-disable */
 import request from "@/request";
 
-/** 此处后端没有提供注释 DELETE /word/${param0} */
+/** 物理删除单词 物理删除单词及其选项、词书关联，并回写相关词书 word_count。 DELETE /word/${param0} */
 export async function deleteWord(
   // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
   params: API.deleteWordParams,
@@ -16,7 +16,7 @@ export async function deleteWord(
   });
 }
 
-/** 此处后端没有提供注释 PUT /word/update */
+/** 修改单词 可修改英文、音标、正确释义、错误选项、例句等；更新选项时需同时传入 3 个错误中文释义。 PUT /word/update */
 export async function updateWord(
   body: API.WordUpdateRequest,
   options?: { [key: string]: any }

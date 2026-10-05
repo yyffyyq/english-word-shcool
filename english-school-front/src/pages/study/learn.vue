@@ -148,7 +148,7 @@ import {
   answerSpell,
   getTodayHomework,
   updateWordStatus,
-} from '@/api/studentStudyController'
+} from '@/api/xueshengxuexi'
 import AuthModals from '@/components/AuthModals.vue'
 import { useAuth } from '@/composables/useAuth'
 import {
