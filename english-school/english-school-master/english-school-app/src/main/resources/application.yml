@@ -2,7 +2,7 @@ spring:
   application:
     name: english-school-master
   profiles:
-    active: prd
+    active: dev
 
 # 扫描各业务 jar 中的 Mapper XML，保证多模块拆分后 SQL 映射仍生效
 mybatis-flex:

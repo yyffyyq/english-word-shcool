@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="yfy.englishschoolmaster.mapper.StudentWordProgressMapper">
 
-    <!-- 词书范围内未掌握单词，按首次下发时间结转 -->
+    <!-- 词书范围内未掌握单词，按周次、单元序号结转 -->
     <select id="selectUnfinishedWordIds" resultType="java.lang.Long">
         SELECT p.word_id
         FROM student_word_progress p
@@ -14,7 +14,9 @@
         WHERE p.student_id = #{studentId}
           AND p.class_id = #{classId}
           AND p.status IN ('NEW', 'LEARNING')
-        ORDER BY p.created_at ASC, p.id ASC
+        ORDER BY wbi.week IS NULL, wbi.week ASC,
+                 wbi.unit_name IS NULL, wbi.unit_name ASC,
+                 wbi.sort_order ASC, p.id ASC
     </select>
 
 </mapper>

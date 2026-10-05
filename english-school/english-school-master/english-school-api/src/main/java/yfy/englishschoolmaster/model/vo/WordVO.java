@@ -49,9 +49,14 @@ public class WordVO implements Serializable {
     private String exampleTranslation;
 
     /**
-     * 所属单元名称（词书内单词列表填充）
+     * 所属周次（词书内单词列表填充）
      */
-    private String unitName;
+    private Integer week;
+
+    /**
+     * 所属单元序号（词书内单词列表填充）
+     */
+    private Integer unitName;
 
     /**
      * 单词在词书中的排序（词书内单词列表填充）

@@ -1,6 +1,5 @@
 package yfy.englishschoolmaster.service.impl;
 
-import cn.hutool.core.util.StrUtil;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.spring.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
@@ -27,7 +26,7 @@ public class WordBookItemServiceImpl extends ServiceImpl<WordBookItemMapper, Wor
     }
 
     @Override
-    public boolean linkIfAbsent(Long bookId, Long wordId, int sortOrder, String unitName) {
+    public boolean linkIfAbsent(Long bookId, Long wordId, int sortOrder, Integer week, Integer unitName) {
         WordBookItem exist = this.getOne(QueryWrapper.create()
                 .eq(WordBookItem::getBookId, bookId)
                 .eq(WordBookItem::getWordId, wordId));
@@ -38,7 +37,8 @@ public class WordBookItemServiceImpl extends ServiceImpl<WordBookItemMapper, Wor
                 .bookId(bookId)
                 .wordId(wordId)
                 .sortOrder(sortOrder)
-                .unitName(StrUtil.isBlank(unitName) ? null : unitName.trim())
+                .week(week)
+                .unitName(unitName)
                 .build();
         return this.save(item);
     }

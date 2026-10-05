@@ -1,8 +1,11 @@
 package yfy.englishschoolmaster.service;
 
 import com.mybatisflex.core.service.IService;
+import yfy.englishschoolmaster.model.dto.ClassDailyAssignment.ClassUnitPlanAssignRequest;
 import yfy.englishschoolmaster.model.entity.ClassDailyAssignment;
 import yfy.englishschoolmaster.model.vo.ClassDailyAssignmentRunResultVO;
+import yfy.englishschoolmaster.model.vo.ClassTodayPlanVO;
+import yfy.englishschoolmaster.model.vo.ClassUnitPlanAssignResultVO;
 import yfy.englishschoolmaster.model.vo.UserAccountVO;
 
 import java.time.LocalDate;
@@ -41,4 +44,25 @@ public interface ClassDailyAssignmentService extends IService<ClassDailyAssignme
      * @param studentId 学生ID
      */
     void backfillTodayForStudent(Long classId, Long studentId);
+
+    /**
+     * 按班级、词书、周次、单元把该单元全部单词追加到今日学习计划。
+     * 只写入该班级的在班学生；教师仅能分配自己的班级。
+     *
+     * @param request   班级、词书、周次、单元
+     * @param loginUser 当前登录教师或管理员
+     * @return 分配结果
+     */
+    ClassUnitPlanAssignResultVO assignUnitPlan(ClassUnitPlanAssignRequest request, UserAccountVO loginUser);
+
+    /**
+     * 按班级查询今日学习单词。
+     * 教师仅可查询自己的班级，管理员可查询全部班级。
+     * 当天没有计划时返回空单词列表。
+     *
+     * @param classId   班级ID
+     * @param loginUser 当前登录教师或管理员
+     * @return 该班今日学习单词
+     */
+    ClassTodayPlanVO getTodayPlanByClass(Long classId, UserAccountVO loginUser);
 }

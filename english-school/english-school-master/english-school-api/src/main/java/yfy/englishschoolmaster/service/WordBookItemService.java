@@ -27,10 +27,11 @@ public interface WordBookItemService extends IService<WordBookItem> {
      * @param bookId    词书ID
      * @param wordId    单词ID
      * @param sortOrder 排序号
-     * @param unitName  单元名称，可空
+     * @param week      周次，可空
+     * @param unitName  单元序号，可空
      * @return true 表示新写入关联，false 表示已存在
      */
-    boolean linkIfAbsent(Long bookId, Long wordId, int sortOrder, String unitName);
+    boolean linkIfAbsent(Long bookId, Long wordId, int sortOrder, Integer week, Integer unitName);
 
     /**
      * 统计词书下单词数量：

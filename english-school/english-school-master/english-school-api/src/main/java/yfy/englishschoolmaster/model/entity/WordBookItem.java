@@ -14,7 +14,7 @@ import java.io.Serializable;
 /**
  * 词书单词关系实体：
  * 对应 word_book_item 表，
- *       记录单词在词书中的排序及所属单元
+ *       记录单词在词书中的排序、周次及单元序号
  *
  * @author <a href="https://github.com/yyffyyq">代码制造者yfy</a>
  */
@@ -50,7 +50,12 @@ public class WordBookItem implements Serializable {
     private Integer sortOrder;
 
     /**
-     * 所属单元名称，例如 Unit 1
+     * 所属周次，按整数排序
      */
-    private String unitName;
+    private Integer week;
+
+    /**
+     * 所属单元序号，按整数排序
+     */
+    private Integer unitName;
 }

@@ -16,7 +16,7 @@ public interface StudentWordProgressMapper extends BaseMapper<StudentWordProgres
 
     /**
      * 查询学生在指定班级、指定词书下尚未掌握的单词（NEW / LEARNING），
-     * 按首次下发时间升序，便于次日优先结转。
+     * 按 week、unit_name、sort_order 升序结转。空的周次、单元排在后面。
      *
      * @param studentId 学生 ID
      * @param classId   班级 ID

@@ -72,7 +72,7 @@ public interface WordBookService extends IService<WordBook> {
 
     /**
      * 词书内单词分页查询（教师、管理员）：
-     * 按词书 ID 查询关联单词，支持按英文单词、单元名称筛选。
+     * 按词书 ID 查询关联单词，支持按英文单词、周次、单元序号筛选。
      *
      * @param bookId    词书ID
      * @param request   分页查询请求

@@ -7,7 +7,7 @@ import yfy.englishschoolmaster.common.PageRequest;
 /**
  * 词书内单词分页查询请求：
  * 查询指定词书下的单词列表，
- *       支持按英文单词、单元名称筛选
+ *       支持按英文单词、周次、单元序号筛选
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -19,7 +19,12 @@ public class WordBookWordQueryRequest extends PageRequest {
     private String wordText;
 
     /**
-     * 所属单元名称，例如 Unit 1
+     * 所属周次，精确匹配
      */
-    private String unitName;
+    private Integer week;
+
+    /**
+     * 所属单元序号，精确匹配
+     */
+    private Integer unitName;
 }

@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="yfy.englishschoolmaster.mapper.ClassDailyAssignmentWordMapper">
 
-    <!-- 按词书关系 ID 顺序，抽取该学生尚未出现在学习进度里的单词 -->
+    <!-- 按周次、单元序号、词书内排序抽取尚未出现在学习进度里的单词 -->
     <select id="selectUnlearnedWordIdsInOrder" resultType="java.lang.Long">
         SELECT wbi.word_id
         FROM word_book_item wbi
@@ -15,7 +15,9 @@
             WHERE p.student_id = #{studentId}
               AND p.word_id = wbi.word_id
           )
-        ORDER BY wbi.id ASC
+        ORDER BY wbi.week IS NULL, wbi.week ASC,
+                 wbi.unit_name IS NULL, wbi.unit_name ASC,
+                 wbi.sort_order ASC, wbi.id ASC
         LIMIT #{limit}
     </select>
 

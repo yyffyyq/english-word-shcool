@@ -13,9 +13,14 @@ import java.util.List;
 public class WordBookImportRequest {
 
     /**
-     * 所属单元名称，例如 Unit 1；可空
+     * 所属周次，整数；可空，本批单词共用
      */
-    private String unitName;
+    private Integer week;
+
+    /**
+     * 所属单元序号，整数；可空，本批单词共用
+     */
+    private Integer unitName;
 
     /**
      * 待导入单词列表：

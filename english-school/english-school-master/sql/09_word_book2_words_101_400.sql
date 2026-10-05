@@ -1511,9 +1511,9 @@ SELECT 'there', '/ðeə(r)/', 'adv.在那里；往那里；(作引导词)表“�
 FROM DUAL
 WHERE NOT EXISTS (SELECT 1 FROM word w WHERE w.word_text = 'there');
 
--- 3. 关联到词书 id=2（sort_order 使用原表序号 101-400）
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 101, 'Week 3 Day 1'
+-- 3. 关联到词书 id=2（sort_order 使用原表序号 101-400；week、unit_name 为整数）
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 101, 3, 1
 FROM word w
 WHERE w.word_text = 'generation'
   AND NOT EXISTS (
@@ -1521,8 +1521,8 @@ WHERE w.word_text = 'generation'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 102, 'Week 3 Day 1'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 102, 3, 1
 FROM word w
 WHERE w.word_text = 'celebrate'
   AND NOT EXISTS (
@@ -1530,8 +1530,8 @@ WHERE w.word_text = 'celebrate'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 103, 'Week 3 Day 1'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 103, 3, 1
 FROM word w
 WHERE w.word_text = 'childhood'
   AND NOT EXISTS (
@@ -1539,8 +1539,8 @@ WHERE w.word_text = 'childhood'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 104, 'Week 3 Day 1'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 104, 3, 1
 FROM word w
 WHERE w.word_text = 'kick'
   AND NOT EXISTS (
@@ -1548,8 +1548,8 @@ WHERE w.word_text = 'kick'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 105, 'Week 3 Day 1'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 105, 3, 1
 FROM word w
 WHERE w.word_text = 'listen'
   AND NOT EXISTS (
@@ -1557,8 +1557,8 @@ WHERE w.word_text = 'listen'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 106, 'Week 3 Day 1'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 106, 3, 1
 FROM word w
 WHERE w.word_text = 'volleyball'
   AND NOT EXISTS (
@@ -1566,8 +1566,8 @@ WHERE w.word_text = 'volleyball'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 107, 'Week 3 Day 1'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 107, 3, 1
 FROM word w
 WHERE w.word_text = 'college'
   AND NOT EXISTS (
@@ -1575,8 +1575,8 @@ WHERE w.word_text = 'college'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 108, 'Week 3 Day 1'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 108, 3, 1
 FROM word w
 WHERE w.word_text = 'moment'
   AND NOT EXISTS (
@@ -1584,8 +1584,8 @@ WHERE w.word_text = 'moment'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 109, 'Week 3 Day 1'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 109, 3, 1
 FROM word w
 WHERE w.word_text = 'repeat'
   AND NOT EXISTS (
@@ -1593,8 +1593,8 @@ WHERE w.word_text = 'repeat'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 110, 'Week 3 Day 1'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 110, 3, 1
 FROM word w
 WHERE w.word_text = 'result'
   AND NOT EXISTS (
@@ -1602,8 +1602,8 @@ WHERE w.word_text = 'result'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 111, 'Week 3 Day 2'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 111, 3, 2
 FROM word w
 WHERE w.word_text = 'link'
   AND NOT EXISTS (
@@ -1611,8 +1611,8 @@ WHERE w.word_text = 'link'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 112, 'Week 3 Day 2'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 112, 3, 2
 FROM word w
 WHERE w.word_text = 'tennis'
   AND NOT EXISTS (
@@ -1620,8 +1620,8 @@ WHERE w.word_text = 'tennis'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 113, 'Week 3 Day 2'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 113, 3, 2
 FROM word w
 WHERE w.word_text = 'key'
   AND NOT EXISTS (
@@ -1629,8 +1629,8 @@ WHERE w.word_text = 'key'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 114, 'Week 3 Day 2'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 114, 3, 2
 FROM word w
 WHERE w.word_text = 'who'
   AND NOT EXISTS (
@@ -1638,8 +1638,8 @@ WHERE w.word_text = 'who'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 115, 'Week 3 Day 2'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 115, 3, 2
 FROM word w
 WHERE w.word_text = 'interest'
   AND NOT EXISTS (
@@ -1647,8 +1647,8 @@ WHERE w.word_text = 'interest'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 116, 'Week 3 Day 2'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 116, 3, 2
 FROM word w
 WHERE w.word_text = 'queen'
   AND NOT EXISTS (
@@ -1656,8 +1656,8 @@ WHERE w.word_text = 'queen'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 117, 'Week 3 Day 2'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 117, 3, 2
 FROM word w
 WHERE w.word_text = 'play'
   AND NOT EXISTS (
@@ -1665,8 +1665,8 @@ WHERE w.word_text = 'play'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 118, 'Week 3 Day 2'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 118, 3, 2
 FROM word w
 WHERE w.word_text = 'seldom'
   AND NOT EXISTS (
@@ -1674,8 +1674,8 @@ WHERE w.word_text = 'seldom'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 119, 'Week 3 Day 2'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 119, 3, 2
 FROM word w
 WHERE w.word_text = 'relationship'
   AND NOT EXISTS (
@@ -1683,8 +1683,8 @@ WHERE w.word_text = 'relationship'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 120, 'Week 3 Day 2'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 120, 3, 2
 FROM word w
 WHERE w.word_text = 'damage'
   AND NOT EXISTS (
@@ -1692,8 +1692,8 @@ WHERE w.word_text = 'damage'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 121, 'Week 3 Day 3'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 121, 3, 3
 FROM word w
 WHERE w.word_text = 'half'
   AND NOT EXISTS (
@@ -1701,8 +1701,8 @@ WHERE w.word_text = 'half'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 122, 'Week 3 Day 3'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 122, 3, 3
 FROM word w
 WHERE w.word_text = 'focus'
   AND NOT EXISTS (
@@ -1710,8 +1710,8 @@ WHERE w.word_text = 'focus'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 123, 'Week 3 Day 3'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 123, 3, 3
 FROM word w
 WHERE w.word_text = 'upstairs'
   AND NOT EXISTS (
@@ -1719,8 +1719,8 @@ WHERE w.word_text = 'upstairs'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 124, 'Week 3 Day 3'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 124, 3, 3
 FROM word w
 WHERE w.word_text = 'call'
   AND NOT EXISTS (
@@ -1728,8 +1728,8 @@ WHERE w.word_text = 'call'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 125, 'Week 3 Day 3'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 125, 3, 3
 FROM word w
 WHERE w.word_text = 'cabbage'
   AND NOT EXISTS (
@@ -1737,8 +1737,8 @@ WHERE w.word_text = 'cabbage'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 126, 'Week 3 Day 3'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 126, 3, 3
 FROM word w
 WHERE w.word_text = 'freedom'
   AND NOT EXISTS (
@@ -1746,8 +1746,8 @@ WHERE w.word_text = 'freedom'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 127, 'Week 3 Day 3'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 127, 3, 3
 FROM word w
 WHERE w.word_text = 'pink'
   AND NOT EXISTS (
@@ -1755,8 +1755,8 @@ WHERE w.word_text = 'pink'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 128, 'Week 3 Day 3'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 128, 3, 3
 FROM word w
 WHERE w.word_text = 'memory'
   AND NOT EXISTS (
@@ -1764,8 +1764,8 @@ WHERE w.word_text = 'memory'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 129, 'Week 3 Day 3'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 129, 3, 3
 FROM word w
 WHERE w.word_text = 'temperature'
   AND NOT EXISTS (
@@ -1773,8 +1773,8 @@ WHERE w.word_text = 'temperature'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 130, 'Week 3 Day 3'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 130, 3, 3
 FROM word w
 WHERE w.word_text = 'charity'
   AND NOT EXISTS (
@@ -1782,8 +1782,8 @@ WHERE w.word_text = 'charity'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 131, 'Week 3 Day 4'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 131, 3, 4
 FROM word w
 WHERE w.word_text = 'on'
   AND NOT EXISTS (
@@ -1791,8 +1791,8 @@ WHERE w.word_text = 'on'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 132, 'Week 3 Day 4'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 132, 3, 4
 FROM word w
 WHERE w.word_text = 'post'
   AND NOT EXISTS (
@@ -1800,8 +1800,8 @@ WHERE w.word_text = 'post'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 133, 'Week 3 Day 4'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 133, 3, 4
 FROM word w
 WHERE w.word_text = 'invention'
   AND NOT EXISTS (
@@ -1809,8 +1809,8 @@ WHERE w.word_text = 'invention'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 134, 'Week 3 Day 4'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 134, 3, 4
 FROM word w
 WHERE w.word_text = 'theatre'
   AND NOT EXISTS (
@@ -1818,8 +1818,8 @@ WHERE w.word_text = 'theatre'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 135, 'Week 3 Day 4'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 135, 3, 4
 FROM word w
 WHERE w.word_text = 'check'
   AND NOT EXISTS (
@@ -1827,8 +1827,8 @@ WHERE w.word_text = 'check'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 136, 'Week 3 Day 4'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 136, 3, 4
 FROM word w
 WHERE w.word_text = 'publish'
   AND NOT EXISTS (
@@ -1836,8 +1836,8 @@ WHERE w.word_text = 'publish'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 137, 'Week 3 Day 4'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 137, 3, 4
 FROM word w
 WHERE w.word_text = 'understand'
   AND NOT EXISTS (
@@ -1845,8 +1845,8 @@ WHERE w.word_text = 'understand'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 138, 'Week 3 Day 4'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 138, 3, 4
 FROM word w
 WHERE w.word_text = 'library'
   AND NOT EXISTS (
@@ -1854,8 +1854,8 @@ WHERE w.word_text = 'library'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 139, 'Week 3 Day 4'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 139, 3, 4
 FROM word w
 WHERE w.word_text = 'better'
   AND NOT EXISTS (
@@ -1863,8 +1863,8 @@ WHERE w.word_text = 'better'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 140, 'Week 3 Day 4'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 140, 3, 4
 FROM word w
 WHERE w.word_text = 'sad'
   AND NOT EXISTS (
@@ -1872,8 +1872,8 @@ WHERE w.word_text = 'sad'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 141, 'Week 3 Day 5'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 141, 3, 5
 FROM word w
 WHERE w.word_text = 'headache'
   AND NOT EXISTS (
@@ -1881,8 +1881,8 @@ WHERE w.word_text = 'headache'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 142, 'Week 3 Day 5'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 142, 3, 5
 FROM word w
 WHERE w.word_text = 'January'
   AND NOT EXISTS (
@@ -1890,8 +1890,8 @@ WHERE w.word_text = 'January'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 143, 'Week 3 Day 5'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 143, 3, 5
 FROM word w
 WHERE w.word_text = 'lazy'
   AND NOT EXISTS (
@@ -1899,8 +1899,8 @@ WHERE w.word_text = 'lazy'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 144, 'Week 3 Day 5'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 144, 3, 5
 FROM word w
 WHERE w.word_text = 'pretty'
   AND NOT EXISTS (
@@ -1908,8 +1908,8 @@ WHERE w.word_text = 'pretty'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 145, 'Week 3 Day 5'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 145, 3, 5
 FROM word w
 WHERE w.word_text = 'red'
   AND NOT EXISTS (
@@ -1917,8 +1917,8 @@ WHERE w.word_text = 'red'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 146, 'Week 3 Day 5'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 146, 3, 5
 FROM word w
 WHERE w.word_text = 'cat'
   AND NOT EXISTS (
@@ -1926,8 +1926,8 @@ WHERE w.word_text = 'cat'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 147, 'Week 3 Day 5'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 147, 3, 5
 FROM word w
 WHERE w.word_text = 'own'
   AND NOT EXISTS (
@@ -1935,8 +1935,8 @@ WHERE w.word_text = 'own'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 148, 'Week 3 Day 5'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 148, 3, 5
 FROM word w
 WHERE w.word_text = 'farmer'
   AND NOT EXISTS (
@@ -1944,8 +1944,8 @@ WHERE w.word_text = 'farmer'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 149, 'Week 3 Day 5'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 149, 3, 5
 FROM word w
 WHERE w.word_text = 'bite'
   AND NOT EXISTS (
@@ -1953,8 +1953,8 @@ WHERE w.word_text = 'bite'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 150, 'Week 3 Day 5'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 150, 3, 5
 FROM word w
 WHERE w.word_text = 'around'
   AND NOT EXISTS (
@@ -1962,8 +1962,8 @@ WHERE w.word_text = 'around'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 151, 'Week 4 Day 1'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 151, 4, 1
 FROM word w
 WHERE w.word_text = 'increase'
   AND NOT EXISTS (
@@ -1971,8 +1971,8 @@ WHERE w.word_text = 'increase'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 152, 'Week 4 Day 1'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 152, 4, 1
 FROM word w
 WHERE w.word_text = 'empty'
   AND NOT EXISTS (
@@ -1980,8 +1980,8 @@ WHERE w.word_text = 'empty'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 153, 'Week 4 Day 1'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 153, 4, 1
 FROM word w
 WHERE w.word_text = 'tall'
   AND NOT EXISTS (
@@ -1989,8 +1989,8 @@ WHERE w.word_text = 'tall'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 154, 'Week 4 Day 1'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 154, 4, 1
 FROM word w
 WHERE w.word_text = 'room'
   AND NOT EXISTS (
@@ -1998,8 +1998,8 @@ WHERE w.word_text = 'room'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 155, 'Week 4 Day 1'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 155, 4, 1
 FROM word w
 WHERE w.word_text = 'fair'
   AND NOT EXISTS (
@@ -2007,8 +2007,8 @@ WHERE w.word_text = 'fair'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 156, 'Week 4 Day 1'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 156, 4, 1
 FROM word w
 WHERE w.word_text = 'pollute'
   AND NOT EXISTS (
@@ -2016,8 +2016,8 @@ WHERE w.word_text = 'pollute'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 157, 'Week 4 Day 1'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 157, 4, 1
 FROM word w
 WHERE w.word_text = 'duck'
   AND NOT EXISTS (
@@ -2025,8 +2025,8 @@ WHERE w.word_text = 'duck'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 158, 'Week 4 Day 1'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 158, 4, 1
 FROM word w
 WHERE w.word_text = 'underground'
   AND NOT EXISTS (
@@ -2034,8 +2034,8 @@ WHERE w.word_text = 'underground'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 159, 'Week 4 Day 1'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 159, 4, 1
 FROM word w
 WHERE w.word_text = 'fountain'
   AND NOT EXISTS (
@@ -2043,8 +2043,8 @@ WHERE w.word_text = 'fountain'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 160, 'Week 4 Day 1'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 160, 4, 1
 FROM word w
 WHERE w.word_text = 'fill'
   AND NOT EXISTS (
@@ -2052,8 +2052,8 @@ WHERE w.word_text = 'fill'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 161, 'Week 4 Day 2'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 161, 4, 2
 FROM word w
 WHERE w.word_text = 'share'
   AND NOT EXISTS (
@@ -2061,8 +2061,8 @@ WHERE w.word_text = 'share'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 162, 'Week 4 Day 2'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 162, 4, 2
 FROM word w
 WHERE w.word_text = 'shape'
   AND NOT EXISTS (
@@ -2070,8 +2070,8 @@ WHERE w.word_text = 'shape'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 163, 'Week 4 Day 2'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 163, 4, 2
 FROM word w
 WHERE w.word_text = 'water'
   AND NOT EXISTS (
@@ -2079,8 +2079,8 @@ WHERE w.word_text = 'water'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 164, 'Week 4 Day 2'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 164, 4, 2
 FROM word w
 WHERE w.word_text = 'nationality'
   AND NOT EXISTS (
@@ -2088,8 +2088,8 @@ WHERE w.word_text = 'nationality'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 165, 'Week 4 Day 2'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 165, 4, 2
 FROM word w
 WHERE w.word_text = 'success'
   AND NOT EXISTS (
@@ -2097,8 +2097,8 @@ WHERE w.word_text = 'success'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 166, 'Week 4 Day 2'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 166, 4, 2
 FROM word w
 WHERE w.word_text = 'perhaps'
   AND NOT EXISTS (
@@ -2106,8 +2106,8 @@ WHERE w.word_text = 'perhaps'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 167, 'Week 4 Day 2'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 167, 4, 2
 FROM word w
 WHERE w.word_text = 'about'
   AND NOT EXISTS (
@@ -2115,8 +2115,8 @@ WHERE w.word_text = 'about'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 168, 'Week 4 Day 2'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 168, 4, 2
 FROM word w
 WHERE w.word_text = 'know'
   AND NOT EXISTS (
@@ -2124,8 +2124,8 @@ WHERE w.word_text = 'know'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 169, 'Week 4 Day 2'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 169, 4, 2
 FROM word w
 WHERE w.word_text = 'custom'
   AND NOT EXISTS (
@@ -2133,8 +2133,8 @@ WHERE w.word_text = 'custom'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 170, 'Week 4 Day 2'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 170, 4, 2
 FROM word w
 WHERE w.word_text = 'suppose'
   AND NOT EXISTS (
@@ -2142,8 +2142,8 @@ WHERE w.word_text = 'suppose'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 171, 'Week 4 Day 3'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 171, 4, 3
 FROM word w
 WHERE w.word_text = 'noise'
   AND NOT EXISTS (
@@ -2151,8 +2151,8 @@ WHERE w.word_text = 'noise'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 172, 'Week 4 Day 3'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 172, 4, 3
 FROM word w
 WHERE w.word_text = 'rubbish'
   AND NOT EXISTS (
@@ -2160,8 +2160,8 @@ WHERE w.word_text = 'rubbish'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 173, 'Week 4 Day 3'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 173, 4, 3
 FROM word w
 WHERE w.word_text = 'advantage'
   AND NOT EXISTS (
@@ -2169,8 +2169,8 @@ WHERE w.word_text = 'advantage'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 174, 'Week 4 Day 3'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 174, 4, 3
 FROM word w
 WHERE w.word_text = 'fit'
   AND NOT EXISTS (
@@ -2178,8 +2178,8 @@ WHERE w.word_text = 'fit'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 175, 'Week 4 Day 3'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 175, 4, 3
 FROM word w
 WHERE w.word_text = 'as'
   AND NOT EXISTS (
@@ -2187,8 +2187,8 @@ WHERE w.word_text = 'as'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 176, 'Week 4 Day 3'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 176, 4, 3
 FROM word w
 WHERE w.word_text = 'corner'
   AND NOT EXISTS (
@@ -2196,8 +2196,8 @@ WHERE w.word_text = 'corner'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 177, 'Week 4 Day 3'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 177, 4, 3
 FROM word w
 WHERE w.word_text = 'part'
   AND NOT EXISTS (
@@ -2205,8 +2205,8 @@ WHERE w.word_text = 'part'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 178, 'Week 4 Day 3'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 178, 4, 3
 FROM word w
 WHERE w.word_text = 'ancient'
   AND NOT EXISTS (
@@ -2214,8 +2214,8 @@ WHERE w.word_text = 'ancient'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 179, 'Week 4 Day 3'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 179, 4, 3
 FROM word w
 WHERE w.word_text = 'activity'
   AND NOT EXISTS (
@@ -2223,8 +2223,8 @@ WHERE w.word_text = 'activity'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 180, 'Week 4 Day 3'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 180, 4, 3
 FROM word w
 WHERE w.word_text = 'Britain'
   AND NOT EXISTS (
@@ -2232,8 +2232,8 @@ WHERE w.word_text = 'Britain'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 181, 'Week 4 Day 4'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 181, 4, 4
 FROM word w
 WHERE w.word_text = 'drink'
   AND NOT EXISTS (
@@ -2241,8 +2241,8 @@ WHERE w.word_text = 'drink'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 182, 'Week 4 Day 4'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 182, 4, 4
 FROM word w
 WHERE w.word_text = 'tree'
   AND NOT EXISTS (
@@ -2250,8 +2250,8 @@ WHERE w.word_text = 'tree'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 183, 'Week 4 Day 4'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 183, 4, 4
 FROM word w
 WHERE w.word_text = 'enough'
   AND NOT EXISTS (
@@ -2259,8 +2259,8 @@ WHERE w.word_text = 'enough'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 184, 'Week 4 Day 4'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 184, 4, 4
 FROM word w
 WHERE w.word_text = 'cheap'
   AND NOT EXISTS (
@@ -2268,8 +2268,8 @@ WHERE w.word_text = 'cheap'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 185, 'Week 4 Day 4'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 185, 4, 4
 FROM word w
 WHERE w.word_text = 'between'
   AND NOT EXISTS (
@@ -2277,8 +2277,8 @@ WHERE w.word_text = 'between'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 186, 'Week 4 Day 4'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 186, 4, 4
 FROM word w
 WHERE w.word_text = 'decide'
   AND NOT EXISTS (
@@ -2286,8 +2286,8 @@ WHERE w.word_text = 'decide'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 187, 'Week 4 Day 4'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 187, 4, 4
 FROM word w
 WHERE w.word_text = 'write'
   AND NOT EXISTS (
@@ -2295,8 +2295,8 @@ WHERE w.word_text = 'write'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 188, 'Week 4 Day 4'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 188, 4, 4
 FROM word w
 WHERE w.word_text = 'can'
   AND NOT EXISTS (
@@ -2304,8 +2304,8 @@ WHERE w.word_text = 'can'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 189, 'Week 4 Day 4'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 189, 4, 4
 FROM word w
 WHERE w.word_text = 'tape'
   AND NOT EXISTS (
@@ -2313,8 +2313,8 @@ WHERE w.word_text = 'tape'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 190, 'Week 4 Day 4'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 190, 4, 4
 FROM word w
 WHERE w.word_text = 'captain'
   AND NOT EXISTS (
@@ -2322,8 +2322,8 @@ WHERE w.word_text = 'captain'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 191, 'Week 4 Day 5'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 191, 4, 5
 FROM word w
 WHERE w.word_text = 'middle'
   AND NOT EXISTS (
@@ -2331,8 +2331,8 @@ WHERE w.word_text = 'middle'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 192, 'Week 4 Day 5'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 192, 4, 5
 FROM word w
 WHERE w.word_text = 'chair'
   AND NOT EXISTS (
@@ -2340,8 +2340,8 @@ WHERE w.word_text = 'chair'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 193, 'Week 4 Day 5'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 193, 4, 5
 FROM word w
 WHERE w.word_text = 'meal'
   AND NOT EXISTS (
@@ -2349,8 +2349,8 @@ WHERE w.word_text = 'meal'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 194, 'Week 4 Day 5'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 194, 4, 5
 FROM word w
 WHERE w.word_text = 'heavily'
   AND NOT EXISTS (
@@ -2358,8 +2358,8 @@ WHERE w.word_text = 'heavily'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 195, 'Week 4 Day 5'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 195, 4, 5
 FROM word w
 WHERE w.word_text = 'beach'
   AND NOT EXISTS (
@@ -2367,8 +2367,8 @@ WHERE w.word_text = 'beach'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 196, 'Week 4 Day 5'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 196, 4, 5
 FROM word w
 WHERE w.word_text = 'like'
   AND NOT EXISTS (
@@ -2376,8 +2376,8 @@ WHERE w.word_text = 'like'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 197, 'Week 4 Day 5'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 197, 4, 5
 FROM word w
 WHERE w.word_text = 'argue'
   AND NOT EXISTS (
@@ -2385,8 +2385,8 @@ WHERE w.word_text = 'argue'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 198, 'Week 4 Day 5'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 198, 4, 5
 FROM word w
 WHERE w.word_text = 'certainly'
   AND NOT EXISTS (
@@ -2394,8 +2394,8 @@ WHERE w.word_text = 'certainly'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 199, 'Week 4 Day 5'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 199, 4, 5
 FROM word w
 WHERE w.word_text = 'Saturday'
   AND NOT EXISTS (
@@ -2403,8 +2403,8 @@ WHERE w.word_text = 'Saturday'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 200, 'Week 4 Day 5'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 200, 4, 5
 FROM word w
 WHERE w.word_text = 'food'
   AND NOT EXISTS (
@@ -2412,8 +2412,8 @@ WHERE w.word_text = 'food'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 201, 'Week 5 Day 1'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 201, 5, 1
 FROM word w
 WHERE w.word_text = 'left'
   AND NOT EXISTS (
@@ -2421,8 +2421,8 @@ WHERE w.word_text = 'left'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 202, 'Week 5 Day 1'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 202, 5, 1
 FROM word w
 WHERE w.word_text = 'amusement'
   AND NOT EXISTS (
@@ -2430,8 +2430,8 @@ WHERE w.word_text = 'amusement'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 203, 'Week 5 Day 1'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 203, 5, 1
 FROM word w
 WHERE w.word_text = 'aim'
   AND NOT EXISTS (
@@ -2439,8 +2439,8 @@ WHERE w.word_text = 'aim'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 204, 'Week 5 Day 1'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 204, 5, 1
 FROM word w
 WHERE w.word_text = 'connect'
   AND NOT EXISTS (
@@ -2448,8 +2448,8 @@ WHERE w.word_text = 'connect'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 205, 'Week 5 Day 1'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 205, 5, 1
 FROM word w
 WHERE w.word_text = 'May'
   AND NOT EXISTS (
@@ -2457,8 +2457,8 @@ WHERE w.word_text = 'May'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 206, 'Week 5 Day 1'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 206, 5, 1
 FROM word w
 WHERE w.word_text = 'basketball'
   AND NOT EXISTS (
@@ -2466,8 +2466,8 @@ WHERE w.word_text = 'basketball'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 207, 'Week 5 Day 1'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 207, 5, 1
 FROM word w
 WHERE w.word_text = 'smell'
   AND NOT EXISTS (
@@ -2475,8 +2475,8 @@ WHERE w.word_text = 'smell'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 208, 'Week 5 Day 1'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 208, 5, 1
 FROM word w
 WHERE w.word_text = 'dream'
   AND NOT EXISTS (
@@ -2484,8 +2484,8 @@ WHERE w.word_text = 'dream'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 209, 'Week 5 Day 1'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 209, 5, 1
 FROM word w
 WHERE w.word_text = 'hour'
   AND NOT EXISTS (
@@ -2493,8 +2493,8 @@ WHERE w.word_text = 'hour'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 210, 'Week 5 Day 1'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 210, 5, 1
 FROM word w
 WHERE w.word_text = 'litter'
   AND NOT EXISTS (
@@ -2502,8 +2502,8 @@ WHERE w.word_text = 'litter'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 211, 'Week 5 Day 2'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 211, 5, 2
 FROM word w
 WHERE w.word_text = 'fireman'
   AND NOT EXISTS (
@@ -2511,8 +2511,8 @@ WHERE w.word_text = 'fireman'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 212, 'Week 5 Day 2'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 212, 5, 2
 FROM word w
 WHERE w.word_text = 'other'
   AND NOT EXISTS (
@@ -2520,8 +2520,8 @@ WHERE w.word_text = 'other'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 213, 'Week 5 Day 2'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 213, 5, 2
 FROM word w
 WHERE w.word_text = 'automatic'
   AND NOT EXISTS (
@@ -2529,8 +2529,8 @@ WHERE w.word_text = 'automatic'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 214, 'Week 5 Day 2'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 214, 5, 2
 FROM word w
 WHERE w.word_text = 'pot'
   AND NOT EXISTS (
@@ -2538,8 +2538,8 @@ WHERE w.word_text = 'pot'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 215, 'Week 5 Day 2'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 215, 5, 2
 FROM word w
 WHERE w.word_text = 'outdoor'
   AND NOT EXISTS (
@@ -2547,8 +2547,8 @@ WHERE w.word_text = 'outdoor'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 216, 'Week 5 Day 2'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 216, 5, 2
 FROM word w
 WHERE w.word_text = 'gentle'
   AND NOT EXISTS (
@@ -2556,8 +2556,8 @@ WHERE w.word_text = 'gentle'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 217, 'Week 5 Day 2'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 217, 5, 2
 FROM word w
 WHERE w.word_text = 'above'
   AND NOT EXISTS (
@@ -2565,8 +2565,8 @@ WHERE w.word_text = 'above'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 218, 'Week 5 Day 2'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 218, 5, 2
 FROM word w
 WHERE w.word_text = 'exam'
   AND NOT EXISTS (
@@ -2574,8 +2574,8 @@ WHERE w.word_text = 'exam'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 219, 'Week 5 Day 2'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 219, 5, 2
 FROM word w
 WHERE w.word_text = 'course'
   AND NOT EXISTS (
@@ -2583,8 +2583,8 @@ WHERE w.word_text = 'course'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 220, 'Week 5 Day 2'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 220, 5, 2
 FROM word w
 WHERE w.word_text = 'manner'
   AND NOT EXISTS (
@@ -2592,8 +2592,8 @@ WHERE w.word_text = 'manner'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 221, 'Week 5 Day 3'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 221, 5, 3
 FROM word w
 WHERE w.word_text = 'eat'
   AND NOT EXISTS (
@@ -2601,8 +2601,8 @@ WHERE w.word_text = 'eat'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 222, 'Week 5 Day 3'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 222, 5, 3
 FROM word w
 WHERE w.word_text = 'news'
   AND NOT EXISTS (
@@ -2610,8 +2610,8 @@ WHERE w.word_text = 'news'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 223, 'Week 5 Day 3'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 223, 5, 3
 FROM word w
 WHERE w.word_text = 'customer'
   AND NOT EXISTS (
@@ -2619,8 +2619,8 @@ WHERE w.word_text = 'customer'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 224, 'Week 5 Day 3'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 224, 5, 3
 FROM word w
 WHERE w.word_text = 'tea'
   AND NOT EXISTS (
@@ -2628,8 +2628,8 @@ WHERE w.word_text = 'tea'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 225, 'Week 5 Day 3'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 225, 5, 3
 FROM word w
 WHERE w.word_text = 'close'
   AND NOT EXISTS (
@@ -2637,8 +2637,8 @@ WHERE w.word_text = 'close'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 226, 'Week 5 Day 3'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 226, 5, 3
 FROM word w
 WHERE w.word_text = 'pearl'
   AND NOT EXISTS (
@@ -2646,8 +2646,8 @@ WHERE w.word_text = 'pearl'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 227, 'Week 5 Day 3'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 227, 5, 3
 FROM word w
 WHERE w.word_text = 'windy'
   AND NOT EXISTS (
@@ -2655,8 +2655,8 @@ WHERE w.word_text = 'windy'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 228, 'Week 5 Day 3'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 228, 5, 3
 FROM word w
 WHERE w.word_text = 'roast'
   AND NOT EXISTS (
@@ -2664,8 +2664,8 @@ WHERE w.word_text = 'roast'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 229, 'Week 5 Day 3'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 229, 5, 3
 FROM word w
 WHERE w.word_text = 'act'
   AND NOT EXISTS (
@@ -2673,8 +2673,8 @@ WHERE w.word_text = 'act'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 230, 'Week 5 Day 3'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 230, 5, 3
 FROM word w
 WHERE w.word_text = 'magazine'
   AND NOT EXISTS (
@@ -2682,8 +2682,8 @@ WHERE w.word_text = 'magazine'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 231, 'Week 5 Day 4'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 231, 5, 4
 FROM word w
 WHERE w.word_text = 'general'
   AND NOT EXISTS (
@@ -2691,8 +2691,8 @@ WHERE w.word_text = 'general'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 232, 'Week 5 Day 4'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 232, 5, 4
 FROM word w
 WHERE w.word_text = 'situation'
   AND NOT EXISTS (
@@ -2700,8 +2700,8 @@ WHERE w.word_text = 'situation'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 233, 'Week 5 Day 4'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 233, 5, 4
 FROM word w
 WHERE w.word_text = 'create'
   AND NOT EXISTS (
@@ -2709,8 +2709,8 @@ WHERE w.word_text = 'create'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 234, 'Week 5 Day 4'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 234, 5, 4
 FROM word w
 WHERE w.word_text = 'weak'
   AND NOT EXISTS (
@@ -2718,8 +2718,8 @@ WHERE w.word_text = 'weak'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 235, 'Week 5 Day 4'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 235, 5, 4
 FROM word w
 WHERE w.word_text = 'sentence'
   AND NOT EXISTS (
@@ -2727,8 +2727,8 @@ WHERE w.word_text = 'sentence'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 236, 'Week 5 Day 4'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 236, 5, 4
 FROM word w
 WHERE w.word_text = 'laugh'
   AND NOT EXISTS (
@@ -2736,8 +2736,8 @@ WHERE w.word_text = 'laugh'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 237, 'Week 5 Day 4'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 237, 5, 4
 FROM word w
 WHERE w.word_text = 'shirt'
   AND NOT EXISTS (
@@ -2745,8 +2745,8 @@ WHERE w.word_text = 'shirt'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 238, 'Week 5 Day 4'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 238, 5, 4
 FROM word w
 WHERE w.word_text = 'golden'
   AND NOT EXISTS (
@@ -2754,8 +2754,8 @@ WHERE w.word_text = 'golden'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 239, 'Week 5 Day 4'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 239, 5, 4
 FROM word w
 WHERE w.word_text = 'jeans'
   AND NOT EXISTS (
@@ -2763,8 +2763,8 @@ WHERE w.word_text = 'jeans'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 240, 'Week 5 Day 4'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 240, 5, 4
 FROM word w
 WHERE w.word_text = 'recent'
   AND NOT EXISTS (
@@ -2772,8 +2772,8 @@ WHERE w.word_text = 'recent'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 241, 'Week 5 Day 5'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 241, 5, 5
 FROM word w
 WHERE w.word_text = 'lunch'
   AND NOT EXISTS (
@@ -2781,8 +2781,8 @@ WHERE w.word_text = 'lunch'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 242, 'Week 5 Day 5'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 242, 5, 5
 FROM word w
 WHERE w.word_text = 'luggage'
   AND NOT EXISTS (
@@ -2790,8 +2790,8 @@ WHERE w.word_text = 'luggage'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 243, 'Week 5 Day 5'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 243, 5, 5
 FROM word w
 WHERE w.word_text = 'block'
   AND NOT EXISTS (
@@ -2799,8 +2799,8 @@ WHERE w.word_text = 'block'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 244, 'Week 5 Day 5'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 244, 5, 5
 FROM word w
 WHERE w.word_text = 'pineapple'
   AND NOT EXISTS (
@@ -2808,8 +2808,8 @@ WHERE w.word_text = 'pineapple'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 245, 'Week 5 Day 5'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 245, 5, 5
 FROM word w
 WHERE w.word_text = 'market'
   AND NOT EXISTS (
@@ -2817,8 +2817,8 @@ WHERE w.word_text = 'market'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 246, 'Week 5 Day 5'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 246, 5, 5
 FROM word w
 WHERE w.word_text = 'France'
   AND NOT EXISTS (
@@ -2826,8 +2826,8 @@ WHERE w.word_text = 'France'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 247, 'Week 5 Day 5'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 247, 5, 5
 FROM word w
 WHERE w.word_text = 'clothes'
   AND NOT EXISTS (
@@ -2835,8 +2835,8 @@ WHERE w.word_text = 'clothes'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 248, 'Week 5 Day 5'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 248, 5, 5
 FROM word w
 WHERE w.word_text = 'juice'
   AND NOT EXISTS (
@@ -2844,8 +2844,8 @@ WHERE w.word_text = 'juice'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 249, 'Week 5 Day 5'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 249, 5, 5
 FROM word w
 WHERE w.word_text = 'survey'
   AND NOT EXISTS (
@@ -2853,8 +2853,8 @@ WHERE w.word_text = 'survey'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 250, 'Week 5 Day 5'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 250, 5, 5
 FROM word w
 WHERE w.word_text = 'precious'
   AND NOT EXISTS (
@@ -2862,8 +2862,8 @@ WHERE w.word_text = 'precious'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 251, 'Week 6 Day 1'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 251, 6, 1
 FROM word w
 WHERE w.word_text = 'partner'
   AND NOT EXISTS (
@@ -2871,8 +2871,8 @@ WHERE w.word_text = 'partner'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 252, 'Week 6 Day 1'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 252, 6, 1
 FROM word w
 WHERE w.word_text = 'boil'
   AND NOT EXISTS (
@@ -2880,8 +2880,8 @@ WHERE w.word_text = 'boil'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 253, 'Week 6 Day 1'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 253, 6, 1
 FROM word w
 WHERE w.word_text = 'railway'
   AND NOT EXISTS (
@@ -2889,8 +2889,8 @@ WHERE w.word_text = 'railway'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 254, 'Week 6 Day 1'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 254, 6, 1
 FROM word w
 WHERE w.word_text = 'reduce'
   AND NOT EXISTS (
@@ -2898,8 +2898,8 @@ WHERE w.word_text = 'reduce'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 255, 'Week 6 Day 1'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 255, 6, 1
 FROM word w
 WHERE w.word_text = 'few'
   AND NOT EXISTS (
@@ -2907,8 +2907,8 @@ WHERE w.word_text = 'few'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 256, 'Week 6 Day 1'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 256, 6, 1
 FROM word w
 WHERE w.word_text = 'angrily'
   AND NOT EXISTS (
@@ -2916,8 +2916,8 @@ WHERE w.word_text = 'angrily'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 257, 'Week 6 Day 1'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 257, 6, 1
 FROM word w
 WHERE w.word_text = 'exercise'
   AND NOT EXISTS (
@@ -2925,8 +2925,8 @@ WHERE w.word_text = 'exercise'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 258, 'Week 6 Day 1'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 258, 6, 1
 FROM word w
 WHERE w.word_text = 'sandwich'
   AND NOT EXISTS (
@@ -2934,8 +2934,8 @@ WHERE w.word_text = 'sandwich'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 259, 'Week 6 Day 1'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 259, 6, 1
 FROM word w
 WHERE w.word_text = 'inside'
   AND NOT EXISTS (
@@ -2943,8 +2943,8 @@ WHERE w.word_text = 'inside'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 260, 'Week 6 Day 1'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 260, 6, 1
 FROM word w
 WHERE w.word_text = 'dollar'
   AND NOT EXISTS (
@@ -2952,8 +2952,8 @@ WHERE w.word_text = 'dollar'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 261, 'Week 6 Day 2'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 261, 6, 2
 FROM word w
 WHERE w.word_text = 'Monday'
   AND NOT EXISTS (
@@ -2961,8 +2961,8 @@ WHERE w.word_text = 'Monday'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 262, 'Week 6 Day 2'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 262, 6, 2
 FROM word w
 WHERE w.word_text = 'similar'
   AND NOT EXISTS (
@@ -2970,8 +2970,8 @@ WHERE w.word_text = 'similar'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 263, 'Week 6 Day 2'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 263, 6, 2
 FROM word w
 WHERE w.word_text = 'autumn'
   AND NOT EXISTS (
@@ -2979,8 +2979,8 @@ WHERE w.word_text = 'autumn'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 264, 'Week 6 Day 2'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 264, 6, 2
 FROM word w
 WHERE w.word_text = 'holiday'
   AND NOT EXISTS (
@@ -2988,8 +2988,8 @@ WHERE w.word_text = 'holiday'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 265, 'Week 6 Day 2'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 265, 6, 2
 FROM word w
 WHERE w.word_text = 'require'
   AND NOT EXISTS (
@@ -2997,8 +2997,8 @@ WHERE w.word_text = 'require'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 266, 'Week 6 Day 2'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 266, 6, 2
 FROM word w
 WHERE w.word_text = 'forward'
   AND NOT EXISTS (
@@ -3006,8 +3006,8 @@ WHERE w.word_text = 'forward'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 267, 'Week 6 Day 2'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 267, 6, 2
 FROM word w
 WHERE w.word_text = 'bright'
   AND NOT EXISTS (
@@ -3015,8 +3015,8 @@ WHERE w.word_text = 'bright'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 268, 'Week 6 Day 2'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 268, 6, 2
 FROM word w
 WHERE w.word_text = 'careful'
   AND NOT EXISTS (
@@ -3024,8 +3024,8 @@ WHERE w.word_text = 'careful'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 269, 'Week 6 Day 2'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 269, 6, 2
 FROM word w
 WHERE w.word_text = 'visitor'
   AND NOT EXISTS (
@@ -3033,8 +3033,8 @@ WHERE w.word_text = 'visitor'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 270, 'Week 6 Day 2'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 270, 6, 2
 FROM word w
 WHERE w.word_text = 'must'
   AND NOT EXISTS (
@@ -3042,8 +3042,8 @@ WHERE w.word_text = 'must'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 271, 'Week 6 Day 3'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 271, 6, 3
 FROM word w
 WHERE w.word_text = 'twin'
   AND NOT EXISTS (
@@ -3051,8 +3051,8 @@ WHERE w.word_text = 'twin'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 272, 'Week 6 Day 3'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 272, 6, 3
 FROM word w
 WHERE w.word_text = 'point'
   AND NOT EXISTS (
@@ -3060,8 +3060,8 @@ WHERE w.word_text = 'point'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 273, 'Week 6 Day 3'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 273, 6, 3
 FROM word w
 WHERE w.word_text = 'basket'
   AND NOT EXISTS (
@@ -3069,8 +3069,8 @@ WHERE w.word_text = 'basket'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 274, 'Week 6 Day 3'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 274, 6, 3
 FROM word w
 WHERE w.word_text = 'conclusion'
   AND NOT EXISTS (
@@ -3078,8 +3078,8 @@ WHERE w.word_text = 'conclusion'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 275, 'Week 6 Day 3'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 275, 6, 3
 FROM word w
 WHERE w.word_text = 'stomachache'
   AND NOT EXISTS (
@@ -3087,8 +3087,8 @@ WHERE w.word_text = 'stomachache'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 276, 'Week 6 Day 3'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 276, 6, 3
 FROM word w
 WHERE w.word_text = 'hurry'
   AND NOT EXISTS (
@@ -3096,8 +3096,8 @@ WHERE w.word_text = 'hurry'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 277, 'Week 6 Day 3'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 277, 6, 3
 FROM word w
 WHERE w.word_text = 'Wednesday'
   AND NOT EXISTS (
@@ -3105,8 +3105,8 @@ WHERE w.word_text = 'Wednesday'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 278, 'Week 6 Day 3'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 278, 6, 3
 FROM word w
 WHERE w.word_text = 'conversation'
   AND NOT EXISTS (
@@ -3114,8 +3114,8 @@ WHERE w.word_text = 'conversation'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 279, 'Week 6 Day 3'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 279, 6, 3
 FROM word w
 WHERE w.word_text = 'leave'
   AND NOT EXISTS (
@@ -3123,8 +3123,8 @@ WHERE w.word_text = 'leave'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 280, 'Week 6 Day 3'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 280, 6, 3
 FROM word w
 WHERE w.word_text = 'wide'
   AND NOT EXISTS (
@@ -3132,8 +3132,8 @@ WHERE w.word_text = 'wide'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 281, 'Week 6 Day 4'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 281, 6, 4
 FROM word w
 WHERE w.word_text = 'interested'
   AND NOT EXISTS (
@@ -3141,8 +3141,8 @@ WHERE w.word_text = 'interested'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 282, 'Week 6 Day 4'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 282, 6, 4
 FROM word w
 WHERE w.word_text = 'teacher'
   AND NOT EXISTS (
@@ -3150,8 +3150,8 @@ WHERE w.word_text = 'teacher'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 283, 'Week 6 Day 4'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 283, 6, 4
 FROM word w
 WHERE w.word_text = 'happily'
   AND NOT EXISTS (
@@ -3159,8 +3159,8 @@ WHERE w.word_text = 'happily'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 284, 'Week 6 Day 4'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 284, 6, 4
 FROM word w
 WHERE w.word_text = 'envelope'
   AND NOT EXISTS (
@@ -3168,8 +3168,8 @@ WHERE w.word_text = 'envelope'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 285, 'Week 6 Day 4'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 285, 6, 4
 FROM word w
 WHERE w.word_text = 'light'
   AND NOT EXISTS (
@@ -3177,8 +3177,8 @@ WHERE w.word_text = 'light'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 286, 'Week 6 Day 4'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 286, 6, 4
 FROM word w
 WHERE w.word_text = 'September'
   AND NOT EXISTS (
@@ -3186,8 +3186,8 @@ WHERE w.word_text = 'September'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 287, 'Week 6 Day 4'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 287, 6, 4
 FROM word w
 WHERE w.word_text = 'settle'
   AND NOT EXISTS (
@@ -3195,8 +3195,8 @@ WHERE w.word_text = 'settle'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 288, 'Week 6 Day 4'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 288, 6, 4
 FROM word w
 WHERE w.word_text = 'disappointed'
   AND NOT EXISTS (
@@ -3204,8 +3204,8 @@ WHERE w.word_text = 'disappointed'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 289, 'Week 6 Day 4'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 289, 6, 4
 FROM word w
 WHERE w.word_text = 'habit'
   AND NOT EXISTS (
@@ -3213,8 +3213,8 @@ WHERE w.word_text = 'habit'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 290, 'Week 6 Day 4'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 290, 6, 4
 FROM word w
 WHERE w.word_text = 'pound'
   AND NOT EXISTS (
@@ -3222,8 +3222,8 @@ WHERE w.word_text = 'pound'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 291, 'Week 6 Day 5'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 291, 6, 5
 FROM word w
 WHERE w.word_text = 'bear'
   AND NOT EXISTS (
@@ -3231,8 +3231,8 @@ WHERE w.word_text = 'bear'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 292, 'Week 6 Day 5'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 292, 6, 5
 FROM word w
 WHERE w.word_text = 'skate'
   AND NOT EXISTS (
@@ -3240,8 +3240,8 @@ WHERE w.word_text = 'skate'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 293, 'Week 6 Day 5'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 293, 6, 5
 FROM word w
 WHERE w.word_text = 'dress'
   AND NOT EXISTS (
@@ -3249,8 +3249,8 @@ WHERE w.word_text = 'dress'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 294, 'Week 6 Day 5'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 294, 6, 5
 FROM word w
 WHERE w.word_text = 'safe'
   AND NOT EXISTS (
@@ -3258,8 +3258,8 @@ WHERE w.word_text = 'safe'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 295, 'Week 6 Day 5'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 295, 6, 5
 FROM word w
 WHERE w.word_text = 'leg'
   AND NOT EXISTS (
@@ -3267,8 +3267,8 @@ WHERE w.word_text = 'leg'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 296, 'Week 6 Day 5'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 296, 6, 5
 FROM word w
 WHERE w.word_text = 'wrong'
   AND NOT EXISTS (
@@ -3276,8 +3276,8 @@ WHERE w.word_text = 'wrong'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 297, 'Week 6 Day 5'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 297, 6, 5
 FROM word w
 WHERE w.word_text = 'length'
   AND NOT EXISTS (
@@ -3285,8 +3285,8 @@ WHERE w.word_text = 'length'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 298, 'Week 6 Day 5'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 298, 6, 5
 FROM word w
 WHERE w.word_text = 'but'
   AND NOT EXISTS (
@@ -3294,8 +3294,8 @@ WHERE w.word_text = 'but'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 299, 'Week 6 Day 5'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 299, 6, 5
 FROM word w
 WHERE w.word_text = 'deliver'
   AND NOT EXISTS (
@@ -3303,8 +3303,8 @@ WHERE w.word_text = 'deliver'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 300, 'Week 6 Day 5'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 300, 6, 5
 FROM word w
 WHERE w.word_text = 'angry'
   AND NOT EXISTS (
@@ -3312,8 +3312,8 @@ WHERE w.word_text = 'angry'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 301, 'Week 7 Day 1'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 301, 7, 1
 FROM word w
 WHERE w.word_text = 'service'
   AND NOT EXISTS (
@@ -3321,8 +3321,8 @@ WHERE w.word_text = 'service'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 302, 'Week 7 Day 1'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 302, 7, 1
 FROM word w
 WHERE w.word_text = 'spread'
   AND NOT EXISTS (
@@ -3330,8 +3330,8 @@ WHERE w.word_text = 'spread'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 303, 'Week 7 Day 1'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 303, 7, 1
 FROM word w
 WHERE w.word_text = 'loudly'
   AND NOT EXISTS (
@@ -3339,8 +3339,8 @@ WHERE w.word_text = 'loudly'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 304, 'Week 7 Day 1'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 304, 7, 1
 FROM word w
 WHERE w.word_text = 'toy'
   AND NOT EXISTS (
@@ -3348,8 +3348,8 @@ WHERE w.word_text = 'toy'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 305, 'Week 7 Day 1'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 305, 7, 1
 FROM word w
 WHERE w.word_text = 'sightseeing'
   AND NOT EXISTS (
@@ -3357,8 +3357,8 @@ WHERE w.word_text = 'sightseeing'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 306, 'Week 7 Day 1'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 306, 7, 1
 FROM word w
 WHERE w.word_text = 'cigarette'
   AND NOT EXISTS (
@@ -3366,8 +3366,8 @@ WHERE w.word_text = 'cigarette'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 307, 'Week 7 Day 1'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 307, 7, 1
 FROM word w
 WHERE w.word_text = 'gently'
   AND NOT EXISTS (
@@ -3375,8 +3375,8 @@ WHERE w.word_text = 'gently'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 308, 'Week 7 Day 1'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 308, 7, 1
 FROM word w
 WHERE w.word_text = 'since'
   AND NOT EXISTS (
@@ -3384,8 +3384,8 @@ WHERE w.word_text = 'since'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 309, 'Week 7 Day 1'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 309, 7, 1
 FROM word w
 WHERE w.word_text = 'pool'
   AND NOT EXISTS (
@@ -3393,8 +3393,8 @@ WHERE w.word_text = 'pool'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 310, 'Week 7 Day 1'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 310, 7, 1
 FROM word w
 WHERE w.word_text = 'strong'
   AND NOT EXISTS (
@@ -3402,8 +3402,8 @@ WHERE w.word_text = 'strong'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 311, 'Week 7 Day 2'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 311, 7, 2
 FROM word w
 WHERE w.word_text = 'count'
   AND NOT EXISTS (
@@ -3411,8 +3411,8 @@ WHERE w.word_text = 'count'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 312, 'Week 7 Day 2'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 312, 7, 2
 FROM word w
 WHERE w.word_text = 'dry'
   AND NOT EXISTS (
@@ -3420,8 +3420,8 @@ WHERE w.word_text = 'dry'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 313, 'Week 7 Day 2'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 313, 7, 2
 FROM word w
 WHERE w.word_text = 'comfortable'
   AND NOT EXISTS (
@@ -3429,8 +3429,8 @@ WHERE w.word_text = 'comfortable'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 314, 'Week 7 Day 2'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 314, 7, 2
 FROM word w
 WHERE w.word_text = 'while'
   AND NOT EXISTS (
@@ -3438,8 +3438,8 @@ WHERE w.word_text = 'while'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 315, 'Week 7 Day 2'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 315, 7, 2
 FROM word w
 WHERE w.word_text = 'have'
   AND NOT EXISTS (
@@ -3447,8 +3447,8 @@ WHERE w.word_text = 'have'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 316, 'Week 7 Day 2'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 316, 7, 2
 FROM word w
 WHERE w.word_text = 'produce'
   AND NOT EXISTS (
@@ -3456,8 +3456,8 @@ WHERE w.word_text = 'produce'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 317, 'Week 7 Day 2'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 317, 7, 2
 FROM word w
 WHERE w.word_text = 'baby'
   AND NOT EXISTS (
@@ -3465,8 +3465,8 @@ WHERE w.word_text = 'baby'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 318, 'Week 7 Day 2'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 318, 7, 2
 FROM word w
 WHERE w.word_text = 'allow'
   AND NOT EXISTS (
@@ -3474,8 +3474,8 @@ WHERE w.word_text = 'allow'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 319, 'Week 7 Day 2'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 319, 7, 2
 FROM word w
 WHERE w.word_text = 'freezing'
   AND NOT EXISTS (
@@ -3483,8 +3483,8 @@ WHERE w.word_text = 'freezing'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 320, 'Week 7 Day 2'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 320, 7, 2
 FROM word w
 WHERE w.word_text = 'choice'
   AND NOT EXISTS (
@@ -3492,8 +3492,8 @@ WHERE w.word_text = 'choice'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 321, 'Week 7 Day 3'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 321, 7, 3
 FROM word w
 WHERE w.word_text = 'little'
   AND NOT EXISTS (
@@ -3501,8 +3501,8 @@ WHERE w.word_text = 'little'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 322, 'Week 7 Day 3'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 322, 7, 3
 FROM word w
 WHERE w.word_text = 'heat'
   AND NOT EXISTS (
@@ -3510,8 +3510,8 @@ WHERE w.word_text = 'heat'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 323, 'Week 7 Day 3'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 323, 7, 3
 FROM word w
 WHERE w.word_text = 'friendship'
   AND NOT EXISTS (
@@ -3519,8 +3519,8 @@ WHERE w.word_text = 'friendship'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 324, 'Week 7 Day 3'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 324, 7, 3
 FROM word w
 WHERE w.word_text = 'discover'
   AND NOT EXISTS (
@@ -3528,8 +3528,8 @@ WHERE w.word_text = 'discover'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 325, 'Week 7 Day 3'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 325, 7, 3
 FROM word w
 WHERE w.word_text = 'pencil'
   AND NOT EXISTS (
@@ -3537,8 +3537,8 @@ WHERE w.word_text = 'pencil'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 326, 'Week 7 Day 3'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 326, 7, 3
 FROM word w
 WHERE w.word_text = 'strange'
   AND NOT EXISTS (
@@ -3546,8 +3546,8 @@ WHERE w.word_text = 'strange'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 327, 'Week 7 Day 3'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 327, 7, 3
 FROM word w
 WHERE w.word_text = 'lesson'
   AND NOT EXISTS (
@@ -3555,8 +3555,8 @@ WHERE w.word_text = 'lesson'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 328, 'Week 7 Day 3'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 328, 7, 3
 FROM word w
 WHERE w.word_text = 'end'
   AND NOT EXISTS (
@@ -3564,8 +3564,8 @@ WHERE w.word_text = 'end'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 329, 'Week 7 Day 3'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 329, 7, 3
 FROM word w
 WHERE w.word_text = 'various'
   AND NOT EXISTS (
@@ -3573,8 +3573,8 @@ WHERE w.word_text = 'various'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 330, 'Week 7 Day 3'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 330, 7, 3
 FROM word w
 WHERE w.word_text = 'quick'
   AND NOT EXISTS (
@@ -3582,8 +3582,8 @@ WHERE w.word_text = 'quick'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 331, 'Week 7 Day 4'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 331, 7, 4
 FROM word w
 WHERE w.word_text = 'film'
   AND NOT EXISTS (
@@ -3591,8 +3591,8 @@ WHERE w.word_text = 'film'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 332, 'Week 7 Day 4'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 332, 7, 4
 FROM word w
 WHERE w.word_text = 'owner'
   AND NOT EXISTS (
@@ -3600,8 +3600,8 @@ WHERE w.word_text = 'owner'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 333, 'Week 7 Day 4'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 333, 7, 4
 FROM word w
 WHERE w.word_text = 'debate'
   AND NOT EXISTS (
@@ -3609,8 +3609,8 @@ WHERE w.word_text = 'debate'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 334, 'Week 7 Day 4'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 334, 7, 4
 FROM word w
 WHERE w.word_text = 'brave'
   AND NOT EXISTS (
@@ -3618,8 +3618,8 @@ WHERE w.word_text = 'brave'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 335, 'Week 7 Day 4'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 335, 7, 4
 FROM word w
 WHERE w.word_text = 'terrible'
   AND NOT EXISTS (
@@ -3627,8 +3627,8 @@ WHERE w.word_text = 'terrible'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 336, 'Week 7 Day 4'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 336, 7, 4
 FROM word w
 WHERE w.word_text = 'technology'
   AND NOT EXISTS (
@@ -3636,8 +3636,8 @@ WHERE w.word_text = 'technology'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 337, 'Week 7 Day 4'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 337, 7, 4
 FROM word w
 WHERE w.word_text = 'once'
   AND NOT EXISTS (
@@ -3645,8 +3645,8 @@ WHERE w.word_text = 'once'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 338, 'Week 7 Day 4'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 338, 7, 4
 FROM word w
 WHERE w.word_text = 'education'
   AND NOT EXISTS (
@@ -3654,8 +3654,8 @@ WHERE w.word_text = 'education'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 339, 'Week 7 Day 4'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 339, 7, 4
 FROM word w
 WHERE w.word_text = 'garden'
   AND NOT EXISTS (
@@ -3663,8 +3663,8 @@ WHERE w.word_text = 'garden'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 340, 'Week 7 Day 4'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 340, 7, 4
 FROM word w
 WHERE w.word_text = 'detail'
   AND NOT EXISTS (
@@ -3672,8 +3672,8 @@ WHERE w.word_text = 'detail'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 341, 'Week 7 Day 5'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 341, 7, 5
 FROM word w
 WHERE w.word_text = 'tour'
   AND NOT EXISTS (
@@ -3681,8 +3681,8 @@ WHERE w.word_text = 'tour'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 342, 'Week 7 Day 5'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 342, 7, 5
 FROM word w
 WHERE w.word_text = 'borrow'
   AND NOT EXISTS (
@@ -3690,8 +3690,8 @@ WHERE w.word_text = 'borrow'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 343, 'Week 7 Day 5'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 343, 7, 5
 FROM word w
 WHERE w.word_text = 'club'
   AND NOT EXISTS (
@@ -3699,8 +3699,8 @@ WHERE w.word_text = 'club'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 344, 'Week 7 Day 5'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 344, 7, 5
 FROM word w
 WHERE w.word_text = 'educational'
   AND NOT EXISTS (
@@ -3708,8 +3708,8 @@ WHERE w.word_text = 'educational'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 345, 'Week 7 Day 5'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 345, 7, 5
 FROM word w
 WHERE w.word_text = 'sweet'
   AND NOT EXISTS (
@@ -3717,8 +3717,8 @@ WHERE w.word_text = 'sweet'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 346, 'Week 7 Day 5'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 346, 7, 5
 FROM word w
 WHERE w.word_text = 'each'
   AND NOT EXISTS (
@@ -3726,8 +3726,8 @@ WHERE w.word_text = 'each'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 347, 'Week 7 Day 5'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 347, 7, 5
 FROM word w
 WHERE w.word_text = 'cycle'
   AND NOT EXISTS (
@@ -3735,8 +3735,8 @@ WHERE w.word_text = 'cycle'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 348, 'Week 7 Day 5'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 348, 7, 5
 FROM word w
 WHERE w.word_text = 'rain'
   AND NOT EXISTS (
@@ -3744,8 +3744,8 @@ WHERE w.word_text = 'rain'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 349, 'Week 7 Day 5'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 349, 7, 5
 FROM word w
 WHERE w.word_text = 'ever'
   AND NOT EXISTS (
@@ -3753,8 +3753,8 @@ WHERE w.word_text = 'ever'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 350, 'Week 7 Day 5'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 350, 7, 5
 FROM word w
 WHERE w.word_text = 'shout'
   AND NOT EXISTS (
@@ -3762,8 +3762,8 @@ WHERE w.word_text = 'shout'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 351, 'Week 8 Day 1'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 351, 8, 1
 FROM word w
 WHERE w.word_text = 'umbrella'
   AND NOT EXISTS (
@@ -3771,8 +3771,8 @@ WHERE w.word_text = 'umbrella'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 352, 'Week 8 Day 1'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 352, 8, 1
 FROM word w
 WHERE w.word_text = 'impossible'
   AND NOT EXISTS (
@@ -3780,8 +3780,8 @@ WHERE w.word_text = 'impossible'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 353, 'Week 8 Day 1'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 353, 8, 1
 FROM word w
 WHERE w.word_text = 'dishonest'
   AND NOT EXISTS (
@@ -3789,8 +3789,8 @@ WHERE w.word_text = 'dishonest'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 354, 'Week 8 Day 1'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 354, 8, 1
 FROM word w
 WHERE w.word_text = 'very'
   AND NOT EXISTS (
@@ -3798,8 +3798,8 @@ WHERE w.word_text = 'very'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 355, 'Week 8 Day 1'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 355, 8, 1
 FROM word w
 WHERE w.word_text = 'add'
   AND NOT EXISTS (
@@ -3807,8 +3807,8 @@ WHERE w.word_text = 'add'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 356, 'Week 8 Day 1'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 356, 8, 1
 FROM word w
 WHERE w.word_text = 'tooth'
   AND NOT EXISTS (
@@ -3816,8 +3816,8 @@ WHERE w.word_text = 'tooth'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 357, 'Week 8 Day 1'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 357, 8, 1
 FROM word w
 WHERE w.word_text = 'rice'
   AND NOT EXISTS (
@@ -3825,8 +3825,8 @@ WHERE w.word_text = 'rice'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 358, 'Week 8 Day 1'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 358, 8, 1
 FROM word w
 WHERE w.word_text = 'illness'
   AND NOT EXISTS (
@@ -3834,8 +3834,8 @@ WHERE w.word_text = 'illness'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 359, 'Week 8 Day 1'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 359, 8, 1
 FROM word w
 WHERE w.word_text = 'beg'
   AND NOT EXISTS (
@@ -3843,8 +3843,8 @@ WHERE w.word_text = 'beg'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 360, 'Week 8 Day 1'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 360, 8, 1
 FROM word w
 WHERE w.word_text = 'wear'
   AND NOT EXISTS (
@@ -3852,8 +3852,8 @@ WHERE w.word_text = 'wear'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 361, 'Week 8 Day 2'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 361, 8, 2
 FROM word w
 WHERE w.word_text = 'joy'
   AND NOT EXISTS (
@@ -3861,8 +3861,8 @@ WHERE w.word_text = 'joy'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 362, 'Week 8 Day 2'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 362, 8, 2
 FROM word w
 WHERE w.word_text = 'card'
   AND NOT EXISTS (
@@ -3870,8 +3870,8 @@ WHERE w.word_text = 'card'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 363, 'Week 8 Day 2'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 363, 8, 2
 FROM word w
 WHERE w.word_text = 'always'
   AND NOT EXISTS (
@@ -3879,8 +3879,8 @@ WHERE w.word_text = 'always'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 364, 'Week 8 Day 2'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 364, 8, 2
 FROM word w
 WHERE w.word_text = 'deep'
   AND NOT EXISTS (
@@ -3888,8 +3888,8 @@ WHERE w.word_text = 'deep'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 365, 'Week 8 Day 2'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 365, 8, 2
 FROM word w
 WHERE w.word_text = 'pioneer'
   AND NOT EXISTS (
@@ -3897,8 +3897,8 @@ WHERE w.word_text = 'pioneer'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 366, 'Week 8 Day 2'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 366, 8, 2
 FROM word w
 WHERE w.word_text = 'accept'
   AND NOT EXISTS (
@@ -3906,8 +3906,8 @@ WHERE w.word_text = 'accept'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 367, 'Week 8 Day 2'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 367, 8, 2
 FROM word w
 WHERE w.word_text = 'way'
   AND NOT EXISTS (
@@ -3915,8 +3915,8 @@ WHERE w.word_text = 'way'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 368, 'Week 8 Day 2'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 368, 8, 2
 FROM word w
 WHERE w.word_text = 'discussion'
   AND NOT EXISTS (
@@ -3924,8 +3924,8 @@ WHERE w.word_text = 'discussion'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 369, 'Week 8 Day 2'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 369, 8, 2
 FROM word w
 WHERE w.word_text = 'respect'
   AND NOT EXISTS (
@@ -3933,8 +3933,8 @@ WHERE w.word_text = 'respect'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 370, 'Week 8 Day 2'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 370, 8, 2
 FROM word w
 WHERE w.word_text = 'everywhere'
   AND NOT EXISTS (
@@ -3942,8 +3942,8 @@ WHERE w.word_text = 'everywhere'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 371, 'Week 8 Day 3'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 371, 8, 3
 FROM word w
 WHERE w.word_text = 'within'
   AND NOT EXISTS (
@@ -3951,8 +3951,8 @@ WHERE w.word_text = 'within'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 372, 'Week 8 Day 3'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 372, 8, 3
 FROM word w
 WHERE w.word_text = 'animal'
   AND NOT EXISTS (
@@ -3960,8 +3960,8 @@ WHERE w.word_text = 'animal'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 373, 'Week 8 Day 3'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 373, 8, 3
 FROM word w
 WHERE w.word_text = 'nurse'
   AND NOT EXISTS (
@@ -3969,8 +3969,8 @@ WHERE w.word_text = 'nurse'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 374, 'Week 8 Day 3'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 374, 8, 3
 FROM word w
 WHERE w.word_text = 'title'
   AND NOT EXISTS (
@@ -3978,8 +3978,8 @@ WHERE w.word_text = 'title'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 375, 'Week 8 Day 3'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 375, 8, 3
 FROM word w
 WHERE w.word_text = 'per'
   AND NOT EXISTS (
@@ -3987,8 +3987,8 @@ WHERE w.word_text = 'per'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 376, 'Week 8 Day 3'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 376, 8, 3
 FROM word w
 WHERE w.word_text = 'disturb'
   AND NOT EXISTS (
@@ -3996,8 +3996,8 @@ WHERE w.word_text = 'disturb'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 377, 'Week 8 Day 3'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 377, 8, 3
 FROM word w
 WHERE w.word_text = 'beautifully'
   AND NOT EXISTS (
@@ -4005,8 +4005,8 @@ WHERE w.word_text = 'beautifully'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 378, 'Week 8 Day 3'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 378, 8, 3
 FROM word w
 WHERE w.word_text = 'equal'
   AND NOT EXISTS (
@@ -4014,8 +4014,8 @@ WHERE w.word_text = 'equal'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 379, 'Week 8 Day 3'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 379, 8, 3
 FROM word w
 WHERE w.word_text = 'immediately'
   AND NOT EXISTS (
@@ -4023,8 +4023,8 @@ WHERE w.word_text = 'immediately'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 380, 'Week 8 Day 3'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 380, 8, 3
 FROM word w
 WHERE w.word_text = 'salad'
   AND NOT EXISTS (
@@ -4032,8 +4032,8 @@ WHERE w.word_text = 'salad'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 381, 'Week 8 Day 4'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 381, 8, 4
 FROM word w
 WHERE w.word_text = 'ahead'
   AND NOT EXISTS (
@@ -4041,8 +4041,8 @@ WHERE w.word_text = 'ahead'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 382, 'Week 8 Day 4'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 382, 8, 4
 FROM word w
 WHERE w.word_text = 'goal'
   AND NOT EXISTS (
@@ -4050,8 +4050,8 @@ WHERE w.word_text = 'goal'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 383, 'Week 8 Day 4'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 383, 8, 4
 FROM word w
 WHERE w.word_text = 'hard'
   AND NOT EXISTS (
@@ -4059,8 +4059,8 @@ WHERE w.word_text = 'hard'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 384, 'Week 8 Day 4'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 384, 8, 4
 FROM word w
 WHERE w.word_text = 'price'
   AND NOT EXISTS (
@@ -4068,8 +4068,8 @@ WHERE w.word_text = 'price'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 385, 'Week 8 Day 4'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 385, 8, 4
 FROM word w
 WHERE w.word_text = 'keep'
   AND NOT EXISTS (
@@ -4077,8 +4077,8 @@ WHERE w.word_text = 'keep'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 386, 'Week 8 Day 4'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 386, 8, 4
 FROM word w
 WHERE w.word_text = 'nervous'
   AND NOT EXISTS (
@@ -4086,8 +4086,8 @@ WHERE w.word_text = 'nervous'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 387, 'Week 8 Day 4'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 387, 8, 4
 FROM word w
 WHERE w.word_text = 'properly'
   AND NOT EXISTS (
@@ -4095,8 +4095,8 @@ WHERE w.word_text = 'properly'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 388, 'Week 8 Day 4'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 388, 8, 4
 FROM word w
 WHERE w.word_text = 'kid'
   AND NOT EXISTS (
@@ -4104,8 +4104,8 @@ WHERE w.word_text = 'kid'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 389, 'Week 8 Day 4'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 389, 8, 4
 FROM word w
 WHERE w.word_text = 'through'
   AND NOT EXISTS (
@@ -4113,8 +4113,8 @@ WHERE w.word_text = 'through'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 390, 'Week 8 Day 4'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 390, 8, 4
 FROM word w
 WHERE w.word_text = 'kitchen'
   AND NOT EXISTS (
@@ -4122,8 +4122,8 @@ WHERE w.word_text = 'kitchen'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 391, 'Week 8 Day 5'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 391, 8, 5
 FROM word w
 WHERE w.word_text = 'land'
   AND NOT EXISTS (
@@ -4131,8 +4131,8 @@ WHERE w.word_text = 'land'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 392, 'Week 8 Day 5'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 392, 8, 5
 FROM word w
 WHERE w.word_text = 'till'
   AND NOT EXISTS (
@@ -4140,8 +4140,8 @@ WHERE w.word_text = 'till'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 393, 'Week 8 Day 5'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 393, 8, 5
 FROM word w
 WHERE w.word_text = 'put'
   AND NOT EXISTS (
@@ -4149,8 +4149,8 @@ WHERE w.word_text = 'put'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 394, 'Week 8 Day 5'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 394, 8, 5
 FROM word w
 WHERE w.word_text = 'wall'
   AND NOT EXISTS (
@@ -4158,8 +4158,8 @@ WHERE w.word_text = 'wall'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 395, 'Week 8 Day 5'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 395, 8, 5
 FROM word w
 WHERE w.word_text = 'fever'
   AND NOT EXISTS (
@@ -4167,8 +4167,8 @@ WHERE w.word_text = 'fever'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 396, 'Week 8 Day 5'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 396, 8, 5
 FROM word w
 WHERE w.word_text = 'Mr'
   AND NOT EXISTS (
@@ -4176,8 +4176,8 @@ WHERE w.word_text = 'Mr'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 397, 'Week 8 Day 5'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 397, 8, 5
 FROM word w
 WHERE w.word_text = 'camera'
   AND NOT EXISTS (
@@ -4185,8 +4185,8 @@ WHERE w.word_text = 'camera'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 398, 'Week 8 Day 5'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 398, 8, 5
 FROM word w
 WHERE w.word_text = 'patient'
   AND NOT EXISTS (
@@ -4194,8 +4194,8 @@ WHERE w.word_text = 'patient'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 399, 'Week 8 Day 5'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 399, 8, 5
 FROM word w
 WHERE w.word_text = 'inventor'
   AND NOT EXISTS (
@@ -4203,8 +4203,8 @@ WHERE w.word_text = 'inventor'
       WHERE i.book_id = 2 AND i.word_id = w.id
   );
 
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name)
-SELECT 2, w.id, 400, 'Week 8 Day 5'
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name)
+SELECT 2, w.id, 400, 8, 5
 FROM word w
 WHERE w.word_text = 'there'
   AND NOT EXISTS (

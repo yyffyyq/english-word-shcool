@@ -154,7 +154,7 @@ public class WordBookController {
      * @return 导入结果（含成功数、失败明细、词书单词总数）
      */
     @Operation(summary = "批量导入词书单词",
-            description = "手工录入英文、音标、正确中文、3 个错误中文、例句及翻译；正确项写入 word_option.is_correct=1。")
+            description = "手工录入英文、音标、正确中文、3 个错误中文、例句及翻译；可带整数 week、unitName。正确项写入 word_option.is_correct=1。")
     @PostMapping("/{bookId}/words/import")
     @AuthCheck
     public BaseResponse<WordBookImportResultVO> importWords(
@@ -174,8 +174,8 @@ public class WordBookController {
 
     /**
      * 词书内单词分页查询接口（教师、管理员）：
-     * 根据词书 ID 分页查询关联单词，支持按英文单词、单元名称筛选。
-     * 返回结果含四选一选项、单元名称与词书内排序。
+     * 根据词书 ID 分页查询关联单词，支持按英文单词、周次、单元序号筛选。
+     * 返回结果含四选一选项、周次、单元序号与词书内排序，默认按 week、unitName、sortOrder 升序。
      * 请求头需携带 openid 或 userId。
      *
      * @param bookId      词书ID
@@ -184,7 +184,7 @@ public class WordBookController {
      * @return 分页单词列表
      */
     @Operation(summary = "词书内单词分页查询",
-            description = "按词书 ID 分页查询关联单词，支持按英文、单元筛选；返回含四选一选项。")
+            description = "按词书 ID 分页查询关联单词，支持按英文、整数周次、整数单元筛选；默认按 week、unitName、sortOrder 升序。")
     @PostMapping("/{bookId}/words/list/page/vo")
     @AuthCheck
     public BaseResponse<Page<WordVO>> listWordsByBookPage(

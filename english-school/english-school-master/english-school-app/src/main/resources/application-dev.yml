@@ -6,7 +6,7 @@ spring:
 #    username: englishworddb
 #    password: xyxt6d2zy4WdweWX
     username: root
-    password: root
+    password: jintuyfy
   # redis
   data:
     redis:

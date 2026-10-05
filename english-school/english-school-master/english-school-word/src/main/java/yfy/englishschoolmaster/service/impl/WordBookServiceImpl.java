@@ -204,7 +204,10 @@ public class WordBookServiceImpl extends ServiceImpl<WordBookMapper, WordBook> i
         ThrowUtils.throwIf(STATUS_DISABLED.equals(wordBook.getStatus()), ErrorCode.OPERATION_ERROR, "词书已停用，无法导入");
 
         // 2. 逐条处理：单条失败不影响整批
-        String unitName = request.getUnitName();
+        Integer week = request.getWeek();
+        Integer unitName = request.getUnitName();
+        ThrowUtils.throwIf(week != null && week <= 0, ErrorCode.PARAMS_ERROR, "周次必须大于 0");
+        ThrowUtils.throwIf(unitName != null && unitName <= 0, ErrorCode.PARAMS_ERROR, "单元序号必须大于 0");
         int nextSort = wordBookItemService.getMaxSortOrder(bookId) + 1;
         WordBookImportResultVO result = new WordBookImportResultVO();
 
@@ -212,7 +215,7 @@ public class WordBookServiceImpl extends ServiceImpl<WordBookMapper, WordBook> i
             String displayWord = item == null || item.getWordText() == null ? "" : item.getWordText().trim();
             try {
                 Word word = wordService.enrichAndSave(item);
-                boolean linked = wordBookItemService.linkIfAbsent(bookId, word.getId(), nextSort, unitName);
+                boolean linked = wordBookItemService.linkIfAbsent(bookId, word.getId(), nextSort, week, unitName);
                 if (linked) {
                     nextSort++;
                 }
@@ -235,7 +238,7 @@ public class WordBookServiceImpl extends ServiceImpl<WordBookMapper, WordBook> i
         return result;
     }
 
-    /** 实现词书内单词分页查询，保持词书 sortOrder 排序 */
+    /** 实现词书内单词分页查询，按周次、单元、词书内排序 */
     @Override
     public Page<WordVO> listWordsByBookPage(Long bookId, WordBookWordQueryRequest request, UserAccountVO loginUser) {
         // 1. 参数与权限校验
@@ -252,8 +255,13 @@ public class WordBookServiceImpl extends ServiceImpl<WordBookMapper, WordBook> i
         // 2. 组装词书关联查询条件
         QueryWrapper itemQuery = QueryWrapper.create()
                 .eq(WordBookItem::getBookId, bookId);
-        if (StrUtil.isNotBlank(request.getUnitName())) {
-            itemQuery.eq(WordBookItem::getUnitName, request.getUnitName().trim());
+        if (request.getWeek() != null) {
+            ThrowUtils.throwIf(request.getWeek() <= 0, ErrorCode.PARAMS_ERROR, "周次必须大于 0");
+            itemQuery.eq(WordBookItem::getWeek, request.getWeek());
+        }
+        if (request.getUnitName() != null) {
+            ThrowUtils.throwIf(request.getUnitName() <= 0, ErrorCode.PARAMS_ERROR, "单元序号必须大于 0");
+            itemQuery.eq(WordBookItem::getUnitName, request.getUnitName());
         }
         if (StrUtil.isNotBlank(request.getWordText())) {
             List<Word> matchedWords = wordService.list(QueryWrapper.create()
@@ -271,8 +279,10 @@ public class WordBookServiceImpl extends ServiceImpl<WordBookMapper, WordBook> i
             itemQuery.in(WordBookItem::getWordId, matchedWordIds);
         }
 
-        // 默认按词书内 sortOrder 升序
-        itemQuery.orderBy(WordBookItem::getSortOrder, true);
+        // 按周次、单元序号、词书内排序升序
+        itemQuery.orderBy(WordBookItem::getWeek, true)
+                .orderBy(WordBookItem::getUnitName, true)
+                .orderBy(WordBookItem::getSortOrder, true);
 
         // 3. 分页查询词书关联
         Page<WordBookItem> itemPage = wordBookItemService.page(Page.of(pageNum, pageSize), itemQuery);
@@ -343,11 +353,12 @@ public class WordBookServiceImpl extends ServiceImpl<WordBookMapper, WordBook> i
     }
 
     /**
-     * 单词实体转 VO，并填充词书内排序、单元与四选一选项
+     * 单词实体转 VO，并填充词书内排序、周次、单元与四选一选项
      */
     private WordVO toWordVO(Word word, WordBookItem item) {
         WordVO wordVO = new WordVO();
         BeanUtil.copyProperties(word, wordVO);
+        wordVO.setWeek(item.getWeek());
         wordVO.setUnitName(item.getUnitName());
         wordVO.setSortOrder(item.getSortOrder());
 

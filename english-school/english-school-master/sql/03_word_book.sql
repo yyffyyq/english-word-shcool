@@ -85,9 +85,11 @@ CREATE TABLE IF NOT EXISTS word_book_item (
   book_id BIGINT NOT NULL COMMENT '词书ID，关联 word_book.id',
   word_id BIGINT NOT NULL COMMENT '单词ID，关联 word.id',
   sort_order INT NOT NULL COMMENT '单词在词书中的排序',
-  unit_name VARCHAR(100) NULL COMMENT '所属单元名称，例如 Unit 1',
+  week INT NULL COMMENT '所属周次，按整数排序',
+  unit_name INT NULL COMMENT '所属单元序号，按整数排序',
   UNIQUE KEY uk_book_word (book_id, word_id),
   KEY idx_word_book_item_book_sort (book_id, sort_order),
+  KEY idx_word_book_item_book_week_unit (book_id, week, unit_name, sort_order),
   KEY idx_word_book_item_word (word_id),
   CONSTRAINT fk_word_book_item_book
     FOREIGN KEY (book_id) REFERENCES word_book (id),
@@ -274,18 +276,18 @@ INSERT INTO word_option (word_id, option_text, is_correct, sort_order, created_a
 -- white
 (50, '白色的', 1, 0, NOW(), NOW()), (50, '黑色的', 0, 1, NOW(), NOW()), (50, '红色的', 0, 2, NOW(), NOW()), (50, '蓝色的', 0, 3, NOW(), NOW());
 
--- 6.4 关联到单词本 id=1（Unit 1 / Unit 2 各 25 词）
-INSERT INTO word_book_item (book_id, word_id, sort_order, unit_name) VALUES
-(1, 1,  1,  'Unit 1'), (1, 2,  2,  'Unit 1'), (1, 3,  3,  'Unit 1'), (1, 4,  4,  'Unit 1'), (1, 5,  5,  'Unit 1'),
-(1, 6,  6,  'Unit 1'), (1, 7,  7,  'Unit 1'), (1, 8,  8,  'Unit 1'), (1, 9,  9,  'Unit 1'), (1, 10, 10, 'Unit 1'),
-(1, 11, 11, 'Unit 1'), (1, 12, 12, 'Unit 1'), (1, 13, 13, 'Unit 1'), (1, 14, 14, 'Unit 1'), (1, 15, 15, 'Unit 1'),
-(1, 16, 16, 'Unit 1'), (1, 17, 17, 'Unit 1'), (1, 18, 18, 'Unit 1'), (1, 19, 19, 'Unit 1'), (1, 20, 20, 'Unit 1'),
-(1, 21, 21, 'Unit 1'), (1, 22, 22, 'Unit 1'), (1, 23, 23, 'Unit 1'), (1, 24, 24, 'Unit 1'), (1, 25, 25, 'Unit 1'),
-(1, 26, 26, 'Unit 2'), (1, 27, 27, 'Unit 2'), (1, 28, 28, 'Unit 2'), (1, 29, 29, 'Unit 2'), (1, 30, 30, 'Unit 2'),
-(1, 31, 31, 'Unit 2'), (1, 32, 32, 'Unit 2'), (1, 33, 33, 'Unit 2'), (1, 34, 34, 'Unit 2'), (1, 35, 35, 'Unit 2'),
-(1, 36, 36, 'Unit 2'), (1, 37, 37, 'Unit 2'), (1, 38, 38, 'Unit 2'), (1, 39, 39, 'Unit 2'), (1, 40, 40, 'Unit 2'),
-(1, 41, 41, 'Unit 2'), (1, 42, 42, 'Unit 2'), (1, 43, 43, 'Unit 2'), (1, 44, 44, 'Unit 2'), (1, 45, 45, 'Unit 2'),
-(1, 46, 46, 'Unit 2'), (1, 47, 47, 'Unit 2'), (1, 48, 48, 'Unit 2'), (1, 49, 49, 'Unit 2'), (1, 50, 50, 'Unit 2');
+-- 6.4 关联到单词本 id=1（第 1 周单元 1、第 2 周单元 2，各 25 词）
+INSERT INTO word_book_item (book_id, word_id, sort_order, week, unit_name) VALUES
+(1, 1,  1,  1, 1), (1, 2,  2,  1, 1), (1, 3,  3,  1, 1), (1, 4,  4,  1, 1), (1, 5,  5,  1, 1),
+(1, 6,  6,  1, 1), (1, 7,  7,  1, 1), (1, 8,  8,  1, 1), (1, 9,  9,  1, 1), (1, 10, 10, 1, 1),
+(1, 11, 11, 1, 1), (1, 12, 12, 1, 1), (1, 13, 13, 1, 1), (1, 14, 14, 1, 1), (1, 15, 15, 1, 1),
+(1, 16, 16, 1, 1), (1, 17, 17, 1, 1), (1, 18, 18, 1, 1), (1, 19, 19, 1, 1), (1, 20, 20, 1, 1),
+(1, 21, 21, 1, 1), (1, 22, 22, 1, 1), (1, 23, 23, 1, 1), (1, 24, 24, 1, 1), (1, 25, 25, 1, 1),
+(1, 26, 26, 2, 2), (1, 27, 27, 2, 2), (1, 28, 28, 2, 2), (1, 29, 29, 2, 2), (1, 30, 30, 2, 2),
+(1, 31, 31, 2, 2), (1, 32, 32, 2, 2), (1, 33, 33, 2, 2), (1, 34, 34, 2, 2), (1, 35, 35, 2, 2),
+(1, 36, 36, 2, 2), (1, 37, 37, 2, 2), (1, 38, 38, 2, 2), (1, 39, 39, 2, 2), (1, 40, 40, 2, 2),
+(1, 41, 41, 2, 2), (1, 42, 42, 2, 2), (1, 43, 43, 2, 2), (1, 44, 44, 2, 2), (1, 45, 45, 2, 2),
+(1, 46, 46, 2, 2), (1, 47, 47, 2, 2), (1, 48, 48, 2, 2), (1, 49, 49, 2, 2), (1, 50, 50, 2, 2);
 
 -- 6.5 回写词书单词数量
 UPDATE word_book
